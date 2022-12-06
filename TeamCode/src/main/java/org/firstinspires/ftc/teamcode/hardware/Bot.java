@@ -74,8 +74,9 @@ public class Bot {
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBL, Motor.GoBILDA.RPM_435),
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBR, Motor.GoBILDA.RPM_435)
         };
-        driveTrainMotors[0].setInverted(true);
-        driveTrainMotors[2].setInverted(true);
+        // left motors
+//        driveTrainMotors[0].setInverted(true);
+//        driveTrainMotors[2].setInverted(true);
         for(MotorEx motor : driveTrainMotors){
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         }
