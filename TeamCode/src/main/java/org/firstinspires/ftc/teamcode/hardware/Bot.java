@@ -74,6 +74,7 @@ public class Bot {
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBL, Motor.GoBILDA.RPM_435),
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBR, Motor.GoBILDA.RPM_435)
         };
+        // For the blue driver hub, only the middle USB 2.0 port works.
         // left motors
 //        driveTrainMotors[0].setInverted(true);
 //        driveTrainMotors[2].setInverted(true);
