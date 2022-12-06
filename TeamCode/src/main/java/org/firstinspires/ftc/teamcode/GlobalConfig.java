@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.utilclasses.Encoder;
 public class GlobalConfig {//make all fields final
     //control + click class to go to it
     DriveConstants controlClickForDriveConstants;
+
     public enum Alliance{
         RED,
         BLUE;
@@ -24,8 +25,16 @@ public class GlobalConfig {//make all fields final
         }
     }
 
+    public enum PipelineResult {
+        //TODO: insert pipelineresults here
+        ONE,
+        TWO,
+        THREE
+    }
+
     //TODO add more config stuff
     public static final String motorFL = "motorFL", motorFR = "motorFR", motorBL = "motorBL", motorBR = "motorBR";
+
     public static Alliance alliance = Alliance.BLUE;
 
 
