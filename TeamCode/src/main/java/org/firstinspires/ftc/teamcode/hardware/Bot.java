@@ -26,6 +26,7 @@ public class Bot {
     public final Outtake outtake;
     public final Intake intake;
 
+    // front left, front right, back left, back right
     public final MotorEx[] driveTrainMotors;
 
     //required subsystems
@@ -49,6 +50,13 @@ public class Bot {
         if (instance == null) {
             return instance = new Bot(opMode);
         }
+        // left motors
+        // it's inverting the second time, so maybe inverting it when instnace != null might work
+        instance.driveTrainMotors[2].setInverted(false);
+        instance.driveTrainMotors[0].setInverted(false);
+        // right motors
+        instance.driveTrainMotors[1].setInverted(false);
+        instance.driveTrainMotors[3].setInverted(false);
         instance.opMode = opMode;
         instance.initializeImu(instance.imu0);
         instance.initializeImu(instance.imu1);
@@ -75,11 +83,17 @@ public class Bot {
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBR, Motor.GoBILDA.RPM_435)
         };
         // For the blue driver hub, only the middle USB 2.0 port works.
-        // left motors
-//        driveTrainMotors[0].setInverted(true);
-//        driveTrainMotors[2].setInverted(true);
+//        // left motors
+//        driveTrainMotors[0].setInverted(false);
+//        driveTrainMotors[2].setInverted(false);
+//        driveTrainMotors[1].setInverted(false);
+//        driveTrainMotors[3].setInverted(false);
+
         for(MotorEx motor : driveTrainMotors){
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            motor.setInverted(false);
+            // temp - from lightning code
+            motor.setRunMode(Motor.RunMode.RawPower);
         }
 
         //required subsystems
@@ -104,6 +118,45 @@ public class Bot {
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
         imu.initialize(parameters);
+    }
+
+    // temporary code from lightning
+    public void fixMotors() {
+        // mechanum drive is not used
+//        drive.setRightSideInverted(true);
+
+        for (MotorEx motor : driveTrainMotors) {
+            motor.setInverted(false);
+            motor.setRunMode(Motor.RunMode.RawPower);
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        }
+    }
+    // temporary code copied from lightning to fix inverted motors problem which supposedly originates
+    // from the given drive functions (driveFieldCentric in HDrive.java)
+    public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed){
+        double[] speeds = {
+                forwardBackSpeed-strafeSpeed-turnSpeed,
+                forwardBackSpeed+strafeSpeed+turnSpeed,
+                forwardBackSpeed+strafeSpeed-turnSpeed,
+                forwardBackSpeed-strafeSpeed+turnSpeed
+        };
+        double maxSpeed = 0;
+        for(int i = 0; i < 4; i++){
+            maxSpeed = Math.max(maxSpeed, speeds[i]);
+        }
+        if(maxSpeed > 1) {
+            for (int i = 0; i < 4; i++){
+                speeds[i] /= maxSpeed;
+            }
+        }
+//        for (int i = 0; i < 4; i++) {
+//            driveTrainMotors[i].set(speeds[i]);
+//        }
+        // manually invert the left side
+        driveTrainMotors[0].set(speeds[0] * -1);
+        driveTrainMotors[1].set(speeds[1]);
+        driveTrainMotors[2].set(speeds[2] * -1);
+        driveTrainMotors[3].set(speeds[3]);
     }
 
     private void enableAutoBulkRead() {

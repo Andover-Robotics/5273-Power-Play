@@ -104,8 +104,9 @@ public class MainTeleOp extends BaseOpMode {
         telemetry.addData("X", bot.roadRunner.getPoseEstimate().getX());
         telemetry.addData("Y", bot.roadRunner.getPoseEstimate().getY());
         telemetry.addData("Heading", bot.roadRunner.getPoseEstimate().getHeading());
-        telemetry.addData("Driver Left Stick", "left X" + gamepadEx1.getLeftX() + ": " + gamepadEx1.getLeftY());
-
+        telemetry.addData("Driver Left Stick", gamepadEx1.getLeftX() + " : " + gamepadEx1.getLeftY());
+        telemetry.addData("Driver Right Stick", gamepadEx1.getRightX() + " : " + gamepadEx1.getRightY());
+        telemetry.addData("Junction Height", bot.outtake.linearSlides.getCurrentLevel());
     }
 
     private void drive() {
@@ -126,16 +127,16 @@ public class MainTeleOp extends BaseOpMode {
         final double gyroscopeAngle1 = (bot.imu1 != null) ? temporaryAngle1 :gyroscopeAngle0;
         final double averageGyroscopeAngle = (( gyroscopeAngle0 + gyroscopeAngle1)/2);
 
-        telemetry.addData("L ", bot.drive.isRightSideInverted());
-        telemetry.addData("centricity", centricity);
-        telemetry.addData("averageGyroscopeAngle" ,averageGyroscopeAngle);
+        telemetry.addData("Invert Right", bot.drive.isRightSideInverted());
+        telemetry.addData("Centricity", centricity);
+        telemetry.addData("Average Gyroscope Angle", averageGyroscopeAngle);
 
-        telemetry.addData("temporaryAngle0", temporaryAngle0);
-        telemetry.addData("temporaryAngle1", temporaryAngle1);
-        telemetry.addData("gyroAngle0", gyroscopeAngle0);
-        telemetry.addData("gyroAngle1", gyroscopeAngle1);
-        telemetry.addData("fieldCentricOffset0", fieldCentricOffset0);
-        telemetry.addData("fieldCentricOffset1", fieldCentricOffset1);
+//        telemetry.addData("temporaryAngle0", temporaryAngle0);
+//        telemetry.addData("temporaryAngle1", temporaryAngle1);
+//        telemetry.addData("gyroAngle0", gyroscopeAngle0);
+//        telemetry.addData("gyroAngle1", gyroscopeAngle1);
+//        telemetry.addData("fieldCentricOffset0", fieldCentricOffset0);
+//        telemetry.addData("fieldCentricOffset1", fieldCentricOffset1);
 
         Vector2d driveVector = new Vector2d(gamepadEx1.getLeftX(), gamepadEx1.getLeftY()),
                 turnVector = new Vector2d(
@@ -149,42 +150,51 @@ public class MainTeleOp extends BaseOpMode {
             double strafeSpeed = (gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN) || gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)) ? (gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP) ? 1 : -1) : 0;
             double turnSpeed = (gamepadEx1.getButton(GamepadKeys.Button.X) || gamepadEx1.getButton(GamepadKeys.Button.B)) ? (gamepadEx1.getButton(GamepadKeys.Button.B) ? 1 : -1) : 0;
 
-            if (centricity) {//epic java syntax
-                bot.drive.driveFieldCentric(
-                        driveVector.getX() * driveSpeed,
-                        driveVector.getY() * driveSpeed,
-                        turnVector.getX() * driveSpeed,
-                         Math.abs(gyroscopeAngle1 - gyroscopeAngle0) < gyroscopeTolerance ? averageGyroscopeAngle : gyroscopeAngle0
+            // temp
+            bot.fixMotors();
+            // temporary drive function
+            bot.drive(
+                    driveVector.getX() * driveSpeed,
+                    driveVector.getY() * driveSpeed,
+                    turnVector.getX() * driveSpeed
+                    );
 
-                        //field centric W
-
-
-                        // Epic Java Syntax here
-                        /*
-                         * In theory, this check ensures that when the averageGyroscopeAngle is VERY off
-                         * due to one IMU giving  near -180, and the second giving near 180 which SHOULD be considered an angle of 0 but its actually in the opposite direction
-                         * This problem was encountered while first testing the dual IMU dependant field centric drive
-                         * the robot would run two motors on the corners of the robot in opposite directions, causing negligible movement
-                         * Because I believe the rarer incorrect averages, these ternary statements, should correct this.
-                         */
-                );
-            }
-            else if (dpadPressed || buttonPressed) {
-                double temporaryDriveSpeed = driveSpeed * SLOW_MODE_PERCENT;
-                bot.drive.driveRobotCentric(
-                        strafeSpeed * temporaryDriveSpeed,
-                        forwardSpeed * temporaryDriveSpeed,
-                        turnSpeed * temporaryDriveSpeed
-                );
-            }
-
-            else {
-                bot.drive.driveRobotCentric(
-                        driveVector.getX() * driveSpeed,
-                        driveVector.getY() * driveSpeed,
-                        turnVector.getX() * driveSpeed
-                );
-            }
+//            if (centricity) {//epic java syntax
+//                bot.drive.driveFieldCentric(
+//                        driveVector.getX() * driveSpeed,
+//                        driveVector.getY() * driveSpeed,
+//                        turnVector.getX() * driveSpeed,
+//                         Math.abs(gyroscopeAngle1 - gyroscopeAngle0) < gyroscopeTolerance ? averageGyroscopeAngle : gyroscopeAngle0
+//
+//                        //field centric W
+//
+//
+//                        // Epic Java Syntax here
+//                        /*
+//                         * In theory, this check ensures that when the averageGyroscopeAngle is VERY off
+//                         * due to one IMU giving  near -180, and the second giving near 180 which SHOULD be considered an angle of 0 but its actually in the opposite direction
+//                         * This problem was encountered while first testing the dual IMU dependant field centric drive
+//                         * the robot would run two motors on the corners of the robot in opposite directions, causing negligible movement
+//                         * Because I believe the rarer incorrect averages, these ternary statements, should correct this.
+//                         */
+//                );
+//            }
+//            else if (dpadPressed || buttonPressed) {
+//                double temporaryDriveSpeed = driveSpeed * SLOW_MODE_PERCENT;
+//                bot.drive.driveRobotCentric(
+//                        strafeSpeed * temporaryDriveSpeed,
+//                        forwardSpeed * temporaryDriveSpeed,
+//                        turnSpeed * temporaryDriveSpeed
+//                );
+//            }
+//
+//            else {
+//                bot.drive.driveRobotCentric(
+//                        driveVector.getX() * driveSpeed,
+//                        driveVector.getY() * driveSpeed,
+//                        turnVector.getX() * driveSpeed
+//                );
+//            }
 
         }
 

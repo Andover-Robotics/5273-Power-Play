@@ -98,7 +98,7 @@ public class LinearSlides {
                 break;
         }
     }
-    public double getStopSpeed(){
+    private double getStopSpeed(){
         switch(currentLevel){
             case GROUND:
                 return 0.0; //
@@ -111,6 +111,10 @@ public class LinearSlides {
         }
         return 0.0;
 
+    }
+
+    public Level getCurrentLevel() {
+        return currentLevel;
     }
 
     private void setTargetHeight() {
