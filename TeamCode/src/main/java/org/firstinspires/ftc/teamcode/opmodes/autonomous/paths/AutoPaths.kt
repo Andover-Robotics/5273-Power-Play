@@ -93,12 +93,12 @@ class AutoPaths(val opMode: LinearOpMode) {
 
     //Insert pose/vector vals here
 
-    private val epsilon = 2.0;
+    private val epsilon = 2.0
 
-    private val trackWidth = 16.0;
+    private val trackWidth = 16.0
 
-    private val startPose = p2d(-36.0, -72.0 + trackWidth / 2, 0.0);
-    private val intakePose = p2d(-12 - trackWidth / 2, 50.0, - PI);
+    private val startPose = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
+    private val intakePose = p2d(-12 - trackWidth / 2, 50.0, - PI)
     private val deliveryPose = p2d(- trackWidth * sqrt(2.0) / 4 - epsilon,
         - 24.0 - trackWidth * sqrt(2.0) / 4 - epsilon,
         PI / 4)
@@ -122,6 +122,7 @@ class AutoPaths(val opMode: LinearOpMode) {
     private val dropFreight = listOf(
         makeAction("run intake"){
 //                bot.intake.run()
+
         },
         makePath("drive to deliver",
             drive.trajectoryBuilder(startPose, 0.0)

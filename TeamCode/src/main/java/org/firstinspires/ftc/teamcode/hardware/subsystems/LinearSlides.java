@@ -20,7 +20,9 @@ public class LinearSlides {
     private static final int EXTENDED_POSITION = 640;
     private static final int RETRACTED_POSITION = 34;
     private static final int MAXIMUM_POSITION = 680;
+
     //junction heights TODO: find values for junction heights
+
     private static final int GROUND_HEIGHT = 50;
     private static final int LOW_HEIGHT = 200;
     private static final int MEDIUM_HEIGHT = 400;
