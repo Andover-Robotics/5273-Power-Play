@@ -101,43 +101,19 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-            if(currentDetections.size() != 0)
+            boolean tagFound = false;
+
+            for(AprilTagDetection tag : currentDetections)
             {
-                boolean tagFound = false;
-
-                for(AprilTagDetection tag : currentDetections)
+                if(tag.id == ID_LEFT || tag.id == ID_MIDDLE || tag.id == ID_RIGHT )
                 {
-                    if(tag.id == ID_LEFT || tag.id == ID_MIDDLE || tag.id == ID_RIGHT )
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
+                    tagOfInterest = tag;
+                    tagFound = true;
+                    break;
                 }
-
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
             }
-            else
-            {
+
+            if (!tagFound) {
                 telemetry.addLine("Don't see tag of interest :(");
 
                 if(tagOfInterest == null)
@@ -149,8 +125,12 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
                     telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                     tagToTelemetry(tagOfInterest);
                 }
-
+                telemetry.update();
+                continue;
             }
+
+            telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+            tagToTelemetry(tagOfInterest);
 
             telemetry.update();
             sleep(20);
@@ -189,6 +169,7 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
             trajectories = paths.createTrajectory(THREE);
         }
 
+        /* the actual movement */
         for (AutoPaths.AutoPathElement item : trajectories) {
 
             telemetry.addData("executing path element", item.getName());
