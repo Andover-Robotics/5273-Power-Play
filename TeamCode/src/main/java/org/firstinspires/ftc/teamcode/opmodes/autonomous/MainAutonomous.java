@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult.ONE;
 import static org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult.THREE;
 import static org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult.TWO;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -155,8 +157,16 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
         }
 
         List<AutoPaths.AutoPathElement> trajectories;
-        
+
+        double trackWidth = 17.0;
+
+        Vector2d startingVector = new Vector2d(-36.0, -72.0 + trackWidth / 2);
+        Pose2d startingPose = new Pose2d(startingVector.getX(), (GlobalConfig.alliance == GlobalConfig.Alliance.RED) ? startingVector.getY() : - startingVector.getY(), (GlobalConfig.alliance == GlobalConfig.Alliance.RED) ? 0.0 : - 0.0);
+
+        bot.roadRunner.setPoseEstimate(startingPose);
+
         /* Actually do something useful */
+
         if(tagOfInterest == null || tagOfInterest.id == ID_LEFT) {
             trajectories = paths.createTrajectory(ONE);
         }

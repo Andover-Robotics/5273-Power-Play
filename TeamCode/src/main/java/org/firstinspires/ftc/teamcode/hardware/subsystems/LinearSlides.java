@@ -34,9 +34,9 @@ public class LinearSlides {
 
 
     private static final double kP = 0.05;
-    private static final double kI = 0.05;
-    private static final double kD = 0.05;
-    private static final double kF = 0.05;
+    private static final double kI = 0.01;
+    private static final double kD = 0.005;
+    private static final double kF = 0.002;
 
     private static final double TOLERANCE = 31;
 
