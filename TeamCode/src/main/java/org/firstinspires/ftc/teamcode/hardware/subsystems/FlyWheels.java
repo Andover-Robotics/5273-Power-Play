@@ -25,12 +25,12 @@ public class FlyWheels {
     }
 
     public void runReverse() {
-        runAtPower(-RUN_POWER);
+        runAtPower(- RUN_POWER);
     }
 
     private void runAtPower(double power) {
-        leftMotor.set(power);
-        rightMotor.set(power);
+        leftMotor.set(- power);
+        rightMotor.set(- power);
     }
 
     public void stop() {
