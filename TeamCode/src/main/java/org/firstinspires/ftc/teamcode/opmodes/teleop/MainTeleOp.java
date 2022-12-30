@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys.Button;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys.Trigger;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
@@ -35,6 +34,8 @@ public class MainTeleOp extends BaseOpMode {
 
         //Subsystem Control =========================================================================================
 
+        //TODO: Tele-Op Automation?
+
         if (gamepadEx1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
             bot.outtake.linearSlides.decrementLevel();
         }
@@ -43,38 +44,35 @@ public class MainTeleOp extends BaseOpMode {
             bot.outtake.linearSlides.incrementLevel();
         }
 
-        if (gamepadEx1.isDown(Button.A)) {
-            bot.intake.flyWheels.run();
-        } else if (gamepadEx1.wasJustReleased(Button.A)) {
-            bot.intake.flyWheels.stop();
+        if (gamepadEx1.isDown(Button.B)) {
+            bot.outtake.claw.openGrabClaw();
         }
 
-//        if (gamepadEx1.isDown(Button.B)) {
-//            bot.outtake.claw.openClaw();
-//        }
-//        else if (gamepadEx1.wasJustReleased(Button.B)) {
-//            bot.outtake.claw.closeClaw();
-//            bot.outtake.linearSlides.retract();
-//        }
-
-        if (gamepadEx1.isDown(Button.X)) {
-            bot.intake.flyWheels.runReverse();
-        }
-        else if (gamepadEx1.wasJustReleased(Button.X)) {
-            bot.intake.flyWheels.stop();
+        else if (gamepadEx1.wasJustReleased(Button.B)) {
+            bot.outtake.claw.closeGrabClaw();
+            bot.outtake.linearSlides.retract();
         }
 
         if (gamepadEx1.wasJustPressed(Button.Y)) {
             bot.outtake.linearSlides.extend();
         }
 
+        if (gamepadEx1.wasJustReleased(Button.DPAD_DOWN)) {
+            bot.outtake.claw.lowerRotateClaw();
+        }
 
-        if(gamepadEx1.wasJustReleased(Button.DPAD_LEFT)){
-            bot.outtake.linearSlides.extendLeftMotor();
+        if (gamepadEx1.wasJustReleased(Button.DPAD_UP)) {
+            bot.outtake.claw.raiseRotateClaw();
         }
-        if(gamepadEx1.wasJustReleased(Button.DPAD_RIGHT)){
-            bot.outtake.linearSlides.extendRightMotor();
+
+        if (gamepadEx1.wasJustReleased(Button.DPAD_LEFT)) {
+            bot.outtake.claw.closeGrabClaw();
         }
+
+        if (gamepadEx1.wasJustReleased(Button.DPAD_RIGHT)) {
+            bot.outtake.claw.openGrabClaw();
+        }
+
 
 
         /*
@@ -84,7 +82,11 @@ public class MainTeleOp extends BaseOpMode {
             B: hold to release claw, release to reset outtake to base position
             X: intake out
             Y: raise slides to set positions
-        DPAD (unused)
+        DPAD
+            L: close claw
+            D: rotate claw down
+            U: rotate claw up
+            R: open claw
         Joystick
             L: movement (field centric or robot centric)
             R: Set orientation / rotation (determine through practice)
@@ -151,7 +153,9 @@ public class MainTeleOp extends BaseOpMode {
             double turnSpeed = (gamepadEx1.getButton(GamepadKeys.Button.X) || gamepadEx1.getButton(GamepadKeys.Button.B)) ? (gamepadEx1.getButton(GamepadKeys.Button.B) ? 1 : -1) : 0;
 
             // temp
+
             bot.fixMotors();
+
             // temporary drive function
             bot.drive(
                     driveVector.getX() * driveSpeed,

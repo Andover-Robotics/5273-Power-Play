@@ -20,11 +20,15 @@ class AutoPaths(val opMode: LinearOpMode) {
         class Path(override val name: String, val trajectory: Trajectory) : AutoPathElement(name)
 
         //AutoPathElement.Path(name, trajectory)
+
         class Action(override val name: String, val runner: () -> Unit) : AutoPathElement(name)
+
         //AutoPathElement.Action(name) {actions to take(include sleeps)}
+
     }
 
 
+    val extensionDelay: Long = 750
     val Double.toRadAS get() = (if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) this.toRadians else - this.toRadians)
     val Double.toRadians get() = (Math.toRadians(this))
     val Int.toRadians get() = (Math.toRadians(this.toDouble()))
@@ -36,13 +40,15 @@ class AutoPaths(val opMode: LinearOpMode) {
     }
 
     fun p2d(x: Double, y: Double, h: Double): Pose2d{
-        return Pose2d(x, if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) y else -y, if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h)
+        return Pose2d(if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) x else - x, if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) y else -y, if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) (if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h) else 2 * Math.PI - (if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h))
     }
+
     fun p2d(v: Vector2d, h: Double): Pose2d{
-        return Pose2d(v.x, if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) v.y else -v.y, if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h)
+        return Pose2d(if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) v.x else - v.x, if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) v.y else -v.y, if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) (if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h) else 2 * Math.PI - (if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) h else -h))
     }
+
     fun v2d(x: Double, y: Double): Vector2d {
-        return Vector2d(x, if(GlobalConfig.alliance == GlobalConfig.Alliance.RED) y else -y)
+        return Vector2d(if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) x else - x, if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) y else -y)
     }
 
     val bypassSize = 10
@@ -69,26 +75,32 @@ class AutoPaths(val opMode: LinearOpMode) {
     fun makePath(name: String, trajectory: Trajectory): AutoPathElement.Path {
         lastPosition = trajectory.end()
         return AutoPathElement.Path(name, trajectory)
+
         //Start of list of trajectories should not be lastPosition
+
     }
 
     //Probably won't be used, but here just in case
+
     fun makeAction(name: String, action: () -> Unit): AutoPathElement.Action {
         return AutoPathElement.Action(name, action)
         //Redundant but conforms to naming scheme
     }
 
     // Kotlin 1.3 does not support inline instantiation of SAM interfaces
+
     class MarkerCallbackImpl(val func: () -> Unit) : MarkerCallback {
         override fun onMarkerReached() = func()
     }
     //TODO: solve this
+
 //    private fun turn(from: Double, to: Double): AutoPathElement.Action {
 //        return AutoPathElement.Action("Turn from ${Math.toDegrees(from).roundToInt()}deg" +
 //                "to ${Math.toDegrees(to).roundToInt()}deg") {
 //            bot.roadRunner.turn(to - from)
 //        }
 //    }
+
     val autoType = AutoType.DELIVERY
 
     //Insert pose/vector vals here
@@ -97,12 +109,16 @@ class AutoPaths(val opMode: LinearOpMode) {
 
     private val trackWidth = 17.0
 
-    var startPose = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
+//    var startPose = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
 
-    private val intakePose = p2d(-12 - trackWidth / 2, 50.0, - PI)
+    //TODO: Check if x-values and y-values are swapped; and if headings are reversed
+
+    private val intakePose = p2d(- 12 - trackWidth / 2, 50.0, - PI)
+
     private val deliveryPose = p2d(- trackWidth * sqrt(2.0) / 4 - epsilon,
         - 24.0 - trackWidth * sqrt(2.0) / 4 - epsilon,
         PI / 4)
+
     private val parkingPose = mapOf(
         ONE to v2d(- 36.0, - 12.0),
         TWO to v2d(- 36.0, - 36.0),
@@ -118,16 +134,14 @@ class AutoPaths(val opMode: LinearOpMode) {
     //            4 to Pose2d(48 - 5.1, -48.0 - 3.0556 - 3f, (-90.0 + 30.268).toRadians)
     //    )
 
-    //TODO: Make Trajectories in trajectorySets
-
     private val dropFreight = listOf(
         makePath("drive to deliver",
             drive.trajectoryBuilder(lastPosition, 0.0)
                 .splineToSplineHeading(deliveryPose, PI / 4)
+                .addTemporalMarker(0.01, { bot.outtake.linearSlides.extend() })
                 .build()),
         makeAction("deliver cone") {
-            bot.outtake.linearSlides.extend()
-            bot.outtake.claw.openGrabClaw()
+            bot.outtake.claw.outtake()
         }
     )
 
@@ -137,7 +151,7 @@ class AutoPaths(val opMode: LinearOpMode) {
                  .splineToSplineHeading(intakePose, PI)
                  .build()),
         makeAction("intake freight") {
-            bot.outtake.claw.closeGrabClaw()
+            bot.outtake.claw.intake()
         }
     )
 
@@ -182,6 +196,7 @@ class AutoPaths(val opMode: LinearOpMode) {
     //end paste  ==========================================================================
 
     fun createTrajectory(pipelineResult: PipelineResult): ArrayList<AutoPathElement> {
+
         val list = ArrayList<AutoPathElement>();
 
         for (trajectory in trajectorySets[autoType]!![pipelineResult]!!) {
@@ -189,5 +204,7 @@ class AutoPaths(val opMode: LinearOpMode) {
         }
 
         return list
+
     }
+
 }

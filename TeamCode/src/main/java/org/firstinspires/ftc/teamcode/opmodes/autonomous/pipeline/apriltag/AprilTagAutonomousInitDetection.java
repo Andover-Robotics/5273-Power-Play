@@ -20,13 +20,12 @@
  */
 
 
-package org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.apriltag;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -35,8 +34,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @TeleOp
-public class AprilTagAutonomousInitDetection extends LinearOpMode
-{
+public class AprilTagAutonomousInitDetection extends LinearOpMode {
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -48,10 +47,10 @@ public class AprilTagAutonomousInitDetection extends LinearOpMode
     // You will need to do your own calibration for other configurations!
 
     //720p
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 640;
-    double cy = 360;
+    double fx = 1078.03779;
+    double fy = 1084.50988;
+    double cx = 580.850545;
+    double cy = 245.959325;
 
     // UNITS ARE METERS
     double tagsize = 0.075; //ONLY FOR TESTING

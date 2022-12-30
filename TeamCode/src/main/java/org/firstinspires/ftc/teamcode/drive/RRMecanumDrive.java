@@ -62,9 +62,11 @@ import java.util.List;
 
 @Config
 public class RRMecanumDrive extends MecanumDrive {
+
   public static boolean VIRTUAL = false;
 
-  // TODO tune these
+  // TODO: tune PID Coefficients
+
   public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0.15, 0.6);
   public static PIDCoefficients HEADING_PID = new PIDCoefficients(2.8, 0, 0.3);
 

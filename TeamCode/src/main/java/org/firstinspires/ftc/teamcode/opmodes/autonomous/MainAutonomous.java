@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
 import org.firstinspires.ftc.teamcode.hardware.Bot;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.paths.AutoPaths;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.apriltag.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;

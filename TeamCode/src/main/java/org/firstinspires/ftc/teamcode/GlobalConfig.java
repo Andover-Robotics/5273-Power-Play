@@ -10,8 +10,11 @@ import org.firstinspires.ftc.teamcode.util.utilclasses.Encoder.Direction;
 import org.firstinspires.ftc.teamcode.util.utilclasses.Encoder;
 
 @Config
-public class GlobalConfig {//make all fields final
+public class GlobalConfig {
+    //make all fields final
+
     //control + click class to go to it
+
     DriveConstants controlClickForDriveConstants;
 
     public enum Alliance{
@@ -32,12 +35,17 @@ public class GlobalConfig {//make all fields final
         THREE
     }
 
+    public enum Side {
+        AUDIENCE,
+        STAGE
+    }
+
     //TODO add more config stuff
     public static final String motorFL = "motorFL", motorFR = "motorFR", motorBL = "motorBL", motorBR = "motorBR";
 
     public static Alliance alliance = Alliance.BLUE;
 
-
+    public static Side side = Side.STAGE;
 
     public static class SensorFusionValues{
         public static final double[] sensorFusionHeadingWeights = {0.225, 0.225, 0.225, 0.225, 0},
@@ -51,4 +59,5 @@ public class GlobalConfig {//make all fields final
         public static final Encoder.Direction rightEncoderDirection = Direction.FORWARD;
         public static final Encoder.Direction centerEncoderDirection = Direction.REVERSE;
     }
+
 }
