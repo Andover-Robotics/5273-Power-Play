@@ -43,6 +43,7 @@ public class Claw {
 
     }
 
+    // TODO: implement function to move the claw backwards a bit while linear slide is raising so that the cone doesn't get caught
     public void raiseRotateClaw() {
 
         rotateServo.turnToAngle(RAISED_ROTATE_CLAW_ANGLE);

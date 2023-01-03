@@ -36,6 +36,8 @@ public class MainTeleOp extends BaseOpMode {
 
         //TODO: Tele-Op Automation?
 
+        //TODO: implement claw rotation
+
         if (gamepadEx1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
             bot.outtake.linearSlides.decrementLevel();
         }
@@ -56,6 +58,7 @@ public class MainTeleOp extends BaseOpMode {
 
         if (gamepadEx1.wasJustPressed(Button.Y)) {
             bot.outtake.linearSlides.extend();
+            bot.outtake.claw.raiseRotateClaw();
         }
 
         if (gamepadEx1.wasJustReleased(Button.DPAD_DOWN)) {
