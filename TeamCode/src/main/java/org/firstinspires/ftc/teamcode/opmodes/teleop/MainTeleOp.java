@@ -48,8 +48,9 @@ public class MainTeleOp extends BaseOpMode {
             bot.outtake.claw.openGrabClaw();
         }
 
+        // release claw and reset system to intake mode
         else if (gamepadEx1.wasJustReleased(Button.B)) {
-            bot.outtake.claw.closeGrabClaw();
+            bot.outtake.claw.lowerRotateClaw();
             bot.outtake.linearSlides.retract();
         }
 
