@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.MarkerCallback
 import com.acmerobotics.roadrunner.trajectory.Trajectory
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.GlobalConfig
-import org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult
+import org.firstinspires.ftc.teamcode.GlobalConfig.*
 import org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult.*
 import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive
 import org.firstinspires.ftc.teamcode.hardware.Bot
@@ -51,6 +51,10 @@ class AutoPaths(val opMode: LinearOpMode) {
         return Vector2d(if (GlobalConfig.side == GlobalConfig.Side.AUDIENCE) x else - x, if (GlobalConfig.alliance == GlobalConfig.Alliance.RED) y else -y)
     }
 
+    fun h2d(h: Double): Double {
+        return if (side == GlobalConfig.Side.AUDIENCE) (if (alliance == GlobalConfig.Alliance.RED) h else PI-h) else 2 * Math.PI - (if (alliance == GlobalConfig.Alliance.RED) h else PI-h)
+    }
+
     val bypassSize = 10
 
     fun bypass(startPose: Pose2d, endPose: Pose2d): Pose2d{
@@ -92,6 +96,7 @@ class AutoPaths(val opMode: LinearOpMode) {
     class MarkerCallbackImpl(val func: () -> Unit) : MarkerCallback {
         override fun onMarkerReached() = func()
     }
+
     //TODO: solve this
 
 //    private fun turn(from: Double, to: Double): AutoPathElement.Action {
@@ -170,14 +175,30 @@ class AutoPaths(val opMode: LinearOpMode) {
 
      */
 
-    fun park(result: PipelineResult): List<AutoPathElement>{
-        return listOf(
-                makePath("drive into signal zone",
-                    drive.trajectoryBuilder(lastPosition, PI / 4)
-                        .splineTo(parkingPose[result]!!, 0.0)
-                        .build()
-                )
+    fun park(result: PipelineResult): List<AutoPathElement> {
+
+        var reflected: Map<PipelineResult, PipelineResult>
+
+        if ((alliance == Alliance.RED && side == Side.AUDIENCE) || !((alliance == Alliance.RED) || (side == Side.AUDIENCE)))
+            reflected = mapOf(
+                ONE to THREE,
+                TWO to TWO,
+                THREE to ONE
             )
+        else
+            reflected = mapOf(
+                ONE to ONE,
+                TWO to TWO,
+                THREE to THREE
+            )
+
+        return listOf(makePath("Drive forward", drive.trajectoryBuilder(lastPosition, h2d(0.0))
+            .lineTo(Vector2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01))
+            .build()),
+            makePath("Strafe", drive.trajectoryBuilder(Pose2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01), h2d(0.0))
+                .lineTo(parkingPose[reflected[result]]!!)
+                .build()))
+
     }
 
     private val trajectorySets: Map<AutoType, Map<PipelineResult, List<AutoPathElement>>> = mapOf(

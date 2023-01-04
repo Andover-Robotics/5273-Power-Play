@@ -53,12 +53,12 @@ public class AprilTagAutonomousInitDetection extends LinearOpMode {
     double cy = 245.959325;
 
     // UNITS ARE METERS
-    double tagsize = 0.075; //ONLY FOR TESTING
+    double tagsize = 0.032; //ONLY FOR TESTING
 
     // Tag ID 1,2,3 from the 36h11 family
-    int ID_LEFT = 1;
-    int ID_MIDDLE = 2;
-    int ID_RIGHT = 3;
+    int ID_ONE = 1;
+    int ID_TWO = 2;
+    int ID_THREE = 3;
 
     AprilTagDetection tagOfInterest = null;
 
@@ -104,7 +104,7 @@ public class AprilTagAutonomousInitDetection extends LinearOpMode {
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == ID_LEFT || tag.id == ID_MIDDLE || tag.id == ID_RIGHT )
+                    if(tag.id == ID_ONE || tag.id == ID_TWO || tag.id == ID_THREE)
                     {
                         tagOfInterest = tag;
                         tagFound = true;
@@ -172,11 +172,11 @@ public class AprilTagAutonomousInitDetection extends LinearOpMode {
         }
 
         /* Actually do something useful */
-        if(tagOfInterest == null || tagOfInterest.id == ID_LEFT){
+        if (tagOfInterest == null || tagOfInterest.id == ID_ONE) {
             //Park
-        }else if(tagOfInterest.id == ID_MIDDLE){
+        } else if (tagOfInterest.id == ID_TWO){
             //Park
-        }else{
+        } else{
             //Park
         }
 
