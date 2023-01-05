@@ -14,6 +14,7 @@ public class MainTeleOp extends BaseOpMode {
     private boolean centricity = true;
     private final double TRIGGER_CONSTANT = 0.15;
     private final double SLOW_MODE_PERCENT = 0.4;
+    private double slowPercentage;
     private double fieldCentricOffset0 = 0.0;
     private double fieldCentricOffset1 = 0.0;
 
@@ -30,6 +31,7 @@ public class MainTeleOp extends BaseOpMode {
 //      timingScheduler.run();
 
 //      Movement =================================================================================================
+        slowPercentage = 1 - gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
         drive();
 
         //Subsystem Control =========================================================================================
@@ -43,6 +45,7 @@ public class MainTeleOp extends BaseOpMode {
         }
 
         if (gamepadEx1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            telemetry.addData("uping!", true);
             bot.outtake.linearSlides.incrementLevel();
         }
 
@@ -161,10 +164,11 @@ public class MainTeleOp extends BaseOpMode {
             bot.fixMotors();
 
             // temporary drive function
+            // negatived the strafe and turn speed because they were opposite
             bot.drive(
-                    driveVector.getX() * driveSpeed,
-                    driveVector.getY() * driveSpeed,
-                    turnVector.getX() * driveSpeed
+                    -driveVector.getX() * driveSpeed * slowPercentage,
+                    driveVector.getY() * driveSpeed * slowPercentage,
+                    -turnVector.getX() * driveSpeed * slowPercentage
                     );
 
 //            if (centricity) {//epic java syntax

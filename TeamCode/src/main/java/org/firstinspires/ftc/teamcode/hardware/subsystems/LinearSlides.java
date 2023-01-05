@@ -21,9 +21,9 @@ public class LinearSlides {
     //TODO: find values for junction heights(ticks)
 
     private static final int GROUND_HEIGHT = 50;
-    private static final int LOW_HEIGHT = 200;
-    private static final int MEDIUM_HEIGHT = 400;
-    private static final int HIGH_HEIGHT = 600;
+    private static final int LOW_HEIGHT = 2000;
+    private static final int MEDIUM_HEIGHT = 4000;
+    private static final int HIGH_HEIGHT = 6000;
     private static Level currentLevel = Level.GROUND;
     private static int targetHeight = 34;
 
@@ -34,7 +34,7 @@ public class LinearSlides {
     private static final double kD = 0.005;
     private static final double kF = 0.002;
 
-    private static final double TOLERANCE = 31;
+    private static final double TOLERANCE = 10;
 
     private final MotorEx leftSlideMotor;
     private final MotorEx rightSlideMotor;
@@ -45,6 +45,7 @@ public class LinearSlides {
 
         leftSlideMotor = new MotorEx(hardwareMap, "leftSlideMotor", Motor.GoBILDA.RPM_312);
         rightSlideMotor = new MotorEx(hardwareMap, "rightSlideMotor", Motor.GoBILDA.RPM_312);
+        leftSlideMotor.setInverted(true);
         linearSlidesPIDFController= new PIDFController(kP, kI, kD, kF);
         linearSlidesPIDFController.setTolerance(TOLERANCE);
 
@@ -133,8 +134,9 @@ public class LinearSlides {
 
 
     public void periodic() {
-
-        while(!linearSlidesPIDFController.atSetPoint()){
+        setTargetHeight();
+        linearSlidesPIDFController.setSetPoint(targetHeight);
+        if(!linearSlidesPIDFController.atSetPoint()){
             double output = linearSlidesPIDFController.calculate((leftSlideMotor.getCurrentPosition() + rightSlideMotor.getCurrentPosition())/2.0);
             leftSlideMotor.set(output);
             rightSlideMotor.set(output);
