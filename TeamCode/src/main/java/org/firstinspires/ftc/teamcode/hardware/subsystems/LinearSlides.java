@@ -134,13 +134,18 @@ public class LinearSlides {
 
 
     public void periodic() {
+//        setTargetHeight();
+//        linearSlidesPIDFController.(targetHeight);
+//        if(!linearSlidesPIDFController.atSetPoint()){
+//            double output = linearSlidesPIDFController.calculate((leftSlideMotor.getCurrentPosition() + rightSlideMotor.getCurrentPosition())/2.0);
+//            leftSlideMotor.set(output);
+//            rightSlideMotor.set(output);
+//        }
+        int previousTargetHeight=targetHeight;
         setTargetHeight();
-        linearSlidesPIDFController.setSetPoint(targetHeight);
-        if(!linearSlidesPIDFController.atSetPoint()){
-            double output = linearSlidesPIDFController.calculate((leftSlideMotor.getCurrentPosition() + rightSlideMotor.getCurrentPosition())/2.0);
-            leftSlideMotor.set(output);
-            rightSlideMotor.set(output);
-        }
+        int nextTargetHeight=targetHeight;
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+(nextTargetHeight-previousTargetHeight));
+        rightSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+(nextTargetHeight-previousTargetHeight));
     }
 
 }

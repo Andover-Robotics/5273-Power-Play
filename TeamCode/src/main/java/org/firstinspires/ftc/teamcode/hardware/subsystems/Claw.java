@@ -4,78 +4,55 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class Claw {
 
     //TODO: Tune claw values
 
-    private final double OPEN_GRAB_CLAW_ANGLE = 0;
-    private final double CLOSE_GRAB_CLAW_ANGLE = 60;
+    private final double OPEN_GRAB_CLAW_POSITION = 0.70;
+    private final double CLOSE_GRAB_CLAW_POSITION =0.45;
 
-    private final double RAISED_ROTATE_CLAW_ANGLE = 135;
-    private final double HOVER_ROTATE_CLAW_ANGLE = 30;
-    private final double LOWERED_ROTATE_CLAW_ANGLE = 0;
+    private final double RAISED_ROTATE_CLAW_POSITION = 1.00;
+    private final double LOWERED_ROTATE_CLAW_POSITION = 0.75;
 
-    private final ServoEx rotateServo;
-    private final ServoEx grabServo;
+    private final Servo rotateServo;
+    private final Servo grabServo;
 
     public Claw(HardwareMap hardwareMap){
 
-        grabServo = new SimpleServo(hardwareMap, "grabServo",OPEN_GRAB_CLAW_ANGLE,CLOSE_GRAB_CLAW_ANGLE , AngleUnit.DEGREES);
-        grabServo.setInverted(false);
+        grabServo = hardwareMap.get(Servo.class, "grabServo");
 
-        rotateServo = new SimpleServo(hardwareMap, "rotateServo", RAISED_ROTATE_CLAW_ANGLE, LOWERED_ROTATE_CLAW_ANGLE, AngleUnit.DEGREES);
-        rotateServo.setInverted(false);
+        rotateServo = hardwareMap.get(Servo.class, "rotateServo");
 
     }
 
     public void openGrabClaw() {
 
-        grabServo.turnToAngle(OPEN_GRAB_CLAW_ANGLE);
+        grabServo.setPosition(OPEN_GRAB_CLAW_POSITION);
 
     }
 
     public void closeGrabClaw() {
 
-        grabServo.turnToAngle(CLOSE_GRAB_CLAW_ANGLE);
+        grabServo.setPosition(CLOSE_GRAB_CLAW_POSITION);
 
     }
 
     // TODO: implement function to move the claw backwards a bit while linear slide is raising so that the cone doesn't get caught
     public void raiseRotateClaw() {
 
-        rotateServo.turnToAngle(RAISED_ROTATE_CLAW_ANGLE);
+        rotateServo.setPosition(RAISED_ROTATE_CLAW_POSITION);
 
     }
 
     public void lowerRotateClaw() {
 
-        rotateServo.turnToAngle(LOWERED_ROTATE_CLAW_ANGLE);
+        rotateServo.setPosition(LOWERED_ROTATE_CLAW_POSITION);
 
     }
 
-    public void hoverRotateClaw() {
 
-        rotateServo.turnToAngle(HOVER_ROTATE_CLAW_ANGLE);
-
-    }
-
-    public void intake() {
-
-        openGrabClaw();
-        lowerRotateClaw();
-        closeGrabClaw();
-        hoverRotateClaw();
-
-    }
-
-    public void outtake() {
-
-        lowerRotateClaw();
-        openGrabClaw();
-
-    }
 
 }

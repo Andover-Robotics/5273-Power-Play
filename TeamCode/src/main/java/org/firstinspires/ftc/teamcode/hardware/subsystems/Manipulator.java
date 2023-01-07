@@ -4,11 +4,11 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Manipulator extends SubsystemBase {
-    public final LinearSlides linearSlides;
+    public final ScrollLinearSlides linearSlides;
     public final Claw claw;
 
     public Manipulator(HardwareMap hardwareMap) {
-        linearSlides = new LinearSlides(hardwareMap);
+        linearSlides = new ScrollLinearSlides(hardwareMap);
         claw = new Claw(hardwareMap);
     }
 
@@ -16,7 +16,10 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        linearSlides.periodic();
+        //linearSlides.periodic();
+    }
+     public void resetEncoders(){
+         linearSlides.resetEncoders();
     }
 
 }

@@ -21,6 +21,7 @@ public class MainTeleOp extends BaseOpMode {
     // opmode vars here =========================================================================
     public void subInit() {
         driveSpeed = 1.0;
+        bot.outtake.resetEncoders();
     }
 
     public void subLoop() {
@@ -36,50 +37,23 @@ public class MainTeleOp extends BaseOpMode {
 
         //Subsystem Control =========================================================================================
 
+        bot.outtake.linearSlides.move(gamepadEx2.getLeftY());
         //TODO: Tele-Op Automation?
 
         //TODO: implement claw rotation
-
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-            bot.outtake.linearSlides.decrementLevel();
-        }
-
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            telemetry.addData("uping!", true);
-            bot.outtake.linearSlides.incrementLevel();
-        }
-
-        if (gamepadEx1.isDown(Button.B)) {
-            bot.outtake.claw.openGrabClaw();
-        }
-
-        // release claw and reset system to intake mode
-        else if (gamepadEx1.wasJustReleased(Button.B)) {
-            bot.outtake.claw.lowerRotateClaw();
-            bot.outtake.linearSlides.retract();
-        }
-
-        if (gamepadEx1.wasJustPressed(Button.Y)) {
-            bot.outtake.linearSlides.extend();
+        if(gamepadEx2.wasJustPressed(Button.Y)){
             bot.outtake.claw.raiseRotateClaw();
         }
-
-        if (gamepadEx1.wasJustReleased(Button.DPAD_DOWN)) {
+        else if(gamepadEx2.wasJustPressed(Button.A)){
             bot.outtake.claw.lowerRotateClaw();
         }
 
-        if (gamepadEx1.wasJustReleased(Button.DPAD_UP)) {
-            bot.outtake.claw.raiseRotateClaw();
-        }
-
-        if (gamepadEx1.wasJustReleased(Button.DPAD_LEFT)) {
+        if(gamepadEx2.wasJustPressed(Button.X)){
             bot.outtake.claw.closeGrabClaw();
         }
-
-        if (gamepadEx1.wasJustReleased(Button.DPAD_RIGHT)) {
+        else if(gamepadEx2.wasJustPressed(Button.B)){
             bot.outtake.claw.openGrabClaw();
         }
-
 
 
         /*
@@ -115,7 +89,6 @@ public class MainTeleOp extends BaseOpMode {
         telemetry.addData("Heading", bot.roadRunner.getPoseEstimate().getHeading());
         telemetry.addData("Driver Left Stick", gamepadEx1.getLeftX() + " : " + gamepadEx1.getLeftY());
         telemetry.addData("Driver Right Stick", gamepadEx1.getRightX() + " : " + gamepadEx1.getRightY());
-        telemetry.addData("Junction Height", bot.outtake.linearSlides.getCurrentLevel());
     }
 
     private void drive() {
