@@ -105,7 +105,7 @@ public class LinearSlides {
     }
 
     public void extend(){
-        this.setTargetHeight();
+        setTargetHeight();
         leftSlideMotor.setTargetPosition(targetHeight);
         rightSlideMotor.setTargetPosition(targetHeight);
         leftSlideMotor.setPower(0.5);

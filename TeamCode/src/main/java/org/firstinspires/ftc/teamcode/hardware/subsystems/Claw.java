@@ -15,6 +15,8 @@ public class Claw {
     private final double CLOSE_GRAB_CLAW_POSITION =0.45;
 
     private final double RAISED_ROTATE_CLAW_POSITION = 1.00;
+
+    private final double HOVER_ROTATE_CLAW_POSITION = 0.80;
     private final double LOWERED_ROTATE_CLAW_POSITION = 0.75;
 
     private final Servo rotateServo;
@@ -47,10 +49,27 @@ public class Claw {
 
     }
 
+    public void hoverRotateClaw(){
+        rotateServo.setPosition(HOVER_ROTATE_CLAW_POSITION);
+    }
+
     public void lowerRotateClaw() {
 
         rotateServo.setPosition(LOWERED_ROTATE_CLAW_POSITION);
 
+    }
+
+    public void intake() {
+
+        openGrabClaw();
+        lowerRotateClaw();
+        closeGrabClaw();
+        hoverRotateClaw();
+
+    }
+    public void outtake(){
+            lowerRotateClaw();
+            openGrabClaw();
     }
 
 
