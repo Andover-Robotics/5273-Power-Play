@@ -21,7 +21,6 @@ public class MainTeleOp extends BaseOpMode {
     // opmode vars here =========================================================================
     public void subInit() {
         driveSpeed = 1.0;
-        bot.outtake.resetEncoders();
     }
 
     public void subLoop() {
@@ -37,7 +36,27 @@ public class MainTeleOp extends BaseOpMode {
 
         //Subsystem Control =========================================================================================
 
-        bot.outtake.linearSlides.move(gamepadEx2.getLeftY());
+        //ScrollLinearSlides
+
+        //bot.outtake.linearSlides.move(gamepadEx2.getLeftY());
+
+        //PresetLinearSlides
+
+        if (gamepadEx2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
+            bot.outtake.linearSlides.decrementLevel();
+        }
+
+        if (gamepadEx2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            telemetry.addData("uping!", true);
+            bot.outtake.linearSlides.incrementLevel();
+        }
+        if(gamepadEx2.wasJustPressed(Button.DPAD_UP)){
+            bot.outtake.linearSlides.extend();
+        }
+
+
+
+
         //TODO: Tele-Op Automation?
 
         //TODO: implement claw rotation
@@ -89,6 +108,8 @@ public class MainTeleOp extends BaseOpMode {
         telemetry.addData("Heading", bot.roadRunner.getPoseEstimate().getHeading());
         telemetry.addData("Driver Left Stick", gamepadEx1.getLeftX() + " : " + gamepadEx1.getLeftY());
         telemetry.addData("Driver Right Stick", gamepadEx1.getRightX() + " : " + gamepadEx1.getRightY());
+        telemetry.addData("slide positions", bot.outtake.linearSlides.leftSlideMotor.getCurrentPosition()+" , "+bot.outtake.linearSlides.rightSlideMotor.getCurrentPosition());
+        telemetry.addData("slide target position", bot.outtake.linearSlides.leftSlideMotor.getTargetPosition());
     }
 
     private void drive() {
