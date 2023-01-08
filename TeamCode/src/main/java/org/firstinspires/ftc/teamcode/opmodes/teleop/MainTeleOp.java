@@ -38,7 +38,7 @@ public class MainTeleOp extends BaseOpMode {
 
         //ScrollLinearSlides
 
-        //bot.outtake.linearSlides.move(gamepadEx2.getLeftY());
+        bot.outtake.linearSlides.scroll(gamepadEx2.getLeftY());
 
         //PresetLinearSlides
 
@@ -47,18 +47,35 @@ public class MainTeleOp extends BaseOpMode {
         }
 
         if (gamepadEx2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            telemetry.addData("uping!", true);
+            telemetry.addData("upping!", true);
             bot.outtake.linearSlides.incrementLevel();
         }
         if(gamepadEx2.wasJustPressed(Button.DPAD_UP)){
             bot.outtake.linearSlides.extend();
         }
+        if(gamepadEx2.wasJustPressed(Button.DPAD_DOWN)) {
+           bot.outtake.linearSlides.retract();
+        }
 
+        // automated intake -> outtake
+        if (gamepadEx2.wasJustPressed(Button.DPAD_LEFT)) {
+           // bot.outtake.runOuttake();
+        }
 
+        // automated outtake + reset
+        if (gamepadEx2.isDown(Button.DPAD_RIGHT)) {
+            bot.outtake.claw.openGrabClaw();
+        }
+        // release claw and reset system to intake mode
+        else if (gamepadEx2.wasJustReleased(Button.DPAD_RIGHT)) {
+            bot.outtake.claw.lowerRotateClaw();
+            //bot.outtake.linearSlides.retract();
+        }
 
 
         //TODO: Tele-Op Automation?
 
+        //Claw Control
         //TODO: implement claw rotation
         if(gamepadEx2.wasJustPressed(Button.Y)){
             bot.outtake.claw.raiseRotateClaw();
@@ -74,8 +91,12 @@ public class MainTeleOp extends BaseOpMode {
             bot.outtake.claw.openGrabClaw();
         }
 
+        //Scroll Claw Arm
+        bot.outtake.claw.scrollArm(gamepadEx2.getRightY());
+
 
         /*
+        ==================OUT OF DATE=================
         Controller 1
         Buttons
             A: intake in
@@ -110,6 +131,8 @@ public class MainTeleOp extends BaseOpMode {
         telemetry.addData("Driver Right Stick", gamepadEx1.getRightX() + " : " + gamepadEx1.getRightY());
         telemetry.addData("slide positions", bot.outtake.linearSlides.leftSlideMotor.getCurrentPosition()+" , "+bot.outtake.linearSlides.rightSlideMotor.getCurrentPosition());
         telemetry.addData("slide target position", bot.outtake.linearSlides.leftSlideMotor.getTargetPosition());
+        //telemetry.addData("Current Slide Preset", bot.outtake.linearSlides.currentLevel);
+        telemetry.addData("Rotate Servo Position", bot.outtake.claw.getRotatePosition());
     }
 
     private void drive() {

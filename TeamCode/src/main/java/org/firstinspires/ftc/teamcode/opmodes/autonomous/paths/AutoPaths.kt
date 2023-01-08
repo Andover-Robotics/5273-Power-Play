@@ -143,10 +143,10 @@ class AutoPaths(val opMode: LinearOpMode) {
         makePath("drive to deliver",
             drive.trajectoryBuilder(lastPosition, 0.0)
                 .splineToSplineHeading(deliveryPose, PI / 4)
-                .addTemporalMarker(0.01, { bot.outtake.linearSlides.extend() })
+                //.addTemporalMarker(0.01, { bot.outtake.linearSlides.extend() })
                 .build()),
         makeAction("deliver cone") {
-            bot.outtake.claw.outtake()
+            //bot.outtake.claw.outtake()
         }
     )
 

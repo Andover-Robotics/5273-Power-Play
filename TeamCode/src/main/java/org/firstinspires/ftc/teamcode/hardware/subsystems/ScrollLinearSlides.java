@@ -39,12 +39,12 @@ public class ScrollLinearSlides {
         leftSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if(power>0){
-            leftSlideMotor.setPower(power*UP_POWER_CONSTANT); //invert left
-            rightSlideMotor.setPower(-power*UP_POWER_CONSTANT);
+            leftSlideMotor.setPower(-power*UP_POWER_CONSTANT); //invert left
+            rightSlideMotor.setPower(power*UP_POWER_CONSTANT);
         }
         else if (power<0){
-            leftSlideMotor.setPower(power*DOWN_POWER_CONSTANT); //invert left
-            rightSlideMotor.setPower(-power*DOWN_POWER_CONSTANT);
+            leftSlideMotor.setPower(-power*DOWN_POWER_CONSTANT); //invert left
+            rightSlideMotor.setPower(power*DOWN_POWER_CONSTANT);
         }
         else{
             leftSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition());
@@ -60,3 +60,4 @@ public class ScrollLinearSlides {
 
 
 }
+
