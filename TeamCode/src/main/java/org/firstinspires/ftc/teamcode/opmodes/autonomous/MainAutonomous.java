@@ -101,7 +101,7 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
          */
         while (!isStarted() && !isStopRequested())
         {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             boolean tagFound = false;
 

@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.GregorianCalendar;
 
 public class LinearSlides {
+
+    private static final int SCROLL_CONSTANT = 50;
 
     private enum Level {
         GROUND,
@@ -20,8 +22,9 @@ public class LinearSlides {
 
     //TODO: find values for junction heights(ticks)
 
-    private static double UP_POWER_CONSTANT=1;
-    private static double DOWN_POWER_CONSTANT=0.5;
+    private  static final double POWER =0.5;
+
+    private static final double kP=0.01; //TODO Tune
 
     private static final int GROUND_HEIGHT = 50;
     private static final int LOW_HEIGHT = 500;
@@ -30,66 +33,29 @@ public class LinearSlides {
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
-    public final DcMotor leftSlideMotor;
-    public final DcMotor rightSlideMotor;
+    public final DcMotorEx leftSlideMotor;
+    public final DcMotorEx rightSlideMotor;
+
 
     public LinearSlides(HardwareMap hardwareMap) {
 
-        leftSlideMotor = hardwareMap.get(DcMotor.class, "leftSlideMotor");
-        rightSlideMotor = hardwareMap.get(DcMotor.class, "leftSlideMotor");
+        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
+        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
         initializeSlideMotor(leftSlideMotor);
         initializeSlideMotor(rightSlideMotor);
-        leftSlideMotor.setDirection(DcMotor.Direction.REVERSE);
-
-
-
-
-
-
+        rightSlideMotor.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
-    private void initializeSlideMotor(DcMotor motor) {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+    private void initializeSlideMotor(DcMotorEx motor) {
+        motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        motor.setPositionPIDFCoefficients(kP);
     }
 
     public int getCurrentHeight() {
         return leftSlideMotor.getCurrentPosition();
     }
-
-    public void incrementLevel() {
-        switch(currentLevel) {
-            case GROUND:
-                currentLevel = Level.LOW;
-                break;
-            case LOW:
-                currentLevel = Level.MEDIUM;
-                break;
-            case MEDIUM:
-            case HIGH:
-                currentLevel = Level.HIGH;
-                break;
-        }
-    }
-
-    public void decrementLevel() {
-
-        switch(currentLevel) {
-            case GROUND:
-            case LOW:
-                currentLevel = Level.GROUND;
-                break;
-            case MEDIUM:
-                currentLevel = Level.LOW;
-                break;
-            case HIGH:
-                currentLevel = Level.MEDIUM;
-                break;
-        }
-
-    }
-
     private void setTargetHeight() {
 
         switch(currentLevel) {
@@ -108,35 +74,64 @@ public class LinearSlides {
         }
 
     }
+    private void setTargetHeight(int height) {
+        targetHeight=height;
+    }
 
     public void extend(){
         setTargetHeight();
         leftSlideMotor.setTargetPosition(targetHeight);
         rightSlideMotor.setTargetPosition(targetHeight);
-        leftSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlideMotor.setPower(0.5);
-        rightSlideMotor.setPower(0.5);
+        leftSlideMotor.setPower(POWER);
+        rightSlideMotor.setPower(POWER);
     }
 
-    public void scroll(double power){
-        leftSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if(power>=0){
-            leftSlideMotor.setPower(-power*UP_POWER_CONSTANT); //invert left
-            rightSlideMotor.setPower(power*UP_POWER_CONSTANT);
+    public void incrementLevel() {
+        switch(currentLevel) {
+            case GROUND:
+                currentLevel = Level.LOW;
+                break;
+            case LOW:
+                currentLevel = Level.MEDIUM;
+                break;
+            case MEDIUM:
+            case HIGH:
+                currentLevel = Level.HIGH;
+                break;
         }
-        else {
-            leftSlideMotor.setPower(-power*DOWN_POWER_CONSTANT); //invert left
-            rightSlideMotor.setPower(power*DOWN_POWER_CONSTANT);
+        setTargetHeight();
+        extend();
+    }
+
+    public void decrementLevel() {
+
+        switch(currentLevel) {
+            case GROUND:
+            case LOW:
+                currentLevel = Level.GROUND;
+                break;
+            case MEDIUM:
+                currentLevel = Level.LOW;
+                break;
+            case HIGH:
+                currentLevel = Level.MEDIUM;
+                break;
         }
+        setTargetHeight();
+        extend();
 
+    }
 
-
+    public void scroll(double power){ //Hopefully we can remove this soon
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+SCROLL_CONSTANT);
+        rightSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+SCROLL_CONSTANT);
+        leftSlideMotor.setPower(POWER);
+        rightSlideMotor.setPower(POWER);
     }
 
     public void retract() {
         currentLevel = Level.GROUND;
+        setTargetHeight();
         extend();
     }
 }

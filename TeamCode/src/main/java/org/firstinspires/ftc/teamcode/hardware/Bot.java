@@ -80,7 +80,7 @@ public class Bot {
         this.opMode = opMode;
         enableAutoBulkRead();
 
-        outtake = new Manipulator(opMode.hardwareMap);
+        outtake = null;
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 
@@ -92,8 +92,8 @@ public class Bot {
         };
         // For the blue driver hub, only the middle USB 2.0 port works.
 //        // left motors
-//        driveTrainMotors[0].setInverted(false);
-//        driveTrainMotors[2].setInverted(false);
+        driveTrainMotors[0].setInverted(true);
+        driveTrainMotors[2].setInverted(true);
 //        driveTrainMotors[1].setInverted(false);
 //        driveTrainMotors[3].setInverted(false);
 
@@ -114,10 +114,10 @@ public class Bot {
         this.roadRunner = new RRMecanumDrive(opMode.hardwareMap);
 
         this.imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
-        this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
-
+        //this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
+        this.imu1=null;
         this.initializeImu(imu0);
-        this.initializeImu(imu1);
+        //this.initializeImu(imu1);
 
     }
 
