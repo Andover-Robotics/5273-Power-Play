@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.drivebase.RobotDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -29,7 +30,7 @@ public class Bot {
     public final MecanumDrive drive;
     public final RRMecanumDrive roadRunner;
     public final BNO055IMU imu0;
-    public final BNO055IMU imu1;
+//    public final BNO055IMU imu1;
     public OpMode opMode;
 
     /** Get the current Bot instance from somewhere other than an OpMode */
@@ -63,7 +64,7 @@ public class Bot {
         instance.opMode = opMode;
 
         instance.initializeImu(instance.imu0);
-        instance.initializeImu(instance.imu1);
+        //instance.initializeImu(instance.imu1);
 
         return instance;
 
@@ -115,7 +116,7 @@ public class Bot {
 
         this.imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
         //this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
-        this.imu1=null;
+        //this.imu1=null;
         this.initializeImu(imu0);
         //this.initializeImu(imu1);
 
@@ -154,7 +155,6 @@ public class Bot {
     // from the given drive functions (driveFieldCentric in HDrive.java)
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed){
-
         double[] speeds = {
                 forwardBackSpeed - strafeSpeed - turnSpeed,
                 forwardBackSpeed + strafeSpeed + turnSpeed,
@@ -179,11 +179,45 @@ public class Bot {
 //        }
         // manually invert the left side
 
-        driveTrainMotors[0].set(speeds[0] * -1);
+        driveTrainMotors[0].set(-speeds[0]);
         driveTrainMotors[1].set(speeds[1]);
-        driveTrainMotors[2].set(speeds[2] * -1);
+        driveTrainMotors[2].set(-speeds[2]);
         driveTrainMotors[3].set(speeds[3]);
     }
+
+    public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed, double heading){
+        double magnitude=Math.sqrt(strafeSpeed*strafeSpeed+forwardBackSpeed*forwardBackSpeed);
+        double theta=(Math.atan(forwardBackSpeed/strafeSpeed)-heading)%(2*Math.PI);
+        double[] speeds = {
+            magnitude*Math.sin(theta + Math.PI / 4)- turnSpeed,
+                magnitude*Math.sin(theta - Math.PI / 4)+ turnSpeed,
+                magnitude*Math.sin(theta - Math.PI / 4)- turnSpeed,
+                magnitude*Math.sin(theta + Math.PI / 4)+ turnSpeed
+        };
+
+        double maxSpeed = 0;
+
+        for(int i = 0; i < 4; i++){
+            maxSpeed = Math.max(maxSpeed, speeds[i]);
+        }
+
+        if(maxSpeed > 1) {
+            for (int i = 0; i < 4; i++){
+                speeds[i] /= maxSpeed;
+            }
+        }
+
+//        for (int i = 0; i < 4; i++) {
+//            driveTrainMotors[i].set(speeds[i]);
+//        }
+        // manually invert the left side
+
+        driveTrainMotors[0].set(-speeds[0]);
+        driveTrainMotors[1].set(speeds[1]);
+        driveTrainMotors[2].set(-speeds[2]);
+        driveTrainMotors[3].set(speeds[3]);
+    }
+
 
     private void enableAutoBulkRead() {
 

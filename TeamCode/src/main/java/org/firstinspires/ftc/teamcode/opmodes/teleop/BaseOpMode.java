@@ -31,7 +31,7 @@ public abstract class BaseOpMode extends OpMode {
     timingScheduler = new TimingScheduler(this);
     subInit();
     telemetry.addLine("Init done");
-    telemetry.addData("Init calibration status: ", bot.imu0.getCalibrationStatus().toString());
+    //telemetry.addData("Init calibration status: ", bot.imu0.getCalibrationStatus().toString());
     telemetry.update();
   }
 

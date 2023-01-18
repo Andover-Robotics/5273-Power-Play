@@ -139,23 +139,23 @@ public class MainTeleOp extends BaseOpMode {
 
         final double gyroscopeTolerance = 10;
 
-        double temporaryAngle0 = bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.DEGREES).firstAngle
-                - fieldCentricOffset0;
-        double temporaryAngle1 = bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.DEGREES).firstAngle
-                - fieldCentricOffset1;
+        //double temporaryAngle0 = bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.DEGREES).firstAngle
+        //        - fieldCentricOffset0;
+        //double temporaryAngle1 = bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.DEGREES).firstAngle
+        //        - fieldCentricOffset1;
 
         // set absolute value of angle always less than or equal to 180
 
-        final double gyroscopeAngle0 = temporaryAngle0; // accounts for rotation of extension hub and center-lifts angle to -180->180
+        //final double gyroscopeAngle0 = temporaryAngle0; // accounts for rotation of extension hub and center-lifts angle to -180->180
 
         // if imu is null, then use other imu
 
-        final double gyroscopeAngle1 = (bot.imu1 != null) ? temporaryAngle1 :gyroscopeAngle0;
-        final double averageGyroscopeAngle = (( gyroscopeAngle0 + gyroscopeAngle1)/2);
+        //final double gyroscopeAngle1 = (bot.imu1 != null) ? temporaryAngle1 :gyroscopeAngle0;
+        //final double averageGyroscopeAngle = (( gyroscopeAngle0 + gyroscopeAngle1)/2);
 
         telemetry.addData("Invert Right", bot.drive.isRightSideInverted());
         telemetry.addData("Centricity", centricity);
-        telemetry.addData("Average Gyroscope Angle", averageGyroscopeAngle);
+        //telemetry.addData("Average Gyroscope Angle", averageGyroscopeAngle);
 
 //        telemetry.addData("temporaryAngle0", temporaryAngle0);
 //        telemetry.addData("temporaryAngle1", temporaryAngle1);
@@ -231,12 +231,12 @@ public class MainTeleOp extends BaseOpMode {
          * imu is inertial measurement unit, is in the control hubs and is set at 0 when the robot is started
          * offset is set at the angle the imu measures from where it was started, allowing calibration of field centricity
          */
-        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
-            fieldCentricOffset0 = bot.imu0.getAngularOrientation()
-                    .toAngleUnit(AngleUnit.DEGREES).firstAngle;
-            fieldCentricOffset1 = bot.imu1.getAngularOrientation()
-                    .toAngleUnit(AngleUnit.DEGREES).firstAngle;
-        }
+//        if (gamepadEx1.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+//            fieldCentricOffset0 = bot.imu0.getAngularOrientation()
+//                    .toAngleUnit(AngleUnit.DEGREES).firstAngle;
+//            fieldCentricOffset1 = bot.imu1.getAngularOrientation()
+//                    .toAngleUnit(AngleUnit.DEGREES).firstAngle;
+//        }
 
         // switch centricity mode
         if (gamepadEx1.wasJustPressed(GamepadKeys.Button.RIGHT_STICK_BUTTON)){
