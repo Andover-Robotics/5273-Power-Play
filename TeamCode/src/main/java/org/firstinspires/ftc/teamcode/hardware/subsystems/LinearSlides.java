@@ -10,8 +10,6 @@ import java.util.GregorianCalendar;
 
 public class LinearSlides {
 
-    private static final int SCROLL_CONSTANT = 50;
-
     private enum Level {
         GROUND,
         LOW,
@@ -33,17 +31,13 @@ public class LinearSlides {
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
-    public final DcMotorEx leftSlideMotor;
-    public final DcMotorEx rightSlideMotor;
+    public final DcMotorEx slideMotor;
 
 
     public LinearSlides(HardwareMap hardwareMap) {
 
-        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
-        rightSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
-        initializeSlideMotor(leftSlideMotor);
-        initializeSlideMotor(rightSlideMotor);
-        rightSlideMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
+        initializeSlideMotor(slideMotor);
     }
 
     private void initializeSlideMotor(DcMotorEx motor) {
@@ -54,7 +48,7 @@ public class LinearSlides {
     }
 
     public int getCurrentHeight() {
-        return leftSlideMotor.getCurrentPosition();
+        return slideMotor.getCurrentPosition();
     }
     private void setTargetHeight() {
 
@@ -80,10 +74,14 @@ public class LinearSlides {
 
     public void extend(){
         setTargetHeight();
-        leftSlideMotor.setTargetPosition(targetHeight);
-        rightSlideMotor.setTargetPosition(targetHeight);
-        leftSlideMotor.setPower(POWER);
-        rightSlideMotor.setPower(POWER);
+        slideMotor.setTargetPosition(targetHeight);
+        slideMotor.setPower(POWER);
+    }
+
+    public void extend(int ticks){
+        targetHeight=ticks;
+        slideMotor.setTargetPosition(targetHeight);
+        slideMotor.setPower(POWER);
     }
 
     public void incrementLevel() {
@@ -99,7 +97,6 @@ public class LinearSlides {
                 currentLevel = Level.HIGH;
                 break;
         }
-        setTargetHeight();
         extend();
     }
 
@@ -117,21 +114,12 @@ public class LinearSlides {
                 currentLevel = Level.MEDIUM;
                 break;
         }
-        setTargetHeight();
         extend();
 
     }
 
-    public void scroll(double power){ //Hopefully we can remove this soon
-        leftSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+SCROLL_CONSTANT);
-        rightSlideMotor.setTargetPosition(leftSlideMotor.getCurrentPosition()+SCROLL_CONSTANT);
-        leftSlideMotor.setPower(POWER);
-        rightSlideMotor.setPower(POWER);
-    }
-
     public void retract() {
         currentLevel = Level.GROUND;
-        setTargetHeight();
         extend();
     }
 }

@@ -30,7 +30,7 @@ public class Bot {
     public final MecanumDrive drive;
     public final RRMecanumDrive roadRunner;
     public final BNO055IMU imu0;
-//    public final BNO055IMU imu1;
+    public final BNO055IMU imu1;
     public OpMode opMode;
 
     /** Get the current Bot instance from somewhere other than an OpMode */
@@ -81,7 +81,7 @@ public class Bot {
         this.opMode = opMode;
         enableAutoBulkRead();
 
-        outtake = null;
+        outtake = new Manipulator(opMode.hardwareMap);
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 
@@ -91,12 +91,6 @@ public class Bot {
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBL, Motor.GoBILDA.RPM_435),
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBR, Motor.GoBILDA.RPM_435)
         };
-        // For the blue driver hub, only the middle USB 2.0 port works.
-//        // left motors
-        driveTrainMotors[0].setInverted(true);
-        driveTrainMotors[2].setInverted(true);
-//        driveTrainMotors[1].setInverted(false);
-//        driveTrainMotors[3].setInverted(false);
 
         for(MotorEx motor : driveTrainMotors){
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -115,10 +109,10 @@ public class Bot {
         this.roadRunner = new RRMecanumDrive(opMode.hardwareMap);
 
         this.imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
-        //this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
+        this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
         //this.imu1=null;
         this.initializeImu(imu0);
-        //this.initializeImu(imu1);
+        this.initializeImu(imu1);
 
     }
 
@@ -156,10 +150,10 @@ public class Bot {
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed){
         double[] speeds = {
-                forwardBackSpeed - strafeSpeed - turnSpeed,
                 forwardBackSpeed + strafeSpeed + turnSpeed,
-                forwardBackSpeed + strafeSpeed - turnSpeed,
-                forwardBackSpeed - strafeSpeed + turnSpeed
+                forwardBackSpeed - strafeSpeed - turnSpeed,
+                forwardBackSpeed - strafeSpeed + turnSpeed,
+                forwardBackSpeed + strafeSpeed - turnSpeed
         };
 
         double maxSpeed = 0;
@@ -186,13 +180,13 @@ public class Bot {
     }
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed, double heading){
-        double magnitude=Math.sqrt(strafeSpeed*strafeSpeed+forwardBackSpeed*forwardBackSpeed);
-        double theta=(Math.atan(forwardBackSpeed/strafeSpeed)-heading)%(2*Math.PI);
+        double magnitude = Math.sqrt(strafeSpeed * strafeSpeed + forwardBackSpeed * forwardBackSpeed);
+        double theta = (Math.atan(forwardBackSpeed / strafeSpeed) - heading) % (2 * Math.PI);
         double[] speeds = {
-            magnitude*Math.sin(theta + Math.PI / 4)- turnSpeed,
-                magnitude*Math.sin(theta - Math.PI / 4)+ turnSpeed,
-                magnitude*Math.sin(theta - Math.PI / 4)- turnSpeed,
-                magnitude*Math.sin(theta + Math.PI / 4)+ turnSpeed
+                magnitude * Math.sin(theta + Math.PI / 4) + turnSpeed,
+                magnitude * Math.sin(theta - Math.PI / 4) - turnSpeed,
+                magnitude * Math.sin(theta - Math.PI / 4) + turnSpeed,
+                magnitude * Math.sin(theta + Math.PI / 4) - turnSpeed
         };
 
         double maxSpeed = 0;

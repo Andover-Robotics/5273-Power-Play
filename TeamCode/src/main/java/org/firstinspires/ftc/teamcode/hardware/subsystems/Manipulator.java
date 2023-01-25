@@ -14,12 +14,4 @@ public class Manipulator extends SubsystemBase {
     }
 
     //TODO: implement conjoined methods
-
-    public void runOuttake() {
-        linearSlides.extend();
-        if (linearSlides.getCurrentHeight() >= CLAW_CLEARANCE_HEIGHT) {
-            claw.raiseRotateClaw();
-        }
-    }
-
 }
