@@ -9,8 +9,8 @@ public class Claw {
 
     //TODO: Tune claw values
 
-    private final double OPEN_CLAW_POSITION = 0.70;
-    private final double CLOSE_CLAW_POSITION =0.45;
+    private final double OPEN_CLAW_POSITION = 0.20;
+    private final double CLOSE_CLAW_POSITION =0.0;
     private final Servo claw;
 
     public Claw(HardwareMap hardwareMap){
@@ -38,8 +38,7 @@ public class Claw {
 
 
     public void intake() {
-        openClaw();
-        closeClaw();
+
     }
     public void outtake(){
 

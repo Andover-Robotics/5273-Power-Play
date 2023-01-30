@@ -20,14 +20,14 @@ public class LinearSlides {
 
     //TODO: find values for junction heights(ticks)
 
-    private  static final double POWER =0.5;
+    private  static final double POWER =1;
 
-    private static final double kP=0.01; //TODO Tune
+    private static final double kP=1.5          ; //TODO Tune
 
-    private static final int GROUND_HEIGHT = 50;
-    private static final int LOW_HEIGHT = 500;
-    private static final int MEDIUM_HEIGHT = 1000;
-    private static final int HIGH_HEIGHT =  1400;
+    private static final int GROUND_HEIGHT = 0;
+    private static final int LOW_HEIGHT = 1400;
+    private static final int MEDIUM_HEIGHT = 1900;
+    private static final int HIGH_HEIGHT =  2350;
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
@@ -43,12 +43,16 @@ public class LinearSlides {
     private void initializeSlideMotor(DcMotorEx motor) {
         motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        motor.setTargetPosition(GROUND_HEIGHT);
         motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         motor.setPositionPIDFCoefficients(kP);
     }
 
     public int getCurrentHeight() {
         return slideMotor.getCurrentPosition();
+    }
+    public int getTargetHeight(){
+        return targetHeight;
     }
     private void setTargetHeight() {
 

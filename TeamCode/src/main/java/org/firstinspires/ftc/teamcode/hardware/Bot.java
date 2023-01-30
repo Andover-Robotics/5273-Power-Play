@@ -63,9 +63,6 @@ public class Bot {
 
         instance.opMode = opMode;
 
-        instance.initializeImu(instance.imu0);
-        //instance.initializeImu(instance.imu1);
-
         return instance;
 
     }
@@ -92,13 +89,6 @@ public class Bot {
                 new MotorEx(opMode.hardwareMap, GlobalConfig.motorBR, Motor.GoBILDA.RPM_435)
         };
 
-        for(MotorEx motor : driveTrainMotors){
-            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            motor.setInverted(false);
-            // temp - from lightning code
-            motor.setRunMode(Motor.RunMode.RawPower);
-        }
-
         //required subsystems
         this.drive = new MecanumDrive(false,
                 driveTrainMotors[0],
@@ -108,15 +98,24 @@ public class Bot {
 
         this.roadRunner = new RRMecanumDrive(opMode.hardwareMap);
 
-        this.imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
-        this.imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
+        for(MotorEx motor : driveTrainMotors){
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            motor.setInverted(false);
+            // temp - from lightning code
+            motor.setRunMode(Motor.RunMode.RawPower);
+        }
+
+
+
+        imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
+        imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
         //this.imu1=null;
         this.initializeImu(imu0);
         this.initializeImu(imu1);
 
     }
 
-    private void initializeImu(BNO055IMU imu) {
+    public void initializeImu(BNO055IMU imu) {
 
         final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -181,7 +180,7 @@ public class Bot {
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed, double heading){
         double magnitude = Math.sqrt(strafeSpeed * strafeSpeed + forwardBackSpeed * forwardBackSpeed);
-        double theta = (Math.atan(forwardBackSpeed / strafeSpeed) - heading) % (2 * Math.PI);
+        double theta = (Math.atan2(forwardBackSpeed, strafeSpeed) - heading) % (2 * Math.PI);
         double[] speeds = {
                 magnitude * Math.sin(theta + Math.PI / 4) + turnSpeed,
                 magnitude * Math.sin(theta - Math.PI / 4) - turnSpeed,
