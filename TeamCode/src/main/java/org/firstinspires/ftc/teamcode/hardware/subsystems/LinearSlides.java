@@ -20,9 +20,9 @@ public class LinearSlides {
 
     //TODO: find values for junction heights(ticks)
 
-    private  static final double POWER =1;
+    private  static final double POWER = 1;
 
-    private static final double kP=1.5          ; //TODO Tune
+    private static final double kP= 1.5; //TODO: Tune
 
     private static final int GROUND_HEIGHT = 0;
     private static final int LOW_HEIGHT = 1400;
@@ -83,7 +83,7 @@ public class LinearSlides {
     }
 
     public void extend(int ticks){
-        targetHeight=ticks;
+        targetHeight = ticks;
         slideMotor.setTargetPosition(targetHeight);
         slideMotor.setPower(POWER);
     }

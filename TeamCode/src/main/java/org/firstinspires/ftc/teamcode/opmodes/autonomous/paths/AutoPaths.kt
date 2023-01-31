@@ -74,10 +74,8 @@ class AutoPaths(val opMode: LinearOpMode) {
     val bot: Bot = Bot.getInstance()
     val drive: RRMecanumDrive = bot.roadRunner
     private fun Pose2d.reverse() = copy(heading = heading + PI)
-    private var lastPosition: Pose2d = Pose2d()
 
     fun makePath(name: String, trajectory: Trajectory): AutoPathElement.Path {
-        lastPosition = trajectory.end()
         return AutoPathElement.Path(name, trajectory)
 
         //Start of list of trajectories should not be lastPosition
@@ -106,28 +104,27 @@ class AutoPaths(val opMode: LinearOpMode) {
 //        }
 //    }
 
+
     val autoType = AutoType.DELIVERY
 
     //Insert pose/vector vals here
 
     private val epsilon = 2.0
 
-    private val trackWidth = 17.0
+    private val trackWidth = 15.0
 
-//    var startPose = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
+    private var lastPosition = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
 
-    //TODO: Check if x-values and y-values are swapped; and if headings are reversed
+    //TODO: Fix coordinates(maybe X and Y axes are swapped?)
 
-    private val intakePose = p2d(- 12 - trackWidth / 2, 50.0, - PI)
-
-    private val deliveryPose = p2d(- trackWidth * sqrt(2.0) / 4 - epsilon,
-        - 24.0 - trackWidth * sqrt(2.0) / 4 - epsilon,
-        PI / 4)
-
+    private val intakePose = p2d( - 54.0 + trackWidth / 2, - 12.0, PI / 2)
+    private val deliveryPose = p2d(- 24.0 - trackWidth * sqrt(2.0) / 4 - epsilon,
+        - trackWidth * sqrt(2.0) / 4 - epsilon,
+        7 * PI / 4)
     private val parkingPose = mapOf(
-        ONE to v2d(- 36.0, - 12.0),
+        ONE to v2d(- 12.0, - 36.0),
         TWO to v2d(- 36.0, - 36.0),
-        THREE to v2d(- 36.0, - 60.0)
+        THREE to v2d(- 60.0, - 36.0)
     )
 
     //                                                                  ===================================================
@@ -139,28 +136,45 @@ class AutoPaths(val opMode: LinearOpMode) {
     //            4 to Pose2d(48 - 5.1, -48.0 - 3.0556 - 3f, (-90.0 + 30.268).toRadians)
     //    )
 
-    private val dropFreight = listOf(
-        makePath("drive to deliver",
-            drive.trajectoryBuilder(lastPosition, 0.0)
-                .splineToSplineHeading(deliveryPose, PI / 4)
-                //.addTemporalMarker(0.01, { bot.outtake.linearSlides.extend() })
-                .build()),
-        makeAction("deliver cone") {
-            //bot.outtake.claw.outtake()
-        }
-    )
+    fun intakeFreight(): List<AutoPathElement> {
+        println(lastPosition)
 
-    private val intakeFreight = listOf(
-        makePath("drive to cone stack",
-            drive.trajectoryBuilder(lastPosition, 0.0)
-                 .splineToSplineHeading(intakePose, PI)
-                 .build()),
-        makeAction("intake freight") {
-            bot.outtake.claw.intake()
-        }
-    )
+        val trajectoryList = listOf(AutoPathElement.Path("", drive.trajectoryBuilder(lastPosition, lastPosition.heading)
+            .lineTo(Vector2d(lastPosition.x, intakePose.y))
+            .build()),
+            AutoPathElement.Path("", drive.trajectoryBuilder(Pose2d(lastPosition.x, intakePose.y, lastPosition.heading), lastPosition.heading)
+                .lineToLinearHeading(intakePose)
+                .build()))
+        lastPosition = trajectoryList[1].trajectory.end()
+        return trajectoryList
+    }
 
-    //TODO: Add intake trajectory
+    fun depositFreight(): List<AutoPathElement> {
+        println(lastPosition)
+
+        val trajectoryList = listOf(
+            AutoPathElement.Path(
+                "", drive.trajectoryBuilder(lastPosition, lastPosition.heading)
+                    .lineTo(Vector2d(deliveryPose.x, lastPosition.y - 0.01))
+                    .build()
+            ),
+            AutoPathElement.Path(
+                "",
+                drive.trajectoryBuilder(
+                    Pose2d(
+                        deliveryPose.x,
+                        lastPosition.y - 0.01,
+                        lastPosition.heading
+                    ), lastPosition.heading
+                )
+                    .lineToLinearHeading(deliveryPose)
+                    .build()
+            )
+        )
+
+        lastPosition = trajectoryList[1].trajectory.end()
+        return trajectoryList
+    }
 
     /*
 
@@ -179,12 +193,13 @@ class AutoPaths(val opMode: LinearOpMode) {
 
         var reflected: Map<PipelineResult, PipelineResult>
 
-        if ((alliance == Alliance.RED && side == Side.AUDIENCE) || !((alliance == Alliance.RED) || (side == Side.AUDIENCE)))
+        if ((alliance == Alliance.RED && side == Side.AUDIENCE) || !((alliance == GlobalConfig.Alliance.RED) || (side == GlobalConfig.Side.AUDIENCE)))
             reflected = mapOf(
                 ONE to THREE,
                 TWO to TWO,
                 THREE to ONE
             )
+
         else
             reflected = mapOf(
                 ONE to ONE,
@@ -192,26 +207,35 @@ class AutoPaths(val opMode: LinearOpMode) {
                 THREE to THREE
             )
 
-        return listOf(makePath("Drive forward", drive.trajectoryBuilder(lastPosition, h2d(0.0))
+        println(lastPosition)
+
+        val trajectoryList = listOf(AutoPathElement.Path("", drive.trajectoryBuilder(lastPosition, lastPosition.heading)
             .lineTo(Vector2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01))
             .build()),
-            makePath("Strafe", drive.trajectoryBuilder(Pose2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01), h2d(0.0))
+            AutoPathElement.Path("", drive.trajectoryBuilder(Pose2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01, lastPosition.heading), lastPosition.heading)
                 .lineTo(parkingPose[reflected[result]]!!)
                 .build()))
+
+        lastPosition = Pose2d(parkingPose[reflected[result]]!!.x, parkingPose[reflected[result]]!!.y, lastPosition.heading)
+
+        return trajectoryList
 
     }
 
     private val trajectorySets: Map<AutoType, Map<PipelineResult, List<AutoPathElement>>> = mapOf(
+
+        AutoType.DELIVERY to mapOf(
+            ONE to depositFreight() + intakeFreight() + depositFreight() + intakeFreight() + depositFreight() + park(ONE),
+            THREE to depositFreight() + intakeFreight()+ depositFreight() + intakeFreight() + depositFreight() + park(TWO),
+            TWO to depositFreight() + intakeFreight() + depositFreight() + intakeFreight() + depositFreight() + park(THREE)
+        ),
+
         AutoType.PARK to mapOf(
             ONE to park(ONE),
-            THREE to park(THREE),
-            TWO to park(TWO)
-        ),
-        AutoType.DELIVERY to mapOf(
-            ONE to dropFreight + intakeFreight + dropFreight + park(ONE),
-            THREE to dropFreight + intakeFreight + dropFreight + park(THREE),
-            TWO to dropFreight + intakeFreight + dropFreight + park(TWO)
+            TWO to park(TWO),
+            THREE to park(THREE)
         )
+
     )
 
     //end paste  ==========================================================================

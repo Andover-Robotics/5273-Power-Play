@@ -35,8 +35,6 @@ public class Claw {
 
     }
 
-
-
     public void intake() {
 
     }

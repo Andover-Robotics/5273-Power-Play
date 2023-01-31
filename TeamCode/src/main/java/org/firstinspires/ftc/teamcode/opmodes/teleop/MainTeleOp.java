@@ -34,6 +34,7 @@ public class MainTeleOp extends BaseOpMode{
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
             bot.outtake.linearSlides.decrementLevel();
         }
+
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.RIGHT_BUMPER)){
             bot.outtake.linearSlides.incrementLevel();
         }
@@ -41,13 +42,15 @@ public class MainTeleOp extends BaseOpMode{
         if(gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0){
             bot.outtake.claw.closeClaw();
         }
+
         if(gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0){
             bot.outtake.claw.openClaw();
         }
 
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON)){
-            fieldCentricOffset=(bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle+bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle)/2;
+            fieldCentricOffset = (bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle+bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle)/2;
         }
+
         telemetry.addData("imu0", bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("slideMotor Position", bot.outtake.linearSlides.getCurrentHeight());
@@ -63,7 +66,7 @@ public class MainTeleOp extends BaseOpMode{
                 driveVector.getY() * driveSpeed,
                 turnVector.getX() * driveSpeed,
                 (bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle+bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle)/2
-                -fieldCentricOffset
+                - fieldCentricOffset
         );
     }
 
