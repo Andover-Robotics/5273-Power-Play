@@ -18,6 +18,7 @@ public abstract class BaseOpMode extends OpMode {
   protected Bot bot;
   protected double driveSpeed;
   protected GamepadEx gamepadEx1, gamepadEx2;
+  protected GamepadEx driveController, subsystemController;
   TimingScheduler timingScheduler;
 
   //button reader syntax
@@ -28,6 +29,8 @@ public abstract class BaseOpMode extends OpMode {
     bot = Bot.getInstance(this);
     gamepadEx2 = new GamepadEx(gamepad2);
     gamepadEx1 = new GamepadEx(gamepad1);
+    driveController = gamepadEx1;
+    subsystemController = gamepadEx2;
     timingScheduler = new TimingScheduler(this);
     subInit();
     telemetry.addLine("Init done");

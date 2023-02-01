@@ -10,7 +10,8 @@ import java.util.GregorianCalendar;
 
 public class LinearSlides {
 
-    private enum Level {
+    public enum Level {
+        HOVER,
         GROUND,
         LOW,
         MEDIUM,
@@ -26,6 +27,7 @@ public class LinearSlides {
     private static final double kI= 5; //TODO: Tune
     private static final double kD= 5; //TODO: Tune
 
+    private static final int HOVER_HEIGHT = 100;
     private static final int GROUND_HEIGHT = 0;
     private static final int LOW_HEIGHT = 1700;
     private static final int MEDIUM_HEIGHT = 2800;
@@ -59,6 +61,9 @@ public class LinearSlides {
     private void setTargetHeight() {
 
         switch(currentLevel) {
+            case HOVER:
+                targetHeight = HOVER_HEIGHT;
+                break;
             case GROUND:
                 targetHeight = GROUND_HEIGHT;
                 break;
@@ -72,7 +77,6 @@ public class LinearSlides {
                 targetHeight = HIGH_HEIGHT;
                 break;
         }
-
     }
     private void setTargetHeight(int height) {
         targetHeight=height;
@@ -90,8 +94,29 @@ public class LinearSlides {
         slideMotor.setPower(POWER);
     }
 
+    public void setLevel(Level level) {
+        switch(level) {
+            case HOVER:
+                currentLevel = Level.HOVER;
+                break;
+            case GROUND:
+                currentLevel = Level.GROUND;
+                break;
+            case LOW:
+                currentLevel = Level.LOW;
+                break;
+            case MEDIUM:
+                currentLevel = Level.MEDIUM;
+                break;
+            case HIGH:
+                currentLevel = Level.HIGH;
+                break;
+        }
+        extend();
+    }
     public void incrementLevel() {
         switch(currentLevel) {
+            case HOVER:
             case GROUND:
                 currentLevel = Level.LOW;
                 break;
@@ -109,6 +134,7 @@ public class LinearSlides {
     public void decrementLevel() {
 
         switch(currentLevel) {
+            case HOVER:
             case GROUND:
             case LOW:
                 currentLevel = Level.GROUND;
@@ -122,6 +148,10 @@ public class LinearSlides {
         }
         extend();
 
+    }
+    public void hover() {
+        currentLevel = Level.HOVER;
+        extend();
     }
 
     public void retract() {
