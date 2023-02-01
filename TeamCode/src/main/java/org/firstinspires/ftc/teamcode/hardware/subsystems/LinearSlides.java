@@ -22,12 +22,14 @@ public class LinearSlides {
 
     private  static final double POWER = 1;
 
-    private static final double kP= 1.5; //TODO: Tune
+    private static final double kP= 5; //TODO: Tune
+    private static final double kI= 5; //TODO: Tune
+    private static final double kD= 5; //TODO: Tune
 
     private static final int GROUND_HEIGHT = 0;
-    private static final int LOW_HEIGHT = 1400;
-    private static final int MEDIUM_HEIGHT = 1900;
-    private static final int HIGH_HEIGHT =  2350;
+    private static final int LOW_HEIGHT = 1700;
+    private static final int MEDIUM_HEIGHT = 2800;
+    private static final int HIGH_HEIGHT =  4000;
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
@@ -40,8 +42,8 @@ public class LinearSlides {
         initializeSlideMotor(slideMotor);
     }
 
-    private void initializeSlideMotor(DcMotorEx motor) {
-        motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+    public void initializeSlideMotor(DcMotorEx motor) {
+            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motor.setTargetPosition(GROUND_HEIGHT);
         motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);

@@ -61,6 +61,7 @@ public class Bot {
         instance.driveTrainMotors[1].setInverted(false);
         instance.driveTrainMotors[3].setInverted(false);
 
+
         instance.opMode = opMode;
 
         return instance;
@@ -70,7 +71,6 @@ public class Bot {
     public void reset(){
 
         instance = new Bot(opMode);
-
     }
 
     private Bot(OpMode opMode){

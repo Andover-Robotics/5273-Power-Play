@@ -72,7 +72,7 @@ public abstract class BaseOpMode extends OpMode {
     Vector2d v1 = toCoords.apply(gamepadEx1),
         v2 = toCoords.apply(gamepadEx2);
 
-    return v1.magnitude() > 0.02 ? v1 : v2;
+    return v1.magnitude() > 0.01 ? v1 : v2;
   }
 
 
