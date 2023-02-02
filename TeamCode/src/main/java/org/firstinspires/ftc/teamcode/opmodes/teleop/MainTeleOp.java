@@ -85,9 +85,6 @@ public class MainTeleOp extends BaseOpMode{
         if (subsystemController.wasJustPressed((GamepadKeys.Button.Y))) {
             bot.outtake.linearSlides.setLevel(LinearSlides.Level.HIGH);
         }
-        if(Math.abs(subsystemController.getLeftY())>0.05){
-            bot.outtake.linearSlides.extend((int)(bot.outtake.linearSlides.getTargetHeight()+50*subsystemController.getLeftY()));
-        }
 
         telemetry.addData("imu0", bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
@@ -104,7 +101,7 @@ public class MainTeleOp extends BaseOpMode{
                 driveVector.getY() * driveSpeed * slowPercentage,
                 turnVector.getX() * driveSpeed * slowPercentage,
                 (bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle+bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle)/2
-                - fieldCentricOffset
+                        - fieldCentricOffset
         );
     }
 

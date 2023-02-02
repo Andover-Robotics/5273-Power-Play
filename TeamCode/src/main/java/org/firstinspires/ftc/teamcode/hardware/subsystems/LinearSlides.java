@@ -45,7 +45,7 @@ public class LinearSlides {
     }
 
     public void initializeSlideMotor(DcMotorEx motor) {
-            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motor.setTargetPosition(GROUND_HEIGHT);
         motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -78,7 +78,7 @@ public class LinearSlides {
                 break;
         }
     }
-    public void setTargetHeight(int height) {
+    private void setTargetHeight(int height) {
         targetHeight=height;
     }
 
