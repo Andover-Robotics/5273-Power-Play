@@ -105,7 +105,7 @@ class AutoPaths(val opMode: LinearOpMode) {
 //    }
 
 
-    val autoType = AutoType.DELIVERY
+    val autoType = AutoType.PARK
 
     //Insert pose/vector vals here
 
@@ -114,6 +114,8 @@ class AutoPaths(val opMode: LinearOpMode) {
     private val trackWidth = 15.0
 
     private var lastPosition = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
+
+    private var startPosition = p2d(-36.0, -72.0 + trackWidth / 2, 0.0)
 
     //TODO: Fix coordinates(maybe X and Y axes are swapped?)
 
@@ -207,7 +209,9 @@ class AutoPaths(val opMode: LinearOpMode) {
                 THREE to THREE
             )
 
-        println(lastPosition)
+        if (autoType == AutoType.PARK) {
+            lastPosition = startPosition
+        }
 
         val trajectoryList = listOf(AutoPathElement.Path("", drive.trajectoryBuilder(lastPosition, lastPosition.heading)
             .lineTo(Vector2d(lastPosition.x, parkingPose[reflected[result]]!!.y - 0.01))

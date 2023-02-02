@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.BaseOpMode;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -15,10 +16,9 @@ import java.util.stream.Stream;
 @TeleOp(name = "TBX: Slides Tuner", group = "ARC Toolbox")
 public class LinearSlidePIDTuner extends OpMode {
 
-    private Selector motorSelector;
 
     private InputColumnResponder input = new InputColumnResponderImpl();
-    private GamepadEx gamepadEx1 =new GamepadEx(gamepad1);
+    private GamepadEx gamepadEx1;
 
 
     private DcMotorEx slideMotor;
@@ -34,6 +34,7 @@ public class LinearSlidePIDTuner extends OpMode {
 
     @Override
     public void init() {
+        gamepadEx1= new GamepadEx(gamepad1);
     }
 
     @Override
@@ -48,6 +49,7 @@ public class LinearSlidePIDTuner extends OpMode {
 
     @Override
     public void loop() {
+        gamepadEx1.readButtons();
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.X)){
             slideMotor.setTargetPosition(targetPositions[0]);
         }
@@ -69,7 +71,7 @@ public class LinearSlidePIDTuner extends OpMode {
             currentPIDfIndex=(currentPIDfIndex+1)%4;
         }
 
-        if(gamepadEx1.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
             pidfCoefficients[currentPIDfIndex]+=0.1;
         }
         if(gamepadEx1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
@@ -77,7 +79,7 @@ public class LinearSlidePIDTuner extends OpMode {
         }
         PIDFCoefficients pidfCoeffs=new PIDFCoefficients(pidfCoefficients[0], pidfCoefficients[1], pidfCoefficients[2], pidfCoefficients[3]);
 
-        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidfCoeffs);
+        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoeffs);
 
         telemetry.addData("kP", pidfCoefficients[0]);
         telemetry.addData("kI", pidfCoefficients[1]);

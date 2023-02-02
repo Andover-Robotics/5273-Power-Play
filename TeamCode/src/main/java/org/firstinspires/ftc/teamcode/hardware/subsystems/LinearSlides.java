@@ -78,7 +78,7 @@ public class LinearSlides {
                 break;
         }
     }
-    private void setTargetHeight(int height) {
+    public void setTargetHeight(int height) {
         targetHeight=height;
     }
 
