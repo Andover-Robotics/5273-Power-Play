@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.util.toolbox;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +11,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.BaseOpMode;
 
 import java.util.Map;
@@ -21,11 +25,12 @@ public class LinearSlidePIDTuner extends OpMode {
     private GamepadEx gamepadEx1;
 
 
-    private DcMotorEx slideMotor;
+    private MotorEx slideMotor;
 
     private int targetPositions[]={0, 1700, 2800, 4000}; // Change for your specific use case
 
-    private double pidfCoefficients[] ={1, 0, 0, 0};
+    private double ppsvCoefficients[] ={0.5, 0.05, 0.002, 0.01};
+    private double deltaCoefficients[] ={0.01, 0.01, 0.001, 0.001};
 
     private int currentPIDfIndex=0;
 
@@ -39,28 +44,34 @@ public class LinearSlidePIDTuner extends OpMode {
 
     @Override
     public void start() {
-        slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor"); //Change name of motor
+        slideMotor = new MotorEx(hardwareMap, "slideMotor", Motor.GoBILDA.RPM_312);//Change name of motor
 
         input.clearRegistry();
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setTargetPositionTolerance(20);
+        slideMotor.setTargetPosition(0);
+        slideMotor.setRunMode(Motor.RunMode.PositionControl);
+        slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setPositionTolerance(50);
     }
+    int target = 0;
 
     @Override
     public void loop() {
         gamepadEx1.readButtons();
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.X)){
             slideMotor.setTargetPosition(targetPositions[0]);
+            target = targetPositions[0];
         }
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.A)){
             slideMotor.setTargetPosition(targetPositions[1]);
+            target = targetPositions[1];
         }
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.B)){
             slideMotor.setTargetPosition(targetPositions[2]);
+            target = targetPositions[2];
         }
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.Y)){
             slideMotor.setTargetPosition(targetPositions[3]);
+            target = targetPositions[3];
         }
 
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
@@ -72,23 +83,33 @@ public class LinearSlidePIDTuner extends OpMode {
         }
 
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
-            pidfCoefficients[currentPIDfIndex]+=0.1;
+            ppsvCoefficients[currentPIDfIndex]+=deltaCoefficients[currentPIDfIndex];
         }
         if(gamepadEx1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
-            pidfCoefficients[currentPIDfIndex]-=0.1;
+            ppsvCoefficients[currentPIDfIndex]-=deltaCoefficients[currentPIDfIndex];
         }
-        PIDFCoefficients pidfCoeffs=new PIDFCoefficients(pidfCoefficients[0], pidfCoefficients[1], pidfCoefficients[2], pidfCoefficients[3]);
 
-        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoeffs);
 
-        telemetry.addData("kP", pidfCoefficients[0]);
-        telemetry.addData("kI", pidfCoefficients[1]);
-        telemetry.addData("kD", pidfCoefficients[2]);
-        telemetry.addData("kF", pidfCoefficients[3]);
-        telemetry.addData("targetPosition", slideMotor.getTargetPosition());
+        if(target>slideMotor.getCurrentPosition()){
+            slideMotor.setPositionCoefficient(ppsvCoefficients[0]);
+        }
+        else{
+            slideMotor.setPositionCoefficient(ppsvCoefficients[1]);
+        }
+        if(slideMotor.atTargetPosition()){
+            slideMotor.set(ppsvCoefficients[2]);
+        }
+        else{
+            slideMotor.set(ppsvCoefficients[3]);
+        }
+
+        telemetry.addData("kP UP", ppsvCoefficients[0]);
+        telemetry.addData("kp DOWN", ppsvCoefficients[1]);
+        telemetry.addData("kS", ppsvCoefficients[2]);
+        telemetry.addData("kV", ppsvCoefficients[3]);
+        telemetry.addData("targetPosition", target);
         telemetry.addData("currentPosition", slideMotor.getCurrentPosition());
         telemetry.addData("velocity", 	slideMotor.getVelocity());
-
-        slideMotor.setPower(1);
+        telemetry.addData("currentdraw", slideMotor.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
     }
 }

@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.GlobalConfig.PipelineResult.TWO;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -70,6 +71,8 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
         telemetry.addData("Alliance", GlobalConfig.alliance);
         telemetry.update();
 
+        /*
+
         //This is for cam config, if we are going to use the phones cam then we will most likely need to edit this
         //However, if we use an external webcam, then we won't have to edit anything here.
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -99,9 +102,12 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+
         while (!isStarted() && !isStopRequested())
         {
-                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+            /*
+
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             boolean tagFound = false;
 
@@ -144,17 +150,18 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
+
+//        if(tagOfInterest != null)
+//        {
+//            telemetry.addLine("Tag snapshot:\n");
+//            tagToTelemetry(tagOfInterest);
+//            telemetry.update();
+//        }
+//        else
+//        {
+//            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+//            telemetry.update();
+//        }
 
         List<AutoPaths.AutoPathElement> trajectories;
 
@@ -167,19 +174,20 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
 
         /* Actually do something useful */
 
-        if(tagOfInterest == null || tagOfInterest.id == ID_ONE) {
-            trajectories = paths.createTrajectory(ONE);
-        }
-        
-        else if(tagOfInterest.id == ID_TWO) {
-            trajectories = paths.createTrajectory(TWO);
-        }
+//        if(tagOfInterest == null || tagOfInterest.id == ID_ONE) {
+//            trajectories = paths.createTrajectory(ONE);
+//        }
+//
+//        else if(tagOfInterest.id == ID_TWO) {
+//            trajectories = paths.createTrajectory(TWO);
+//        }
+//
+//        else {
+//            trajectories = paths.createTrajectory(THREE);
+//        }
 
-        else {
-            trajectories = paths.createTrajectory(THREE);
-        }
-
-        /* the actual movement */
+        /*
+        // the actual movement
         for (AutoPaths.AutoPathElement item : trajectories) {
 
             telemetry.addData("executing path element", item.getName());
@@ -194,6 +202,12 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
             if (isStopRequested())
                 return;
         }
+        */
+
+
+        Trajectory traj = bot.roadRunner.trajectoryBuilder(new Pose2d(0,0,0))
+            .forward(20.0)
+                .build();
 
 
 
@@ -202,17 +216,19 @@ public class MainAutonomous extends LinearOpMode {//TODO: add reversing for comp
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {sleep(20);
+        bot.roadRunner.followTrajectory(traj);}
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+//    void tagToTelemetry(AprilTagDetection detection)
+//    {
+//        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+//        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+//        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+//        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+//        telemetry.addLine(Stri    ng.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+//        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+//        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+//    }
     }
 }

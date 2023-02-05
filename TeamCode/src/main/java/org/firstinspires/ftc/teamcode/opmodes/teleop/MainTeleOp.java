@@ -86,26 +86,33 @@ public class MainTeleOp extends BaseOpMode{
             bot.outtake.linearSlides.setLevel(LinearSlides.Level.HIGH);
         }
         if(Math.abs(subsystemController.getLeftY())>0.05){
-            bot.outtake.linearSlides.extend((int)(bot.outtake.linearSlides.getTargetHeight()+50*subsystemController.getLeftY()));
+            bot.outtake.linearSlides.extend((int)(bot.outtake.linearSlides.getTargetHeight()+10*subsystemController.getLeftY()));
         }
+        bot.outtake.linearSlides.loop();
 
         telemetry.addData("imu0", bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("slideMotor Position", bot.outtake.linearSlides.getCurrentHeight());
         telemetry.addData("slideMotor targetPosition", bot.outtake.linearSlides.getTargetHeight());
-        telemetry.addData("slideMotor RunMode", bot.outtake.linearSlides.slideMotor.getMode());
     }
     private void drive() {
         Vector2d driveVector = new Vector2d(driveController.getLeftX(), driveController.getLeftY()),
                 turnVector = new Vector2d(
                         driveController.getRightX() , 0);
-        bot.drive(
-                driveVector.getX() * driveSpeed * slowPercentage,
-                driveVector.getY() * driveSpeed * slowPercentage,
-                turnVector.getX() * driveSpeed * slowPercentage,
-                (bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle+bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle)/2
-                - fieldCentricOffset
-        );
+        if (bot.fieldCentricRunMode) {
+            bot.drive(
+                    driveVector.getX() * driveSpeed * slowPercentage,
+                    driveVector.getY() * driveSpeed * slowPercentage,
+                    turnVector.getX() * driveSpeed * slowPercentage,
+                    (bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle + bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle) / 2
+                            - fieldCentricOffset
+            );
+        } else {
+            bot.drive(driveVector.getX() * driveSpeed * slowPercentage,
+                    driveVector.getY() * driveSpeed * slowPercentage,
+                    turnVector.getX() * driveSpeed * slowPercentage
+            );
+        }
     }
 
 }

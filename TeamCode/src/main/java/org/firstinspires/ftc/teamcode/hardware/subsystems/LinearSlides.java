@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import java.util.GregorianCalendar;
 
@@ -21,11 +22,14 @@ public class LinearSlides {
 
     //TODO: find values for junction heights(ticks)
 
-    private  static final double POWER = 1;
 
-    private static final double kP= 5; //TODO: Tune
-    private static final double kI= 5; //TODO: Tune
-    private static final double kD= 5; //TODO: Tune
+
+
+    private final double kPUpward=0.5;
+    private final double kPDownward=0.05;
+    private final double kS=0.002;
+    private final double kV=0.01;
+
 
     private static final int HOVER_HEIGHT = 100;
     private static final int GROUND_HEIGHT = 0;
@@ -35,21 +39,23 @@ public class LinearSlides {
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
-    public final DcMotorEx slideMotor;
+    private final int TOLERANCE=50;
+
+    public final MotorEx slideMotor;
 
 
     public LinearSlides(HardwareMap hardwareMap) {
 
-        slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
+        slideMotor = new MotorEx(hardwareMap, "slideMotor", Motor.GoBILDA.RPM_312);
         initializeSlideMotor(slideMotor);
     }
 
-    public void initializeSlideMotor(DcMotorEx motor) {
-            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+    public void initializeSlideMotor(MotorEx motor) {
+        motor.resetEncoder();
+        motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motor.setTargetPosition(GROUND_HEIGHT);
-        motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        motor.setPositionPIDFCoefficients(kP);
+        motor.setRunMode(MotorEx.RunMode.PositionControl);
+        motor.setPositionTolerance(TOLERANCE);
     }
 
     public int getCurrentHeight() {
@@ -79,19 +85,26 @@ public class LinearSlides {
         }
     }
     public void setTargetHeight(int height) {
+        if(height>targetHeight){
+            slideMotor.setPositionCoefficient(kPUpward);
+        }
+        else{
+            slideMotor.setPositionCoefficient(kPDownward);
+        }
         targetHeight=height;
     }
 
     public void extend(){
         setTargetHeight();
         slideMotor.setTargetPosition(targetHeight);
-        slideMotor.setPower(POWER);
     }
 
     public void extend(int ticks){
-        targetHeight = ticks;
+        if(ticks<0){
+            return;
+        }
+        setTargetHeight(ticks);
         slideMotor.setTargetPosition(targetHeight);
-        slideMotor.setPower(POWER);
     }
 
     public void setLevel(Level level) {
@@ -157,5 +170,15 @@ public class LinearSlides {
     public void retract() {
         currentLevel = Level.GROUND;
         extend();
+    }
+    public void loop(){
+        if(slideMotor.atTargetPosition()){
+            slideMotor.set(kS);
+        }
+        else{
+            slideMotor.set(kV);
+        }
+
+
     }
 }
