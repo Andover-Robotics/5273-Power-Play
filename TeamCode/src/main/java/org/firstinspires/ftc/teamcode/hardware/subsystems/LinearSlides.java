@@ -25,13 +25,13 @@ public class LinearSlides {
 
 
 
-    private final double kPUpward=0.5;
-    private final double kPDownward=0.05;
-    private final double kS=0.002;
+    private final double kPUpward=0.25;
+    private final double kPDownward=0.06;
+    private final double kS=0.004;
     private final double kV=0.01;
 
 
-    private static final int HOVER_HEIGHT = 100;
+    private static final int HOVER_HEIGHT = 200;
     private static final int GROUND_HEIGHT = 0;
     private static final int LOW_HEIGHT = 1700;
     private static final int MEDIUM_HEIGHT = 2800;

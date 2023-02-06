@@ -28,8 +28,6 @@ public class Bot {
 
     //required subsystems
 
-    public final MecanumDrive drive;
-    public final RRMecanumDrive roadRunner;
     public BNO055IMU imu0;
     public BNO055IMU imu1;
     public boolean fieldCentricRunMode = true;
@@ -92,14 +90,6 @@ public class Bot {
         };
 
         //required subsystems
-        this.drive = new MecanumDrive(false,
-                driveTrainMotors[0],
-                driveTrainMotors[1],
-                driveTrainMotors[2],
-                driveTrainMotors[3]);
-
-        this.roadRunner = new RRMecanumDrive(opMode.hardwareMap);
-
         for(MotorEx motor : driveTrainMotors){
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             motor.setInverted(false);
