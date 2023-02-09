@@ -26,27 +26,27 @@ public class AutoPaths {
         drive = new RRMecanumDrive(hardwareMap);
 
         parkingOne=drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(0,48), Math.toRadians(90))
-                .splineTo(new Vector2d(24,0), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(0, 40, Math.toRadians(0)))
+                .splineTo(new Vector2d(-24,48), Math.toRadians(90))
                 .build();
         parkingTwo = drive.trajectoryBuilder(new Pose2d())
                 .splineTo(new Vector2d(48,0), Math.toRadians(0))
                 .build();
         parkingThree = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(0,48), Math.toRadians(-90))
-                .splineTo(new Vector2d(24,0), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(0, 40, Math.toRadians(0)))
+                .splineTo(new Vector2d(24,48), Math.toRadians(-90))
                 .build();
 
         outtake =new Manipulator(hardwareMap);
 
         stackRight=drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(0,48), Math.toRadians(-90))
-                .splineTo(new Vector2d(24,0), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(0, 40, Math.toRadians(0)))
+                .splineTo(new Vector2d(-24,48), Math.toRadians(90))
                 .build();
 
         stackLeft=drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(0,48), Math.toRadians(90))
-                .splineTo(new Vector2d(24,0), Math.toRadians(0))
+                .lineToSplineHeading(new Pose2d(0, 40, Math.toRadians(0)))
+                .splineTo(new Vector2d(24,48), Math.toRadians(-90))
                 .build();
 
         CONE_ONE_HEIGHT=550;
