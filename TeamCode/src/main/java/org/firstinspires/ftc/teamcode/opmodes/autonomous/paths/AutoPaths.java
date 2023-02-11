@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Subsystems;
 
 public class AutoPaths {
 
@@ -14,7 +14,8 @@ public class AutoPaths {
     public final Trajectory parkingOne;
     public final Trajectory parkingTwo;
     public final Trajectory parkingThree;
-    public final Manipulator outtake;
+
+    public final Subsystems subsystems;
 
     public final Trajectory stackRight;
 
@@ -37,7 +38,7 @@ public class AutoPaths {
                 .splineTo(new Vector2d(24,48), Math.toRadians(-90))
                 .build();
 
-        outtake =new Manipulator(hardwareMap);
+        subsystems =new Subsystems(hardwareMap);
 
         stackRight=drive.trajectoryBuilder(new Pose2d())
                 .lineToSplineHeading(new Pose2d(0, 40, Math.toRadians(0)))
