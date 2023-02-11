@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.LinearSlides;
-
-import java.util.Map;
-
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Outtake;
 
 
 @TeleOp(name = "Main TeleOp", group = "Competition")
@@ -28,7 +23,6 @@ public class MainTeleOp extends BaseOpMode{
             motor.resetEncoder();
             motor.setRunMode(Motor.RunMode.RawPower);
         }
-        bot.outtake.linearSlides.initializeSlideMotor(bot.outtake.linearSlides.slideMotor);
         bot.initializeImu(bot.imu0);
         bot.initializeImu(bot.imu1);
 
@@ -52,48 +46,48 @@ public class MainTeleOp extends BaseOpMode{
 
         //============ subsystem control =============================================================================
         if(subsystemController.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
-            bot.outtake.linearSlides.decrementLevel();
+            bot.subsystems.outtake.decrementLevel();
         }
         if(subsystemController.wasJustReleased(GamepadKeys.Button.RIGHT_BUMPER)){
-            bot.outtake.linearSlides.incrementLevel();
+            bot.subsystems.outtake.incrementLevel();
         }
 
         if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-            bot.outtake.linearSlides.hover();
+            bot.subsystems.outtake.hover();
         }
         if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-            bot.outtake.linearSlides.retract();
+            bot.subsystems.outtake.retract();
         }
 
         if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
-            bot.outtake.claw.openClaw();
+            bot.subsystems.outtake.openOuttakeClaw();
         }
         if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
-            bot.outtake.claw.closeClaw();
+            bot.subsystems.outtake.closeOuttakeClaw();
         }
 
 
         if (subsystemController.wasJustPressed(GamepadKeys.Button.A)) {
-            bot.outtake.linearSlides.setLevel(LinearSlides.Level.GROUND);
+            bot.subsystems.outtake.setLevel(Outtake.Level.GROUND);
         }
         if (subsystemController.wasJustPressed((GamepadKeys.Button.X))) {
-            bot.outtake.linearSlides.setLevel(LinearSlides.Level.LOW);
+            bot.subsystems.outtake.setLevel(Outtake.Level.LOW);
         }
         if (subsystemController.wasJustPressed(GamepadKeys.Button.B)) {
-            bot.outtake.linearSlides.setLevel(LinearSlides.Level.MEDIUM);
+            bot.subsystems.outtake.setLevel(Outtake.Level.MEDIUM);
         }
         if (subsystemController.wasJustPressed((GamepadKeys.Button.Y))) {
-            bot.outtake.linearSlides.setLevel(LinearSlides.Level.HIGH);
+            bot.subsystems.outtake.setLevel(Outtake.Level.HIGH);
         }
         if(Math.abs(subsystemController.getLeftY())>0.05){
-            bot.outtake.linearSlides.extend((int)(bot.outtake.linearSlides.getTargetHeight()+10*subsystemController.getLeftY()));
+            bot.subsystems.outtake.extend((int)(bot.subsystems.outtake.getTargetHeight()+10*subsystemController.getLeftY()));
         }
-        bot.outtake.linearSlides.loop();
+        bot.subsystems.outtake.loop();
 
         telemetry.addData("imu0", bot.imu0.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
         telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
-        telemetry.addData("slideMotor Position", bot.outtake.linearSlides.getCurrentHeight());
-        telemetry.addData("slideMotor targetPosition", bot.outtake.linearSlides.getTargetHeight());
+        telemetry.addData("slideMotor Position", bot.subsystems.outtake.getCurrentHeight());
+        telemetry.addData("slideMotor targetPosition", bot.subsystems.outtake.getTargetHeight());
     }
     private void drive() {
         Vector2d driveVector = new Vector2d(driveController.getLeftX(), driveController.getLeftY()),

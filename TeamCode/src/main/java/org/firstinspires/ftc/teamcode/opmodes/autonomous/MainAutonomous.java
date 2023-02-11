@@ -1,19 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.hardware.Bot;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.LinearSlides;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.paths.AutoPaths;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.apriltag.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
@@ -24,9 +15,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 
-@Autonomous(name = "BlueRightAutonomous", group = "Competition")
-public class BlueRightAutonomous extends LinearOpMode {
-
+@Autonomous(name = "MainAutonomous", group = "Competition")
+public class MainAutonomous extends LinearOpMode {
     double fx = 578.272;
     double fy = 578.272;
     double cx = 640;
@@ -72,8 +62,6 @@ public class BlueRightAutonomous extends LinearOpMode {
         }
 
         waitForStart();
-        autoPaths.outtake.claw.closeClaw();
-        autoPaths.outtake.linearSlides.setLevel(LinearSlides.Level.HOVER);
 
 
         if(PARK_NUMBER==1){

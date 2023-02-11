@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.drivebase.RobotDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Subsystems;
 
 public class Bot {
 
@@ -20,7 +16,7 @@ public class Bot {
 
     public static Bot instance;
 
-    public final Manipulator outtake;
+    public final Subsystems subsystems;
 
     // front left, front right, back left, back right
 
@@ -78,7 +74,7 @@ public class Bot {
         this.opMode = opMode;
         enableAutoBulkRead();
 
-        outtake = new Manipulator(opMode.hardwareMap);
+        subsystems = new Subsystems(opMode.hardwareMap);
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 

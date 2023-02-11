@@ -1,26 +1,44 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.GregorianCalendar;
+public class Outtake {
+    private final double TOLERANCE = 50;
 
-public class LinearSlides {
+    private final double OPEN_CLAW_POSITION=0.3; //tune
+    private final double CLOSE_CLAW_POSITION=0.0; //tune
+
+    private final double IN_ARM_POSITION=0.0; //tune
+    private final double OUT_ARM_POSITION=0.8; //tune
+
+    private Servo outtakeArm;
+    private Servo outtakeClaw;
+
+    private MotorEx rightVerticalSlide;
+    private MotorEx leftVerticalSlide;
+
 
     public enum Level {
-        HOVER,
         GROUND,
+        HOVER,
         LOW,
         MEDIUM,
         HIGH
     }
 
 
-    //TODO: find values for junction heights(ticks)
+    private final int GROUND_HEIGHT = 0;  //tune
+    private final int HOVER_HEIGHT = 200;
+
+    private final int LOW_HEIGHT = 1700;
+    private final int MEDIUM_HEIGHT = 2800;
+    private final int HIGH_HEIGHT =  4000;
+
+    private int targetHeight;
+    private Level currentLevel;
 
 
 
@@ -30,27 +48,14 @@ public class LinearSlides {
     private final double kS=0.004;
     private final double kV=0.01;
 
-
-    private static final int HOVER_HEIGHT = 200;
-    private static final int GROUND_HEIGHT = 0;
-    private static final int LOW_HEIGHT = 1700;
-    private static final int MEDIUM_HEIGHT = 2800;
-    private static final int HIGH_HEIGHT =  4000;
-    public static Level currentLevel = Level.GROUND;
-    private static int targetHeight;
-
-    private final int TOLERANCE=50;
-
-    public final MotorEx slideMotor;
-
-
-    public LinearSlides(HardwareMap hardwareMap) {
-
-        slideMotor = new MotorEx(hardwareMap, "slideMotor", Motor.GoBILDA.RPM_312);
-        initializeSlideMotor(slideMotor);
+    public Outtake(HardwareMap hardwareMap){
+        rightVerticalSlide=hardwareMap.get(MotorEx.class, "rightVerticalSlide");
+        leftVerticalSlide=hardwareMap.get(MotorEx.class, "leftVerticalSlide");
+        initializeMotor(rightVerticalSlide);
+        initializeMotor(leftVerticalSlide);
     }
 
-    public void initializeSlideMotor(MotorEx motor) {
+    private void initializeMotor(MotorEx motor){
         motor.resetEncoder();
         motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motor.setTargetPosition(GROUND_HEIGHT);
@@ -58,12 +63,16 @@ public class LinearSlides {
         motor.setPositionTolerance(TOLERANCE);
     }
 
-    public int getCurrentHeight() {
-        return slideMotor.getCurrentPosition();
+    public int[] getCurrentHeight() {
+
+        return new int[]{rightVerticalSlide.getCurrentPosition(), leftVerticalSlide.getCurrentPosition()};
     }
+
     public int getTargetHeight(){
+
         return targetHeight;
     }
+
     private void setTargetHeight() {
 
         switch(currentLevel) {
@@ -86,27 +95,29 @@ public class LinearSlides {
     }
     public void setTargetHeight(int height) {
         if(height>targetHeight){
-            slideMotor.setPositionCoefficient(kPUpward);
+            leftVerticalSlide.setPositionCoefficient(kPUpward);
+            rightVerticalSlide.setPositionCoefficient(kPUpward);
         }
         else{
-            slideMotor.setPositionCoefficient(kPDownward);
+            rightVerticalSlide.setPositionCoefficient(kPDownward);
+            leftVerticalSlide.setPositionCoefficient(kPDownward);
+
         }
         targetHeight=height;
     }
-
     public void extend(){
         setTargetHeight();
-        slideMotor.setTargetPosition(targetHeight);
+        rightVerticalSlide.setTargetPosition(targetHeight);
+        leftVerticalSlide.setTargetPosition(targetHeight);
     }
-
     public void extend(int ticks){
         if(ticks<0){
             return;
         }
         setTargetHeight(ticks);
-        slideMotor.setTargetPosition(targetHeight);
+        rightVerticalSlide.setTargetPosition(targetHeight);
+        leftVerticalSlide.setTargetPosition(targetHeight);
     }
-
     public void setLevel(Level level) {
         switch(level) {
             case HOVER:
@@ -172,13 +183,48 @@ public class LinearSlides {
         extend();
     }
     public void loop(){
-        if(slideMotor.atTargetPosition()){
-            slideMotor.set(kS);
+        if(rightVerticalSlide.atTargetPosition()&&leftVerticalSlide.atTargetPosition()){
+            rightVerticalSlide.set(kS);
+            leftVerticalSlide.set(kS);
         }
         else{
-            slideMotor.set(kV);
+            rightVerticalSlide.set(kV);
+            leftVerticalSlide.set(kV);
         }
+    }
+
+    public void outtake(){
+        openOuttakeClaw();
+        inOuttakeArm();
+        closeOuttakeClaw();
+        outOuttakeArm();
+
+    }
+    public void outtake(Level level){
+        currentLevel=level;
+        openOuttakeClaw();
+        inOuttakeArm();
+        extend();
+        closeOuttakeClaw();
+        outOuttakeArm();
+
 
 
     }
+
+
+    public void inOuttakeArm(){
+        outtakeArm.setPosition(IN_ARM_POSITION);
+    }
+    public void outOuttakeArm(){
+        outtakeArm.setPosition(OUT_ARM_POSITION);
+    }
+    public void openOuttakeClaw(){
+        outtakeClaw.setPosition(OPEN_CLAW_POSITION);
+    }
+    public void closeOuttakeClaw(){
+        outtakeClaw.setPosition(CLOSE_CLAW_POSITION);
+    }
+
+
 }
