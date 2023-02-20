@@ -14,8 +14,8 @@ public class Outtake {
     private final double IN_ARM_POSITION=0.0; //tune
     private final double OUT_ARM_POSITION=0.8; //tune
 
-    private Servo outtakeArm;
-    private Servo outtakeClaw;
+//    private Servo outtakeArm;
+//    private Servo outtakeClaw;
 
     private MotorEx rightVerticalSlide;
     private MotorEx leftVerticalSlide;
@@ -193,38 +193,38 @@ public class Outtake {
         }
     }
 
-    public void outtake(){
-        openOuttakeClaw();
-        inOuttakeArm();
-        closeOuttakeClaw();
-        outOuttakeArm();
+//    public void outtake(){
+//        openOuttakeClaw();
+//        inOuttakeArm();
+//        closeOuttakeClaw();
+//        outOuttakeArm();
+//
+//    }
+//    public void outtake(Level level){
+//        currentLevel=level;
+//        openOuttakeClaw();
+//        inOuttakeArm();
+//        extend();
+//        closeOuttakeClaw();
+//        outOuttakeArm();
+//
+//
+//
+//    }
 
-    }
-    public void outtake(Level level){
-        currentLevel=level;
-        openOuttakeClaw();
-        inOuttakeArm();
-        extend();
-        closeOuttakeClaw();
-        outOuttakeArm();
 
-
-
-    }
-
-
-    public void inOuttakeArm(){
-        outtakeArm.setPosition(IN_ARM_POSITION);
-    }
-    public void outOuttakeArm(){
-        outtakeArm.setPosition(OUT_ARM_POSITION);
-    }
-    public void openOuttakeClaw(){
-        outtakeClaw.setPosition(OPEN_CLAW_POSITION);
-    }
-    public void closeOuttakeClaw(){
-        outtakeClaw.setPosition(CLOSE_CLAW_POSITION);
-    }
-
+//    public void inOuttakeArm(){
+//        outtakeArm.setPosition(IN_ARM_POSITION);
+//    }
+//    public void outOuttakeArm(){
+//        outtakeArm.setPosition(OUT_ARM_POSITION);
+//    }
+//    public void openOuttakeClaw(){
+//        outtakeClaw.setPosition(OPEN_CLAW_POSITION);
+//    }
+//    public void closeOuttakeClaw(){
+//        outtakeClaw.setPosition(CLOSE_CLAW_POSITION);
+//    }
+//
 
 }

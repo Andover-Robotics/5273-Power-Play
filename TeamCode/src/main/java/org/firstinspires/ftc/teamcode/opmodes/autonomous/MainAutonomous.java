@@ -64,15 +64,15 @@ public class MainAutonomous extends LinearOpMode {
         waitForStart();
 
 
-        if(PARK_NUMBER==1){
-            autoPaths.drive.followTrajectory(autoPaths.parkingOne);
-        }
-        else if(PARK_NUMBER==2){
-            autoPaths.drive.followTrajectory(autoPaths.parkingTwo);
-        }
-        else{
-            autoPaths.drive.followTrajectory(autoPaths.parkingThree);
-        }
+//        if(PARK_NUMBER==1){
+//            autoPaths.drive.followTrajectory(autoPaths.parkingOne);
+//        }
+//        else if(PARK_NUMBER==2){
+//            autoPaths.drive.followTrajectory(autoPaths.parkingTwo);
+//        }
+//        else{
+//            autoPaths.drive.followTrajectory(autoPaths.parkingThree);
+//        }
 
 
         telemetry.addData("Park Number", PARK_NUMBER);

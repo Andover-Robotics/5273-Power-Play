@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
 import org.firstinspires.ftc.teamcode.GlobalConfig.SensorFusionValues;
 import org.firstinspires.ftc.teamcode.util.utilclasses.Encoder;
@@ -25,7 +26,7 @@ public class SensorFusionLocalizer implements Localizer {
   private Pose2d rightPose, leftPose, centerPose;
   private SensorFusionData data;
 
-  public SensorFusionLocalizer(HardwareMap hardwareMap, BNO055IMU imu1, BNO055IMU imu2){
+  public SensorFusionLocalizer(HardwareMap hardwareMap, IMU imu1, IMU imu2){
     rightPose = GlobalConfig.EncoderValues.sideEncoder;
     leftPose = GlobalConfig.EncoderValues.sideEncoder.minus(new Pose2d( 0, 2 * GlobalConfig.EncoderValues.sideEncoder.getY(), 0));
     centerPose = GlobalConfig.EncoderValues.centerEncoder;

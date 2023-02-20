@@ -18,7 +18,7 @@ public class ParkAutonomous extends LinearOpMode{
         waitForStart();
 
 
-        autoPaths.drive.followTrajectory(autoPaths.parkingTwo);
+        autoPaths.drive.followTrajectory(autoPaths.stackLeft);
 
         if (isStopRequested()) {
             return;

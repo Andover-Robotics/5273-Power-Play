@@ -37,7 +37,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationCon
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -47,6 +48,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
 import org.firstinspires.ftc.teamcode.drive.localizer.SensorFusionLocalizer;
@@ -102,8 +104,8 @@ public class RRMecanumDrive extends MecanumDrive {
 
   private final DcMotorEx leftFront, leftRear, rightRear, rightFront;
   private final List<DcMotorEx> motors;
-  public final BNO055IMU imu;
-  public final BNO055IMU imu2;
+  public final IMU imu0;
+  public final IMU imu1;
 
   private final VoltageSensor batteryVoltageSensor;
 
@@ -137,18 +139,31 @@ public class RRMecanumDrive extends MecanumDrive {
 
     batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-    final List<BNO055IMU> allIMUs = hardwareMap.getAll(BNO055IMU.class);
-    imu = allIMUs.get(0);
-    imu2 = allIMUs.size() < 2 ? imu : allIMUs.get(1);
+    final List<IMU> allIMUs = hardwareMap.getAll(IMU.class);
+    imu0 = allIMUs.get(0);
+    imu1 = allIMUs.size() < 2 ? imu0 : allIMUs.get(1);
 
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-    parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-    imu.initialize(parameters);
-    if (imu2 != imu) imu2.initialize(parameters);
+    imu0.initialize(
+            new IMU.Parameters(
+                    new RevHubOrientationOnRobot(
+                            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                            RevHubOrientationOnRobot.UsbFacingDirection.UP
+                    )
+            )
+    );
+    if (imu1 != imu0){
+      imu1.initialize(
+              new IMU.Parameters(
+                      new RevHubOrientationOnRobot(
+                              RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                              RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                      )
+              )
+      );
+    }
 
     // if your hub is mounted vertically, remap the IMU axes so that the z-axis points
     // upward (normal to the floor) using a command like the following:
-    BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
     leftFront = hardwareMap.get(DcMotorEx.class, GlobalConfig.motorFL);
     leftRear = hardwareMap.get(DcMotorEx.class, GlobalConfig.motorBL);
@@ -181,7 +196,7 @@ public class RRMecanumDrive extends MecanumDrive {
 
 
 
-    localizer = new SensorFusionLocalizer(hardwareMap, imu, imu2);
+    localizer = new SensorFusionLocalizer(hardwareMap, imu0, imu1);
 //    setLocalizer(localizer);
   }
 
@@ -409,6 +424,6 @@ public class RRMecanumDrive extends MecanumDrive {
 
   @Override
   public double getRawExternalHeading() {
-    return imu.getAngularOrientation().firstAngle;
+    return imu0.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
   }
 }
