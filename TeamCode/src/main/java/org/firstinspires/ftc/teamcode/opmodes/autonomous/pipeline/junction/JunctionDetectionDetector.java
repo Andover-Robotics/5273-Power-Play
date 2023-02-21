@@ -80,8 +80,6 @@ public class JunctionDetectionDetector {
         private final Scalar upperRange = new Scalar(180, 255, 255);
 
     //JUNCTION DETECTION CONSTANTS
-
-        static final double MINIMUM_JUNCTION_AREA = 1500;
         static final double MAXIMUM_JUNCTION_AREA = 21500;
 
         private final Mat test = new Mat(),
@@ -140,7 +138,7 @@ public class JunctionDetectionDetector {
                 // if polydp fails, switch to a local new MatOfPoint2f();
                 Imgproc.approxPolyDP(new MatOfPoint2f(contour.toArray()), polyDpResult, 3, true);
                 Rect r = Imgproc.boundingRect(new MatOfPoint(polyDpResult.toArray()));
-                if (r.area() > MINIMUM_JUNCTION_AREA && r.area() > MAXIMUM_JUNCTION_AREA)
+                if (r.area() > MAXIMUM_JUNCTION_AREA)
                     addCombineRectangle(bounds, r, bounds.size() - 1);
             }
         }
