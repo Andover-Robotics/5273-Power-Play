@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.util.utilclasses.Encoder;
 
 @Config
 public class GlobalConfig {
+
     //make all fields final
 
     //control + click class to go to it
@@ -40,12 +41,21 @@ public class GlobalConfig {
         STAGE
     }
 
-    //TODO add more config stuff
+    public enum AutonomousType {
+        PARKING,
+        STACK
+    }
+
+    //TODO: Add more config
     public static final String motorFL = "motorFL", motorFR = "motorFR", motorBL = "motorBL", motorBR = "motorBR";
 
-    public static Alliance alliance = Alliance.BLUE;
+    public static Alliance alliance = Alliance.RED;
 
-    public static Side side = Side.STAGE;
+    public static Side side = Side.AUDIENCE;
+
+    public static AutonomousType autonomousType = AutonomousType.STACK;
+
+    public static PipelineResult pipelineResult = PipelineResult.ONE;
 
     public static class SensorFusionValues{
         public static final double[] sensorFusionHeadingWeights = {0.225, 0.225, 0.225, 0.225, 0},

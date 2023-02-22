@@ -28,7 +28,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import static org.opencv.imgproc.Imgproc.COLOR_RGB2HLS;
 
-public class JunctionDetectionDetector {
+public class JunctionDetector {
 
     private final OpenCvCamera camera;
     private final JunctionDetectionPipeline pipeline = new JunctionDetectionPipeline();
@@ -36,7 +36,7 @@ public class JunctionDetectionDetector {
     private volatile boolean saveImageNext = true;
     private Telemetry telemetry;
 
-    public JunctionDetectionDetector(OpMode opMode, Telemetry telemetry) {
+    public JunctionDetector(OpMode opMode, Telemetry telemetry) {
 
         this.telemetry = telemetry;
         WebcamName camName = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
