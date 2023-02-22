@@ -67,7 +67,7 @@ public class RRMecanumDrive extends MecanumDrive {
 
   public static boolean VIRTUAL = false;
 
-  // TODO: tune PID Coefficients
+  // TODO: une PID Coefficients
 
   public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0.15, 0.6);
   public static PIDCoefficients HEADING_PID = new PIDCoefficients(2.8, 0, 0.3);
@@ -125,12 +125,12 @@ public class RRMecanumDrive extends MecanumDrive {
     turnController.setInputBounds(0, 2 * Math.PI);
 
     velConstraint = new MinVelocityConstraint(Arrays.asList(
-        new AngularVelocityConstraint(MAX_ANG_VEL),
-        new MecanumVelocityConstraint(MAX_VEL, TRACK_WIDTH)
+            new AngularVelocityConstraint(MAX_ANG_VEL),
+            new MecanumVelocityConstraint(MAX_VEL, TRACK_WIDTH)
     ));
     accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
     follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-        new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.2);
+            new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.2);
 
     poseHistory = new LinkedList<>();
 
@@ -218,10 +218,10 @@ public class RRMecanumDrive extends MecanumDrive {
     lastPoseOnTurn = getPoseEstimate();
 
     turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-        new MotionState(heading, 0, 0, 0),
-        new MotionState(heading + angle, 0, 0, 0),
-        MAX_ANG_VEL,
-        MAX_ANG_ACCEL
+            new MotionState(heading, 0, 0, 0),
+            new MotionState(heading + angle, 0, 0, 0),
+            MAX_ANG_VEL,
+            MAX_ANG_ACCEL
     );
 
     turnStart = clock.seconds();
@@ -296,13 +296,13 @@ public class RRMecanumDrive extends MecanumDrive {
         double targetOmega = targetState.getV();
         double targetAlpha = targetState.getA();
         setDriveSignal(new DriveSignal(new Pose2d(
-            0, 0, targetOmega + correction
+                0, 0, targetOmega + correction
         ), new Pose2d(
-            0, 0, targetAlpha
+                0, 0, targetAlpha
         )));
 
         Pose2d newPose = lastPoseOnTurn
-            .copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
+                .copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
 
         fieldOverlay.setStroke("#4CAF50");
         DashboardUtil.drawRobot(fieldOverlay, newPose);
@@ -367,8 +367,8 @@ public class RRMecanumDrive extends MecanumDrive {
 
   public void setPIDFCoefficients(RunMode runMode, PIDFCoefficients coefficients) {
     PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
-        coefficients.p, coefficients.i, coefficients.d,
-        coefficients.f * 12 / batteryVoltageSensor.getVoltage()
+            coefficients.p, coefficients.i, coefficients.d,
+            coefficients.f * 12 / batteryVoltageSensor.getVoltage()
     );
     for (DcMotorEx motor : motors) {
       motor.setPIDFCoefficients(runMode, compensatedCoefficients);
@@ -379,16 +379,16 @@ public class RRMecanumDrive extends MecanumDrive {
     Pose2d vel = drivePower;
 
     if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
-        + Math.abs(drivePower.getHeading()) > 1) {
+            + Math.abs(drivePower.getHeading()) > 1) {
       // re-normalize the powers according to the weights
       double denom = VX_WEIGHT * Math.abs(drivePower.getX())
-          + VY_WEIGHT * Math.abs(drivePower.getY())
-          + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+              + VY_WEIGHT * Math.abs(drivePower.getY())
+              + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
 
       vel = new Pose2d(
-          VX_WEIGHT * drivePower.getX(),
-          VY_WEIGHT * drivePower.getY(),
-          OMEGA_WEIGHT * drivePower.getHeading()
+              VX_WEIGHT * drivePower.getX(),
+              VY_WEIGHT * drivePower.getY(),
+              OMEGA_WEIGHT * drivePower.getHeading()
       ).div(denom);
     }
 
