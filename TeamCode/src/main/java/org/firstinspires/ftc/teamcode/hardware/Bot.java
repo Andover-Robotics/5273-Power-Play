@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.drivebase.RobotDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.BNO055IMUImpl;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Subsystems;
 
 public class Bot {
 
@@ -20,7 +20,7 @@ public class Bot {
 
     public static Bot instance;
 
-    public final Manipulator outtake;
+    public final Subsystems subsystems;
 
     // front left, front right, back left, back right
 
@@ -28,8 +28,9 @@ public class Bot {
 
     //required subsystems
 
-    public BNO055IMU imu0;
-    public BNO055IMU imu1;
+    public IMU imu0;
+//  public IMU imu1;
+
     public boolean fieldCentricRunMode = true;
     public OpMode opMode;
 
@@ -78,7 +79,7 @@ public class Bot {
         this.opMode = opMode;
         enableAutoBulkRead();
 
-        outtake = new Manipulator(opMode.hardwareMap);
+        subsystems = new Subsystems(opMode.hardwareMap);
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 
@@ -96,33 +97,15 @@ public class Bot {
             // temp - from lightning code
             motor.setRunMode(Motor.RunMode.RawPower);
         }
-
-        try {
-            imu0 = opMode.hardwareMap.get(BNO055IMU.class, "imu0");
-            imu1 = opMode.hardwareMap.get(BNO055IMU.class, "imu1");
-
-            this.initializeImu(imu0);
-            this.initializeImu(imu1);
-            fieldCentricRunMode=true;
-        }
-        catch(Exception e){
-            imu0=null;
-            imu1=null;
-            fieldCentricRunMode = false;
-
-        }
-    }
-
-    public void initializeImu(BNO055IMU imu) {
-            final BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-            parameters.mode = BNO055IMU.SensorMode.IMU;
-            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.loggingEnabled = false;
-
-            imu.initialize(parameters);
-
+        imu0=opMode.hardwareMap.get(IMU.class, "imu0");
+        imu0.initialize(
+                new IMU.Parameters(
+                        new RevHubOrientationOnRobot(
+                                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                                RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        )
+                )
+        );
     }
 
     // temporary code from Lightning
@@ -217,4 +200,11 @@ public class Bot {
 
     }
 
+    public double getDriveCurrentDraw() {
+        double currentDraw=0;
+        for(MotorEx motor: driveTrainMotors){
+            currentDraw+=motor.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
+        }
+        return currentDraw;
+    }
 }
