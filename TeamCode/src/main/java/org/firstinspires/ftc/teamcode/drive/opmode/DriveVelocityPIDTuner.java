@@ -42,7 +42,7 @@ import java.util.List;
  * 3. Back off kP and kD a little until the response is less oscillatory (but without lag).
  *
  * Pressing X (on the Xbox and Logitech F310 gamepads, square on the PS4 Dualshock gamepad) will
- * pause the tuning process and enter driver override, allowing the user to resetVertical the position of
+ * pause the tuning process and enter driver override, allowing the user to reset the position of
  * the bot in the event that it drifts off the path.
  * Pressing A (on the Xbox and Logitech F310 gamepads, X on the PS4 Dualshock gamepad) will cede
  * control back to the tuning process.

@@ -45,7 +45,7 @@ import org.firstinspires.ftc.teamcode.drive.localizer.RROdometryLocalizer;
  * yourself. Read the heading output and follow the advice stated in the note below to manually
  * nudge the values yourself.
  * <p>
- * Note: It helps to pay attention to how the pose on the field is drawn in dashboard. A b circle
+ * Note: It helps to pay attention to how the pose on the field is drawn in dashboard. A blue circle
  * with a line from the circumference to the center should be present, representing the bot. The
  * line indicates forward. If your LATERAL_DISTANCE value is tuned currently, the pose drawn in
  * dashboard should keep track with the pose of your actual bot. If the drawn bot turns slower than

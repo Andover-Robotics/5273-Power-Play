@@ -36,7 +36,7 @@ import java.util.Objects;
  * satisfactory set of gains, add them to the appropriate fields in the DriveConstants.java file.
  *
  * Pressing Y/Δ (Xbox/PS4) will pause the tuning process and enter driver override, allowing the
- * user to resetVertical the position of the bot in the event that it drifts off the path.
+ * user to reset the position of the bot in the event that it drifts off the path.
  * Pressing B/O (Xbox/PS4) will cede control back to the tuning process.
  */
 @Config
