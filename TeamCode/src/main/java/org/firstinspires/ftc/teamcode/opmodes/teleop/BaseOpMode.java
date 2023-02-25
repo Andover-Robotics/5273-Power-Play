@@ -17,8 +17,7 @@ public abstract class BaseOpMode extends OpMode {
 
   protected Bot bot;
   protected double driveSpeed;
-  protected GamepadEx gamepadEx1, gamepadEx2;
-  protected GamepadEx driveController, subsystemController;
+  protected GamepadEx DriveController, SubsystemController;
   TimingScheduler timingScheduler;
 
   //button reader syntax
@@ -27,10 +26,8 @@ public abstract class BaseOpMode extends OpMode {
   @Override
   public void init() {
     bot = Bot.getInstance(this);
-    gamepadEx2 = new GamepadEx(gamepad2);
-    gamepadEx1 = new GamepadEx(gamepad1);
-    driveController = gamepadEx1;
-    subsystemController = gamepadEx2;
+    SubsystemController = new GamepadEx(gamepad2);
+    DriveController = new GamepadEx(gamepad1);
     timingScheduler = new TimingScheduler(this);
     subInit();
     telemetry.addLine("Init done");
@@ -49,19 +46,19 @@ public abstract class BaseOpMode extends OpMode {
   protected abstract void subLoop();
 
   void updateButtons(){
-    gamepadEx1.readButtons();
-    gamepadEx2.readButtons();
+    DriveController.readButtons();
+    SubsystemController.readButtons();
   }
 
 
 
   boolean buttonSignal(Button button) {
-    return gamepadEx1.isDown(button) || gamepadEx2.isDown(button);
+    return DriveController.isDown(button) || SubsystemController.isDown(button);
   }
 
   double triggerSignal(Trigger trigger) {
-    double in1 = gamepadEx1.getTrigger(trigger),
-            in2 = gamepadEx2.getTrigger(trigger);
+    double in1 = DriveController.getTrigger(trigger),
+            in2 = SubsystemController.getTrigger(trigger);
     return Math.max(in1, in2);
   }
 
@@ -72,18 +69,18 @@ public abstract class BaseOpMode extends OpMode {
             side == Direction.LEFT ? new Vector2d(pad.getLeftX(), pad.getLeftY()) :
                     new Vector2d(pad.getRightX(), pad.getRightY());
 
-    Vector2d v1 = toCoords.apply(gamepadEx1),
-            v2 = toCoords.apply(gamepadEx2);
+    Vector2d v1 = toCoords.apply(DriveController),
+            v2 = toCoords.apply(SubsystemController);
 
     return v1.magnitude() > 0.01 ? v1 : v2;
   }
 
 
   boolean justPressed(Button button) {
-    return gamepadEx1.wasJustPressed(button) || gamepadEx2.wasJustPressed(button);
+    return DriveController.wasJustPressed(button) || SubsystemController.wasJustPressed(button);
   }
 
   boolean justReleased(Button button){
-    return !(gamepadEx1.isDown(button) || gamepadEx2.isDown(button)) && (gamepadEx1.wasJustReleased(button) || gamepadEx2.wasJustReleased(button));
+    return !(DriveController.isDown(button) || SubsystemController.isDown(button)) && (DriveController.wasJustReleased(button) || SubsystemController.wasJustReleased(button));
   }
 }

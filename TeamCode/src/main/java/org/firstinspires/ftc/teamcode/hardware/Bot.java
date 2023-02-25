@@ -8,11 +8,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
+
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Subsystems;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
 
 public class Bot {
 
@@ -20,7 +19,7 @@ public class Bot {
 
     public static Bot instance;
 
-    public final Subsystems subsystems;
+    public final Manipulator manipulator;
 
     // front left, front right, back left, back right
 
@@ -79,7 +78,7 @@ public class Bot {
         this.opMode = opMode;
         enableAutoBulkRead();
 
-        subsystems = new Subsystems(opMode.hardwareMap);
+        manipulator = new Manipulator(opMode.hardwareMap);
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 
@@ -201,9 +200,9 @@ public class Bot {
     }
 
     public double getDriveCurrentDraw() {
-        double currentDraw=0;
+        double currentDraw = 0;
         for(MotorEx motor: driveTrainMotors){
-            currentDraw+=motor.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
+            currentDraw += motor.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
         }
         return currentDraw;
     }

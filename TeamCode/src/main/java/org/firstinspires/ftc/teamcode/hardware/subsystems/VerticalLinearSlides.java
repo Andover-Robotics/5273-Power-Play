@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class VerticalLinearSlides {
@@ -33,8 +35,8 @@ public class VerticalLinearSlides {
 
     private final int TOLERANCE=50;
 
-    public final MotorEx leftSlideMotor;
-    public final MotorEx rightSlideMotor;
+    private final MotorEx leftSlideMotor;
+    private final MotorEx rightSlideMotor;
 
 
     public VerticalLinearSlides(HardwareMap hardwareMap) {

@@ -2,9 +2,30 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.GlobalConfig;
+
 public class HorizontalLinearSlides {
+
+    private class Color {
+
+        private final int COLOR_TOLERANCE = 20;
+        public int r, g, b;
+
+        public Color(int r, int g, int b){
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
+
+        public boolean matchColor(Color c){
+            return (Math.abs(this.r - c.r) < COLOR_TOLERANCE && Math.abs(this.g - c.g) < COLOR_TOLERANCE && Math.abs(this.b - c.b) < COLOR_TOLERANCE);
+        }
+    }
 
     public enum Level {
         RETRACTED,
@@ -12,12 +33,15 @@ public class HorizontalLinearSlides {
         EXTENDED
     }
 
+    public enum RunState {
+        MANUAL,
+        DISTANCE_SENSOR,
+        PRESET
+    }
+
     //TODO: Tune position controller
 
-    private final double kPUpward = 0.25;
-    private final double kPDownward = 0.06;
-
-    private final double kS = 0.004;
+    private final double kP = 0.05;
     private final double kV = 0.01;
 
     //TODO: Find values for levels of extension(ticks)
@@ -26,17 +50,38 @@ public class HorizontalLinearSlides {
     private static final int MIDWAY = 1700;
     private static final int EXTENDED =  4000;
 
-    public static Level currentLevel = Level.RETRACTED;
-    private static int targetHeight;
+    private static final double POWER_CONSTANT = 0.05;
+
+    //TODO: Tune TICKS_TO_INCHES
+
+    private static final double TICKS_TO_INCHES = 56.8;
 
     private final int TOLERANCE = 50;
 
-    public final MotorEx slideMotor;
+    public static Level currentLevel = Level.RETRACTED;
+    private static int targetHeight;
 
+    private final MotorEx rightSlideMotor;
+    private final MotorEx leftSlideMotor;
+
+    private final DistanceSensor distanceSensor;
+    private final ColorSensor colorSensor;
+
+    private RunState runState = RunState.PRESET;
+
+    private Color BLUE_CONE = new Color(0, 0, 255);
+    private Color RED_CONE = new Color(255, 0, 0);
 
     public HorizontalLinearSlides(HardwareMap hardwareMap) {
-        slideMotor = new MotorEx(hardwareMap, "horizontalSlideMotor", Motor.GoBILDA.RPM_312);
-        initializeSlideMotor(slideMotor);
+        rightSlideMotor = new MotorEx(hardwareMap, "horizontalRightSlideMotor", Motor.GoBILDA.RPM_312);
+        initializeSlideMotor(rightSlideMotor);
+
+        leftSlideMotor = new MotorEx(hardwareMap, "horizontalLeftSlideMotor", Motor.GoBILDA.RPM_312);
+        initializeSlideMotor(leftSlideMotor);
+
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
     }
 
     public void initializeSlideMotor(MotorEx motor) {
@@ -47,9 +92,7 @@ public class HorizontalLinearSlides {
         motor.setPositionTolerance(TOLERANCE);
     }
 
-    public int getCurrentHeight() {
-        return slideMotor.getCurrentPosition();
-    }
+    public int getCurrentHeight() { return (rightSlideMotor.getCurrentPosition() + leftSlideMotor.getCurrentPosition()) / 2; }
 
     public int getTargetHeight(){
         return targetHeight;
@@ -70,22 +113,20 @@ public class HorizontalLinearSlides {
     }
 
     public void setTargetHeight(int height) {
-        if (height > targetHeight) { slideMotor.setPositionCoefficient(kPUpward); }
-
-        else { slideMotor.setPositionCoefficient(kPDownward); }
-
+        rightSlideMotor.setPositionCoefficient(kP);
         targetHeight = height;
     }
 
     public void runSlides(){
         setTargetHeight();
-        slideMotor.setTargetPosition(targetHeight);
+        rightSlideMotor.setTargetPosition(targetHeight);
     }
 
     public void runSlides(int ticks){
         if(ticks < 0){ return;}
         setTargetHeight(ticks);
-        slideMotor.setTargetPosition(targetHeight);
+        rightSlideMotor.setTargetPosition(targetHeight);
+        leftSlideMotor.setTargetPosition(targetHeight);
     }
 
     public void setLevel(Level level) {
@@ -141,8 +182,37 @@ public class HorizontalLinearSlides {
         runSlides();
     }
 
+    public void setManual() { runState = RunState.MANUAL; }
+
+    public void setRunUsingDistanceSensor() { runState = RunState.DISTANCE_SENSOR; }
+
+    public void setPreset() { runState = RunState.PRESET; }
+
+    public boolean coneDetected() {
+        Color colorDetected = new Color(colorSensor.red(), colorSensor.green(), colorSensor.blue());
+        return colorDetected.matchColor((GlobalConfig.alliance == GlobalConfig.Alliance.BLUE) ? BLUE_CONE : RED_CONE);
+    }
+
+    public void runManual(double input) {
+        rightSlideMotor.set(input * POWER_CONSTANT);
+        leftSlideMotor.set(input * POWER_CONSTANT);
+    }
+
+    public void runUsingDistanceSensor() {
+        double distance = distanceSensor.getDistance(DistanceUnit.INCH);
+        runSlides((int) (distance * TICKS_TO_INCHES));
+    }
+
+
     public void loop(){
-        if (slideMotor.atTargetPosition()) { slideMotor.set(kS); }
-        else { slideMotor.set(kV); }
+        switch(runState) {
+            case DISTANCE_SENSOR:
+                runUsingDistanceSensor();
+                break;
+            case PRESET:
+                if (!rightSlideMotor.atTargetPosition()) { rightSlideMotor.set(kV); }
+                break;
+            case MANUAL:
+        }
     }
 }

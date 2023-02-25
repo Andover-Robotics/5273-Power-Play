@@ -18,28 +18,68 @@ public class Manipulator extends SubsystemBase {
         horizontalArm = new HorizontalArm(hardwareMap);
     }
 
-    //TODO: implement conjoined methods
+    //TODO: modify methods to reflect robot
 
     public void intake(){
         horizontalArm.closeClaw();
         horizontalArm.flipClaw();
+        horizontalArm.pivotClaw();
         horizontalLinearSlides.retract();
         horizontalArm.retractArm();
     }
 
-    public void outtake() {
+    public void prepareToOuttake() {
         verticalArm.closeClaw();
-        verticalLinearSlides.extend();
+        verticalArm.flipClaw();
+        verticalArm.pivotClaw();
+    }
+
+    public void extendVerticalArm() {
         verticalArm.extendArm();
+    }
+
+    public void openHorizontalClaw() {
+        horizontalArm.openClaw();
+    }
+
+    public void closeVerticalClaw() {
+        verticalArm.closeClaw();
+    }
+
+    public void openVerticalClaw() {
         verticalArm.openClaw();
     }
 
-    public void reset() {
+    public void resetVertical() {
         verticalArm.retractArm();
-        horizontalArm.retractArm();
-        horizontalArm.uprightClaw();
+        verticalArm.uprightClaw();
+        verticalArm.unpivotClaw();
+        verticalArm.openClaw();
         verticalLinearSlides.retract();
-        horizontalLinearSlides.retract();
     }
 
+    public void resetHorizontal() {
+        horizontalArm.retractArm();
+        horizontalArm.uprightClaw();
+        horizontalArm.unpivotClaw();
+        horizontalArm.openClaw();
+        horizontalLinearSlides.retract();
+    }
+    
+    public void init() {
+        verticalArm.unpivotClaw();
+        verticalArm.openClaw();
+        verticalArm.retractArm();
+        verticalArm.uprightClaw();
+
+        horizontalArm.unpivotClaw();
+        horizontalArm.openClaw();
+        horizontalArm.retractArm();
+        horizontalArm.uprightClaw();
+
+        verticalLinearSlides.retract();
+
+        horizontalLinearSlides.setPreset();
+        horizontalLinearSlides.retract();
+    }
 }

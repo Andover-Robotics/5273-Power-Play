@@ -41,7 +41,7 @@ public class LinearSlidePIDTuner extends OpMode {
 
     @Override
     public void start() {
-        slideMotor = new MotorEx(hardwareMap, "slideMotor", Motor.GoBILDA.RPM_312);//Change name of motor
+        slideMotor = new MotorEx(hardwareMap, "rightSlideMotor", Motor.GoBILDA.RPM_312);//Change name of motor
 
         input.clearRegistry();
 

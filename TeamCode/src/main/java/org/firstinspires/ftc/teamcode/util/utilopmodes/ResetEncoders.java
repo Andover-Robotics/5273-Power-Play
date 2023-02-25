@@ -18,7 +18,7 @@ public class ResetEncoders extends LinearOpMode {
       while (!isStopRequested() && Math.abs(entry.getValue().getCurrentPosition()) > 1) {
         idle();
       }
-      telemetry.addData(entry.getKey(), "is reset");
+      telemetry.addData(entry.getKey(), "is resetVertical");
       telemetry.update();
     }
 

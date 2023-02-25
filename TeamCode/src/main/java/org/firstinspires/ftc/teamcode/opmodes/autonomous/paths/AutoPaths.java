@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous.paths;
 
 import static org.firstinspires.ftc.teamcode.GlobalConfig.*;
 import static java.lang.Math.PI;
-import static java.lang.Math.sqrt;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -22,18 +21,17 @@ public class AutoPaths {
 
     public final Trajectory park;
 
-    private static double EPSILON = 2.0;
-    private static double TRACK_WITDH = 15.0;
+    private static final double EPSILON = 2.0;
+    private static final double TRACK_WIDTH = 15.0;
+    private static double TRACK_LENGTH;
 
     //TODO: Tune positions(add turning) - Use RRPathVisualizer
 
-    private Pose2d intakePose = p2d( - 54.0 + TRACK_WITDH / 2, - 12.0, PI / 2);
+    // private Pose2d intakePose = p2d( - 54.0 + TRACK_WIDTH / 2, - 12.0, PI / 2);
 
-    private Pose2d deliveryPose = p2d(- 24.0 - TRACK_WITDH * sqrt(2.0) / 4 - EPSILON,
-                    - EPSILON * sqrt(2.0) / 4 - EPSILON,
-                    7 * PI / 4);
+    private Pose2d deliveryPose = p2d(- 34.0, - 7.0, PI);
 
-    private Pose2d startPose = p2d(-36.0, - 72.0 + TRACK_WITDH / 2, 0.0);
+    private Pose2d startPose = p2d(- 72.0 + TRACK_WIDTH / 2, - 36.0, PI);
 
     private Map<GlobalConfig.PipelineResult, Pose2d> parkingPose = new HashMap<>();
 
@@ -44,23 +42,32 @@ public class AutoPaths {
     public AutoPaths(HardwareMap hardwareMap) {
         drive = new RRMecanumDrive(hardwareMap);
 
-        parkingPose.put(PipelineResult.ONE, p2d(- 12.0, - 36.0, PI));
-        parkingPose.put(PipelineResult.TWO, p2d(- 36.0, -36.0, PI));
-        parkingPose.put(PipelineResult.THREE, p2d(- 60.0, - 36.0, PI));
+        Pose2d parkingTrajectoryStartPose = (autonomousType == AutonomousType.STACK) ? deliveryPose : startPose;
 
-        park = drive.trajectoryBuilder((autonomousType == AutonomousType.STACK) ? deliveryPose : startPose)
-                .splineTo(p2v(parkingPose.get(GlobalConfig.pipelineResult)), PI / 2)
+        parkingPose.put(PipelineResult.ONE, p2d(- 12.0, parkingTrajectoryStartPose.getY(), PI));
+        parkingPose.put(PipelineResult.TWO, p2d(- 36.0, parkingTrajectoryStartPose.getY(), PI));
+        parkingPose.put(PipelineResult.THREE, p2d(- 60.0, parkingTrajectoryStartPose.getY(), PI));
+
+        park = drive.trajectoryBuilder(parkingTrajectoryStartPose, parkingTrajectoryStartPose.getHeading())
+                .lineTo(p2v(parkingPose.get(GlobalConfig.pipelineResult)))
                 .build();
 
+        //Cycling in place
+
         stack = drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(deliveryPose)
-                .lineToLinearHeading(intakePose)
-                .lineToLinearHeading(deliveryPose)
-                .addTemporalMarker(0.01, () -> bot.outtake.outtake())
-                .addTemporalMarker(5.01, () -> bot.outtake.reset())
-                .addTemporalMarker(10.01, () -> bot.outtake.intake())
-                .addTemporalMarker(15.01, () -> bot.outtake.outtake())
-                .addTemporalMarker(20.01, () -> bot.outtake.reset())
+                .lineTo(p2v(deliveryPose))
+                .addTemporalMarker(4.01, () -> bot.manipulator.prepareToOuttake())
+                .addTemporalMarker(4.01, () -> bot.manipulator.verticalLinearSlides.extend())
+                .addTemporalMarker(5.01, () -> bot.manipulator.extendVerticalArm())
+                .addTemporalMarker(7.01, () -> bot.manipulator.openVerticalClaw())
+                .addTemporalMarker(8.01, () -> bot.manipulator.resetVertical())
+                .addTemporalMarker(8.01, () -> bot.manipulator.horizontalLinearSlides.extend())
+                .addTemporalMarker(8.01, () -> bot.manipulator.intake())
+                .addTemporalMarker(10.01, () -> bot.manipulator.prepareToOuttake())
+                .addTemporalMarker(10.01, () -> bot.manipulator.verticalLinearSlides.extend())
+                .addTemporalMarker(11.01, () -> bot.manipulator.extendVerticalArm())
+                .addTemporalMarker(12.01, () -> bot.manipulator.openVerticalClaw())
+                .addTemporalMarker(12.01, () -> bot.manipulator.resetVertical())
                 .build();
     }
 
