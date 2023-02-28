@@ -67,8 +67,9 @@ public class MainTeleOp extends BaseOpMode{
                 bot.manipulator.horizontalLinearSlides.runManual(DriveController.getLeftY());
             }
 
-            if (SubsystemController.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+            if (SubsystemController.wasJustPressed(GamepadKeys.Button.X)) {
                 bot.manipulator.horizontalLinearSlides.setRunUsingDistanceSensor();
+                bot.manipulator.prepareToIntake();
             }
 
             if (SubsystemController.isDown(GamepadKeys.Button.A)) {
@@ -115,6 +116,7 @@ public class MainTeleOp extends BaseOpMode{
                 if (bot.manipulator.verticalArm.armPosition == VerticalArm.ArmPosition.OUT) {
                     if (SubsystemController.wasJustReleased(GamepadKeys.Button.A)) {
                         bot.manipulator.openVerticalClaw();
+                        gameState = GameState.INTAKE;
                         timingScheduler.defer(0.5, () -> bot.manipulator.resetVertical());
                     }
                 }

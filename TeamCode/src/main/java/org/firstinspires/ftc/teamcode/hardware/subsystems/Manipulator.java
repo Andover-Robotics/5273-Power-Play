@@ -20,6 +20,13 @@ public class Manipulator extends SubsystemBase {
 
     //TODO: modify methods to reflect robot
 
+    public void prepareToIntake() {
+        horizontalArm.openClaw();
+        horizontalArm.uprightClaw();
+        horizontalArm.extendArm();
+        horizontalArm.unpivotClaw();
+    }
+
     public void intake(){
         horizontalArm.closeClaw();
         horizontalArm.flipClaw();

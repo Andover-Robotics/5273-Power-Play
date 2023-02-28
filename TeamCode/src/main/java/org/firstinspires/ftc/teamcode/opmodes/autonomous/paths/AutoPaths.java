@@ -52,7 +52,7 @@ public class AutoPaths {
                 .lineTo(p2v(parkingPose.get(GlobalConfig.pipelineResult)))
                 .build();
 
-        //Cycling in place
+        //Cycling in place(1 + 1 at the moment)
 
         stack = drive.trajectoryBuilder(startPose)
                 .lineTo(p2v(deliveryPose))
@@ -62,12 +62,13 @@ public class AutoPaths {
                 .addTemporalMarker(7.01, () -> bot.manipulator.openVerticalClaw())
                 .addTemporalMarker(8.01, () -> bot.manipulator.resetVertical())
                 .addTemporalMarker(8.01, () -> bot.manipulator.horizontalLinearSlides.extend())
-                .addTemporalMarker(8.01, () -> bot.manipulator.intake())
-                .addTemporalMarker(10.01, () -> bot.manipulator.prepareToOuttake())
-                .addTemporalMarker(10.01, () -> bot.manipulator.verticalLinearSlides.extend())
-                .addTemporalMarker(11.01, () -> bot.manipulator.extendVerticalArm())
-                .addTemporalMarker(12.01, () -> bot.manipulator.openVerticalClaw())
-                .addTemporalMarker(12.01, () -> bot.manipulator.resetVertical())
+                .addTemporalMarker(8.02, () -> bot.manipulator.horizontalArm.rotateArmToConeStack(5))
+                .addTemporalMarker(10.01, () -> bot.manipulator.intake())
+                .addTemporalMarker(12.01, () -> bot.manipulator.prepareToOuttake())
+                .addTemporalMarker(12.01, () -> bot.manipulator.verticalLinearSlides.extend())
+                .addTemporalMarker(13.01, () -> bot.manipulator.extendVerticalArm())
+                .addTemporalMarker(14.01, () -> bot.manipulator.openVerticalClaw())
+                .addTemporalMarker(14.01, () -> bot.manipulator.resetVertical())
                 .build();
     }
 

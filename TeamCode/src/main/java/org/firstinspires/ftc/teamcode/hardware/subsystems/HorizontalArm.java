@@ -44,7 +44,8 @@ public class HorizontalArm {
     private final double CONE_INTERVAL = 0.04;
 
     private final Servo claw;
-    private final Servo rotateServo;
+    private final Servo rotateServoOne;
+    private final Servo rotateServoTwo;
     private final Servo armOne;
     private final Servo armTwo;
     private final Servo pivotServo;
@@ -58,7 +59,8 @@ public class HorizontalArm {
         claw = hardwareMap.get(Servo.class, "horizontalClaw");
         armOne = hardwareMap.get(Servo.class, "horizontalArmOne");
         armTwo = hardwareMap.get(Servo.class, "horizontalArmTwo");
-        rotateServo = hardwareMap.get(Servo.class, "horizontalRotateServo");
+        rotateServoOne = hardwareMap.get(Servo.class, "horizontalRotateServoOne");
+        rotateServoTwo = hardwareMap.get(Servo.class, "horizontalRotateServoTwo");
         pivotServo = hardwareMap.get(Servo.class, "horizontalPivotServo");
     }
 
@@ -68,7 +70,7 @@ public class HorizontalArm {
 
     public double getClawPosition() { return claw.getPosition(); }
 
-    public double getRotateServoPosition() { return rotateServo.getPosition(); }
+    public double getRotateServoPosition() { return rotateServoOne.getPosition(); }
 
     public double getArmPosition() { return armOne.getPosition(); }
 
@@ -95,17 +97,20 @@ public class HorizontalArm {
     }
 
     public void uprightClaw() {
-        rotateServo.setPosition(ROTATE_CLAW_UP_POSITION);
+        rotateServoOne.setPosition(ROTATE_CLAW_UP_POSITION);
+        rotateServoTwo.setPosition(ROTATE_CLAW_UP_POSITION);
         rotateServoPosition = RotateServoPosition.UP;
     }
 
     public void flipClaw() {
-        rotateServo.setPosition(ROTATE_CLAW_DOWN_POSITION);
+        rotateServoOne.setPosition(ROTATE_CLAW_DOWN_POSITION);
+        rotateServoTwo.setPosition(ROTATE_CLAW_DOWN_POSITION);
         rotateServoPosition = RotateServoPosition.DOWN;
     }
 
     public void rotateArmToConeStack(int cones) {
         armOne.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
+        armTwo.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
         armPosition = ArmPosition.OUT;
     }
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.hardware.Bot;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.paths.AutoPaths;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.pipeline.apriltag.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
@@ -22,6 +23,8 @@ public class MainAutonomous extends LinearOpMode {
     double fy = 578.272;
     double cx = 640;
     double cy = 360;
+
+    private final Bot bot = Bot.getInstance();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -77,6 +80,15 @@ public class MainAutonomous extends LinearOpMode {
             case 3:
                 pipelineResult = PipelineResult.THREE;
         }
+
+        Thread runSlides = new Thread(() -> {
+            while (opModeIsActive()) {
+                bot.manipulator.verticalLinearSlides.loop();
+                bot.manipulator.horizontalLinearSlides.loop();
+            }
+        });
+
+        runSlides.run();
 
         if (autonomousType == AutonomousType.STACK) { autoPaths.drive.followTrajectory(autoPaths.stack);}
         autoPaths.drive.followTrajectory(autoPaths.park);
