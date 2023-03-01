@@ -11,21 +11,6 @@ import org.firstinspires.ftc.teamcode.GlobalConfig;
 
 public class HorizontalLinearSlides {
 
-    private class Color {
-
-        private final int COLOR_TOLERANCE = 20;
-        public int r, g, b;
-
-        public Color(int r, int g, int b){
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        public boolean matchColor(Color c){
-            return (Math.abs(this.r - c.r) < COLOR_TOLERANCE && Math.abs(this.g - c.g) < COLOR_TOLERANCE && Math.abs(this.b - c.b) < COLOR_TOLERANCE);
-        }
-    }
 
     public enum Level {
         RETRACTED,
@@ -60,18 +45,13 @@ public class HorizontalLinearSlides {
     public final MotorEx slideMotor;
 
     private final DistanceSensor distanceSensor;
-    private final ColorSensor colorSensor;
 
     private RunState runState = RunState.PRESET;
 
-    private Color BLUE_CONE = new Color(0, 0, 255);
-    private Color RED_CONE = new Color(255, 0, 0);
 
     public HorizontalLinearSlides(HardwareMap hardwareMap) {
         slideMotor = new MotorEx(hardwareMap, "horizontalSlideMotor", Motor.GoBILDA.RPM_312);
         initializeSlideMotor(slideMotor);
-
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
     }
@@ -181,11 +161,6 @@ public class HorizontalLinearSlides {
 
     public void setPreset() { runState = RunState.PRESET; }
 
-    public boolean coneDetected() {
-        Color colorDetected = new Color(colorSensor.red(), colorSensor.green(), colorSensor.blue());
-        return colorDetected.matchColor((GlobalConfig.alliance == GlobalConfig.Alliance.BLUE) ? BLUE_CONE : RED_CONE);
-    }
-
     public void runManual(double input) {
         slideMotor.set(input * POWER_CONSTANT);
     }
@@ -199,7 +174,11 @@ public class HorizontalLinearSlides {
     private int distanceToTicks(double distance) {
         double angle = Math.acos((Math.pow(12.0, 2) + Math.pow(distance, 2) - Math.pow(14.0, 2)) / (2 * 12.0 * distance));
 
+<<<<<<< Updated upstream
         if (!Double.isNaN(angle)) {
+=======
+        if (!Double.isNaN(angle)) { // 1 full revolution
+>>>>>>> Stashed changes
             return (int) ((Math.PI / 2 - angle) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
         }
 

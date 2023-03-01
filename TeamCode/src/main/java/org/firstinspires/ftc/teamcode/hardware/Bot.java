@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.hardware.IMU;
-
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 
 public class Bot {
 
@@ -28,8 +32,7 @@ public class Bot {
     //required subsystems
 
     public IMU imu0;
-//  public IMU imu1;
-
+    public IMU imu1;
     public boolean fieldCentricRunMode = true;
     public OpMode opMode;
 
@@ -97,11 +100,20 @@ public class Bot {
             motor.setRunMode(Motor.RunMode.RawPower);
         }
         imu0=opMode.hardwareMap.get(IMU.class, "imu0");
+        imu1=opMode.hardwareMap.get(IMU.class, "imu1");
         imu0.initialize(
                 new IMU.Parameters(
                         new RevHubOrientationOnRobot(
                                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                                 RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        )
+                )
+        );
+        imu1.initialize(
+                new IMU.Parameters(
+                        new RevHubOrientationOnRobot(
+                                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
                         )
                 )
         );
@@ -123,8 +135,6 @@ public class Bot {
 
     }
 
-    // temporary code copied from lightning to fix inverted motors problem which supposedly originates
-    // from the given drive functions (driveFieldCentric in HDrive.java)
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed){
         double[] speeds = {
@@ -158,13 +168,13 @@ public class Bot {
     }
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed, double heading){
-        double magnitude = Math.sqrt(strafeSpeed * strafeSpeed + forwardBackSpeed * forwardBackSpeed);
-        double theta = (Math.atan2(forwardBackSpeed, strafeSpeed) - heading) % (2 * Math.PI);
-        double[] speeds = {
-                magnitude * Math.sin(theta + Math.PI / 4) + turnSpeed,
-                magnitude * Math.sin(theta - Math.PI / 4) - turnSpeed,
-                magnitude * Math.sin(theta - Math.PI / 4) + turnSpeed,
-                magnitude * Math.sin(theta + Math.PI / 4) - turnSpeed
+        double rotateX=strafeSpeed*Math.cos(-heading)-forwardBackSpeed*Math.sin(-heading);
+        double rotateY=strafeSpeed*Math.sin(-heading)+forwardBackSpeed*Math.cos(-heading);
+        double speeds[]= {
+                (rotateY + rotateX + turnSpeed),
+                (rotateY - rotateX - turnSpeed),
+                (rotateY - rotateX + turnSpeed),
+                (rotateY + rotateX - turnSpeed)
         };
 
         double maxSpeed = 0;
@@ -179,10 +189,6 @@ public class Bot {
             }
         }
 
-//        for (int i = 0; i < 4; i++) {
-//            driveTrainMotors[i].set(speeds[i]);
-//        }
-        // manually invert the left side
 
         driveTrainMotors[0].set(-speeds[0]);
         driveTrainMotors[1].set(speeds[1]);
@@ -200,9 +206,9 @@ public class Bot {
     }
 
     public double getDriveCurrentDraw() {
-        double currentDraw = 0;
+        double currentDraw=0;
         for(MotorEx motor: driveTrainMotors){
-            currentDraw += motor.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
+            currentDraw+=motor.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
         }
         return currentDraw;
     }

@@ -22,7 +22,7 @@ public class VerticalArm {
         DOWN
     }
 
-    public enum PivoteServoPosition {
+    public enum PivotServoPosition {
         PIVOTED,
         UNPIVOTED
     }
@@ -52,7 +52,7 @@ public class VerticalArm {
     public ArmPosition armPosition = ArmPosition.IN;
     private ClawPosition clawPosition = ClawPosition.OPEN;
     private RotateServoPosition rotateServoPosition = RotateServoPosition.UP;
-    private PivoteServoPosition pivoteServoPosition = PivoteServoPosition.UNPIVOTED;
+    private PivotServoPosition pivotServoPosition = PivotServoPosition.UNPIVOTED;
 
     public VerticalArm (HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "horizontalClaw");
@@ -100,11 +100,11 @@ public class VerticalArm {
 
     public void pivotClaw() {
         pivotServo.setPosition(PIVOTED_CLAW_POSITION);
-        pivoteServoPosition = PivoteServoPosition.PIVOTED;
+        pivotServoPosition = PivotServoPosition.PIVOTED;
     }
 
     public void unpivotClaw() {
         pivotServo.setPosition(UNPIVOTED_CLAW_POSITION);
-        pivoteServoPosition = PivoteServoPosition.UNPIVOTED;
+        pivotServoPosition = PivotServoPosition.UNPIVOTED;
     }
 }

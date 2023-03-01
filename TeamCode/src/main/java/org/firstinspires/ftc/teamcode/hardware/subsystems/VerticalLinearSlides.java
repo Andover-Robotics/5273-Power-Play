@@ -24,8 +24,15 @@ public class VerticalLinearSlides {
     private final double kS = 0.004;
     private final double kV = 0.01;
 
+<<<<<<< Updated upstream
     private static final int HOVER_HEIGHT = 1000;
     private static final int GROUND_HEIGHT = 800;
+=======
+    private static final int GROUND_HEIGHT = 0;
+
+    private static final int HOVER_HEIGHT = 200;
+
+>>>>>>> Stashed changes
     private static final int LOW_HEIGHT = 1700;
     private static final int MEDIUM_HEIGHT = 2800;
     private static final int HIGH_HEIGHT =  4000;
