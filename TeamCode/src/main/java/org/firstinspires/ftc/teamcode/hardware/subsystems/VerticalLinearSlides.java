@@ -24,8 +24,8 @@ public class VerticalLinearSlides {
     private final double kS = 0.004;
     private final double kV = 0.01;
 
-    private static final int HOVER_HEIGHT = 200;
-    private static final int GROUND_HEIGHT = 0;
+    private static final int HOVER_HEIGHT = 1000;
+    private static final int GROUND_HEIGHT = 800;
     private static final int LOW_HEIGHT = 1700;
     private static final int MEDIUM_HEIGHT = 2800;
     private static final int HIGH_HEIGHT =  4000;
@@ -33,7 +33,7 @@ public class VerticalLinearSlides {
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
 
-    private final int TOLERANCE=50;
+    private final int TOLERANCE = 50;
 
     private final MotorEx leftSlideMotor;
     private final MotorEx rightSlideMotor;
@@ -60,6 +60,8 @@ public class VerticalLinearSlides {
     public int getTargetHeight(){
         return targetHeight;
     }
+
+    public boolean atTargetHeight() { return Math.abs(getCurrentHeight() - targetHeight) <= TOLERANCE; }
 
     private void setTargetHeight() {
         switch(currentLevel) {
@@ -176,7 +178,7 @@ public class VerticalLinearSlides {
     }
 
     public void loop(){
-        if (Math.abs(getCurrentHeight() - targetHeight) <= TOLERANCE) {
+        if (atTargetHeight()) {
             rightSlideMotor.set(kS);
             leftSlideMotor.set(kS);
         }

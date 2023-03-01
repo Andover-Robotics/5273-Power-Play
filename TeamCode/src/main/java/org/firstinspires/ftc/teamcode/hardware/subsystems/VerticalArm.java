@@ -32,7 +32,7 @@ public class VerticalArm {
     private final double OPEN_CLAW_POSITION = 0.50;
     private final double CLOSE_CLAW_POSITION = 0.75;
 
-    private final double ROTATE_CLAW_DOWN_POSITION = 0.50;
+    private final double ROTATE_CLAW_DOWN_POSITION = 0.45;
     private final double ROTATE_CLAW_UP_POSITION = 0.0;
 
     private final double ARM_OUT_POSITION = 1.0;
@@ -58,10 +58,10 @@ public class VerticalArm {
         claw = hardwareMap.get(Servo.class, "horizontalClaw");
 
         // 3(Left), 4(Right)
-        armLeft = hardwareMap.get(Servo.class, "verticalArmOne");
-        armRight = hardwareMap.get(Servo.class, "verticalArmTwo");
-        rotateServo = hardwareMap.get(Servo.class, "horizontalRotateServo");
-        pivotServo = hardwareMap.get(Servo.class, "horizontalPivotServo");
+        armLeft = hardwareMap.get(Servo.class, "verticalArmLeft");
+        armRight = hardwareMap.get(Servo.class, "verticalArmRight");
+        rotateServo = hardwareMap.get(Servo.class, "verticalRotateServo");
+        pivotServo = hardwareMap.get(Servo.class, "verticalPivotServo");
 
         armRight.setDirection(Servo.Direction.REVERSE);
     }

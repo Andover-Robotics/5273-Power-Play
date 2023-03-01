@@ -29,25 +29,28 @@ public class HorizontalArm {
 
     //TODO: Tune claw values
 
-    private final double OPEN_CLAW_POSITION = 0.20;
-    private final double CLOSE_CLAW_POSITION = 0.0;
+    private final double OPEN_CLAW_POSITION = 0.70;
+    private final double CLOSE_CLAW_POSITION = 0.95;
 
-    private final double ROTATE_CLAW_DOWN_POSITION = 0.50;
-    private final double ROTATE_CLAW_UP_POSITION = 0.0;
+    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.0;
+    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.32;
 
-    private final double ARM_OUT_POSITION = 0.50;
-    private final double ARM_IN_POSITION = 0.0;
+    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.55;
+    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.70;
 
-    private final double PIVOTED_CLAW_POSITION = 0.40;
-    private final double UNPIVOTED_CLAW_POSITION = 0.0;
+    private final double ARM_OUT_POSITION = 0.0;
+    private final double ARM_IN_POSITION = 0.70;
+
+    private final double PIVOTED_CLAW_POSITION = 0.70;
+    private final double UNPIVOTED_CLAW_POSITION = 0.04;
 
     private final double CONE_INTERVAL = 0.04;
 
     private final Servo claw;
-    private final Servo rotateServoOne;
-    private final Servo rotateServoTwo;
-    private final Servo armOne;
-    private final Servo armTwo;
+    private final Servo rotateServoLeft;
+    private final Servo rotateServoRight;
+    private final Servo armRight;
+    private final Servo armLeft;
     private final Servo pivotServo;
 
     public ArmPosition armPosition = ArmPosition.IN;
@@ -57,10 +60,10 @@ public class HorizontalArm {
 
     public HorizontalArm (HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "horizontalClaw");
-        armOne = hardwareMap.get(Servo.class, "horizontalArmOne");
-        armTwo = hardwareMap.get(Servo.class, "horizontalArmTwo");
-        rotateServoOne = hardwareMap.get(Servo.class, "horizontalRotateServoOne");
-        rotateServoTwo = hardwareMap.get(Servo.class, "horizontalRotateServoTwo");
+        armRight = hardwareMap.get(Servo.class, "horizontalArmRight");
+        armLeft = hardwareMap.get(Servo.class, "horizontalArmLeft");
+        rotateServoLeft = hardwareMap.get(Servo.class, "horizontalRotateLeft");
+        rotateServoRight = hardwareMap.get(Servo.class, "horizontalRotateRight");
         pivotServo = hardwareMap.get(Servo.class, "horizontalPivotServo");
     }
 
@@ -70,9 +73,9 @@ public class HorizontalArm {
 
     public double getClawPosition() { return claw.getPosition(); }
 
-    public double getRotateServoPosition() { return rotateServoOne.getPosition(); }
+    public double getRotateServoPosition() { return rotateServoLeft.getPosition(); }
 
-    public double getArmPosition() { return armOne.getPosition(); }
+    public double getArmPosition() { return armRight.getPosition(); }
 
     public void openClaw() {
         claw.setPosition(OPEN_CLAW_POSITION);
@@ -85,32 +88,32 @@ public class HorizontalArm {
     }
 
     public void extendArm() {
-        armOne.setPosition(ARM_OUT_POSITION);
-        armTwo.setPosition(ARM_OUT_POSITION);
+        armRight.setPosition(ARM_OUT_POSITION);
+        armLeft.setPosition(ARM_OUT_POSITION);
         armPosition = ArmPosition.OUT;
     }
 
     public void retractArm() {
-        armOne.setPosition(ARM_IN_POSITION);
-        armTwo.setPosition(ARM_OUT_POSITION);
+        armRight.setPosition(ARM_IN_POSITION);
+        armLeft.setPosition(ARM_OUT_POSITION);
         armPosition = ArmPosition.IN;
     }
 
     public void uprightClaw() {
-        rotateServoOne.setPosition(ROTATE_CLAW_UP_POSITION);
-        rotateServoTwo.setPosition(ROTATE_CLAW_UP_POSITION);
+        rotateServoLeft.setPosition(ROTATE_CLAW_UP_POSITION_LEFT);
+        rotateServoRight.setPosition(ROTATE_CLAW_UP_POSITION_RIGHT);
         rotateServoPosition = RotateServoPosition.UP;
     }
 
     public void flipClaw() {
-        rotateServoOne.setPosition(ROTATE_CLAW_DOWN_POSITION);
-        rotateServoTwo.setPosition(ROTATE_CLAW_DOWN_POSITION);
+        rotateServoLeft.setPosition(ROTATE_CLAW_DOWN_POSITION_LEFT);
+        rotateServoRight.setPosition(ROTATE_CLAW_DOWN_POSITION_RIGHT);
         rotateServoPosition = RotateServoPosition.DOWN;
     }
 
     public void rotateArmToConeStack(int cones) {
-        armOne.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
-        armTwo.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
+        armRight.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
+        armLeft.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
         armPosition = ArmPosition.OUT;
     }
 

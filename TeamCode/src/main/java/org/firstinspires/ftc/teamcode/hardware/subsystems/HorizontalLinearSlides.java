@@ -46,22 +46,18 @@ public class HorizontalLinearSlides {
 
     //TODO: Find values for levels of extension(ticks)
 
-    private static final int RETRACTED = 0;
-    private static final int MIDWAY = 1700;
-    private static final int EXTENDED =  4000;
+    private static final int RETRACTED = -20;
+    private static final int MIDWAY = 56;
+    private static final int EXTENDED =  80;
 
-    private static final double POWER_CONSTANT = 0.05;
+    private static final double POWER_CONSTANT = 0.01;
 
-    //TODO: Tune TICKS_TO_INCHES
-
-    private static final double TICKS_TO_INCHES = 4.8;
-
-    private final int TOLERANCE = 50;
+    private final int TOLERANCE = 5;
 
     public static Level currentLevel = Level.RETRACTED;
     private static int targetHeight;
 
-    private final MotorEx slideMotor;
+    public final MotorEx slideMotor;
 
     private final DistanceSensor distanceSensor;
     private final ColorSensor colorSensor;
@@ -93,6 +89,8 @@ public class HorizontalLinearSlides {
     public int getTargetHeight(){
         return targetHeight;
     }
+
+    public boolean atTargetHeight() { return slideMotor.atTargetPosition(); }
 
     private void setTargetHeight() {
         switch(currentLevel) {
@@ -202,10 +200,10 @@ public class HorizontalLinearSlides {
         double angle = Math.acos((Math.pow(12.0, 2) + Math.pow(distance, 2) - Math.pow(14.0, 2)) / (2 * 12.0 * distance));
 
         if (!Double.isNaN(angle)) {
-            return (int) ((Math.PI / 2 - angle) * Motor.GoBILDA.RPM_312.getCPR());
+            return (int) ((Math.PI / 2 - angle) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
         }
 
-        return (int) (Math.PI / 2 * Motor.GoBILDA.RPM_312.getCPR());
+        return (int) ((Math.PI / 2) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
     }
 
 
