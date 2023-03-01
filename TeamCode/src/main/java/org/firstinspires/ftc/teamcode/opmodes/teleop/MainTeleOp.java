@@ -49,11 +49,11 @@ public class MainTeleOp extends BaseOpMode{
     }
     public void subLoop(){
         //============== driving and slowmode ================================================================
-        slowPercentage = (1 - SubsystemController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)) * (1 - MINIMUM_SPEED) + MINIMUM_SPEED;
+        slowPercentage = (1 - DriveController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)) * (1 - MINIMUM_SPEED) + MINIMUM_SPEED;
 
-        if (SubsystemController.isDown(GamepadKeys.Button.RIGHT_BUMPER)) { slowPercentage = 0.5; }
+        if (DriveController.isDown(GamepadKeys.Button.RIGHT_BUMPER)) { slowPercentage = 0.5; }
 
-        if (SubsystemController.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON)){
+        if (DriveController.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON)){
             telemetry.addLine("LEFT STICK PRESSED");
             bot.imu0.resetYaw();
         }
@@ -67,7 +67,7 @@ public class MainTeleOp extends BaseOpMode{
                 bot.manipulator.horizontalLinearSlides.runManual(DriveController.getLeftY());
             }
 
-            if (SubsystemController.wasJustPressed(GamepadKeys.Button.X)) {
+            if (SubsystemController.wasJustPressed(GamepadKeys.Button.B)) {
                 bot.manipulator.horizontalLinearSlides.setRunUsingDistanceSensor();
                 bot.manipulator.prepareToIntake();
             }
@@ -94,11 +94,11 @@ public class MainTeleOp extends BaseOpMode{
                 }
 
                 if (SubsystemController.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-                    bot.manipulator.verticalLinearSlides.extend();
+                    bot.manipulator.verticalLinearSlides.extend(); // high junction
                 }
 
                 else if (SubsystemController.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-                    bot.manipulator.verticalLinearSlides.retract();
+                    bot.manipulator.verticalLinearSlides.retract(); // ground junction?
                 }
 
                 else if (SubsystemController.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
