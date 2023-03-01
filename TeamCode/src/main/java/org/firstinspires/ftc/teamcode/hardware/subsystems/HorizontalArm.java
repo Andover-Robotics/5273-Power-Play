@@ -7,22 +7,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class HorizontalArm {
 
-    public enum ClawPosition {
+    public enum ClawPosition { // 1 servo
         OPEN,
         CLOSED
     }
 
-    public enum ArmPosition {
+    public enum ArmPosition { // 2 servos
         IN,
         OUT
     }
 
-    public enum RotateServoPosition {
+    public enum RotateServoPosition { // 2 servos
         UP,
         DOWN
     }
 
-    public enum PivoteServoPosition {
+    public enum PivoteServoPosition { // 1 servo
         PIVOTED,
         UNPIVOTED
     }
