@@ -113,9 +113,9 @@ public class HorizontalArm extends SubsystemBase {
         claw.setPosition(ClawPos.CLOSED.getPos());
         pivotServo.setPosition(PivotPos.INIT_POS.getPos());
         hingeServoL.setPosition(HingePos.INIT_POS.getPos());
-        hingeServoR.setPosition(1-HingePos.INIT_POS.getPos());
+        hingeServoR.setPosition(HingePos.INIT_POS.getPos());
         armServoL.setPosition(ArmPos.INIT_POS.getPos());
-        armServoR.setPosition(1-ArmPos.INIT_POS.getPos());
+        armServoR.setPosition(ArmPos.INIT_POS.getPos());
     }
 
     public void setServoPoses() {
