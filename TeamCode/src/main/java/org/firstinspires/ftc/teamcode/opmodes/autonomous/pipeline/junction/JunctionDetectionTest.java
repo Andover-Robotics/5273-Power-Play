@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.hardware.Bot;
 
-@Autonomous(name = "Cone Detection")
+@Autonomous(name = "Junction Detection")
 public class JunctionDetectionTest extends OpMode {
 
     private JunctionDetector junctionDetector;

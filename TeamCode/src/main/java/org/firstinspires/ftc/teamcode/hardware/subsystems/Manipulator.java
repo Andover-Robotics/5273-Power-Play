@@ -74,19 +74,19 @@ public class Manipulator extends SubsystemBase {
     }
     
     public void init() {
-        verticalArm.unpivotClaw();
-        verticalArm.openClaw();
-        verticalArm.retractArm();
-        verticalArm.uprightClaw();
-
-        horizontalArm.unpivotClaw();
-        horizontalArm.openClaw();
-        horizontalArm.retractArm();
-        horizontalArm.uprightClaw();
-
-        verticalLinearSlides.retract();
-
-        horizontalLinearSlides.setPreset();
-        horizontalLinearSlides.retract();
+//        verticalArm.unpivotClaw();
+//        verticalArm.openClaw();
+//        verticalArm.retractArm();
+//        verticalArm.uprightClaw();
+//
+//        horizontalArm.unpivotClaw();
+//        horizontalArm.openClaw();
+//        horizontalArm.retractArm();
+//        horizontalArm.uprightClaw();
+//
+//        verticalLinearSlides.retract();
+//
+//        horizontalLinearSlides.setPreset();
+//        horizontalLinearSlides.retract();
     }
 }

@@ -19,7 +19,7 @@ public class ServoPositionTuner extends OpMode {
     private GamepadEx gamepadEx1;
     @Override
     public void init() {
-        servos=hardwareMap.getAll(Servo.class);
+        servos=this.hardwareMap.getAll(Servo.class);
         currentServo=servos.get(currentServoIndex);
         currentPosition=currentServo.getPosition();
         gamepadEx1= new GamepadEx(gamepad1);
@@ -29,23 +29,36 @@ public class ServoPositionTuner extends OpMode {
     @Override
     public void loop() {
         gamepadEx1.readButtons();
-        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
-            currentPosition=(int)(currentPosition+0.01);
-        }
-        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
-            currentPosition=(int)(currentPosition-0.01);
-        }
+
+
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_LEFT)){
             currentServoIndex=(currentServoIndex+1)%servos.size();
         }
         if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_RIGHT)){
-            currentServoIndex=(currentServoIndex-1)%servos.size();
+            currentServoIndex=(currentServoIndex+10)%servos.size();
         }
 
-        telemetry.addData("currentServoName",currentServo.getDeviceName());
+        currentServo=servos.get(currentServoIndex);
+        currentPosition=currentServo.getPosition();
 
-        for(Servo servo: hardwareMap.getAll(Servo.class)){
-            telemetry.addLine(servo.getDeviceName()+servo.getPosition());
+        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
+            currentPosition=(currentPosition+0.10)%1.0;
+        }
+
+        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
+            currentPosition=(currentPosition+0.01)%1.0;
+        }
+        if(gamepadEx1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
+            currentPosition=(currentPosition+0.99)%1.0;
+        }
+
+
+        currentServo.setPosition(currentPosition);
+
+        telemetry.addData("currentServoName",currentServo.getConnectionInfo());
+
+        for(Servo servo: servos){
+            telemetry.addLine(servo.getConnectionInfo()+" "+servo.getPosition());
         }
         telemetry.update();
     }

@@ -174,11 +174,8 @@ public class HorizontalLinearSlides {
     private int distanceToTicks(double distance) {
         double angle = Math.acos((Math.pow(12.0, 2) + Math.pow(distance, 2) - Math.pow(14.0, 2)) / (2 * 12.0 * distance));
 
-<<<<<<< Updated upstream
-        if (!Double.isNaN(angle)) {
-=======
         if (!Double.isNaN(angle)) { // 1 full revolution
->>>>>>> Stashed changes
+
             return (int) ((Math.PI / 2 - angle) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
         }
 

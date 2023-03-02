@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+//0.00 0.60
+//0.50 0.75
+
 
 public class HorizontalArm {
 

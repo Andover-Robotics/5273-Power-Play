@@ -28,7 +28,7 @@ public class VerticalArm {
     }
 
     //TODO: Tune claw values
-
+//0.05->0.25
     private final double OPEN_CLAW_POSITION = 0.50;
     private final double CLOSE_CLAW_POSITION = 0.75;
 

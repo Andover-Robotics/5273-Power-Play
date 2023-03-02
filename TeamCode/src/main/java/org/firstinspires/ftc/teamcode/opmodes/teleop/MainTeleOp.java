@@ -44,12 +44,12 @@ public class MainTeleOp extends BaseOpMode{
                 )
         );
 
-        bot.manipulator.init();
-
-        while (bot.manipulator.horizontalLinearSlides.atTargetHeight() && bot.manipulator.horizontalLinearSlides.atTargetHeight()) {
-            bot.manipulator.horizontalLinearSlides.loop();
-            bot.manipulator.verticalLinearSlides.loop();
-        }
+//        bot.manipulator.init();
+//
+//        while (bot.manipulator.horizontalLinearSlides.atTargetHeight() && bot.manipulator.horizontalLinearSlides.atTargetHeight()) {
+//            bot.manipulator.horizontalLinearSlides.loop();
+//            bot.manipulator.verticalLinearSlides.loop();
+//        }
 
         bot.manipulator.horizontalLinearSlides.setManual();
     }
