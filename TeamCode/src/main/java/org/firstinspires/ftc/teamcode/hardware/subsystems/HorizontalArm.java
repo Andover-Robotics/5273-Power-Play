@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,140 +9,121 @@ import com.qualcomm.robotcore.hardware.Servo;
 //0.50 0.75
 
 
-public class HorizontalArm {
+public class HorizontalArm extends SubsystemBase {
 
-    public enum ClawPosition { // 1 servo
-        OPEN,
-        CLOSED
+    //TODO: find INIT valutes & cone stack values then implement functions for those
+    // additionally do cone righting if there is time
+
+    public enum ClawPos {
+        OPEN(0.70),
+        CLOSED(0.95);
+
+        private double pos;
+        ClawPos(double pos) { this.pos = pos; }
+        public double getPos() { return pos; }
     }
 
-    public enum ArmPosition { // 2 servos
-        IN,
-        OUT
+    public enum ArmPos { //left vals
+        INIT_POS(0.0),
+        TRANSFER_POS(0.85),
+        INTAKE_POS(0.15);
+        private double pos;
+        ArmPos(double pos) { this.pos = pos; }
+        public double getPos() { return pos; }
     }
 
-    public enum RotateServoPosition { // 2 servos
-        UP,
-        DOWN
+    public enum HingePos { // left vals
+        INIT_POS(0.0),
+        TRANSFER_POS(0.66),
+        INTAKE_POS(0.63);
+
+        private double pos;
+        HingePos(double pos) { this.pos = pos; }
+        public double getPos() { return pos; }
     }
 
-    public enum PivoteServoPosition { // 1 servo
-        PIVOTED,
-        UNPIVOTED
+    public enum PivotPos {
+        INIT_POS(0.0),
+        TRANSFER_POS(0.03),
+        INTAKE_POS(0.7);
+
+        private double pos;
+        PivotPos(double pos) { this.pos = pos; }
+        public double getPos() { return pos; }
     }
 
-    //TODO: Tune claw values
+    private final double CONE_ARM_ANGLE_OFFSET = 0.04;
+    //use this by adding to the value of the arm and hinge to emulate 4bar behavior and add height of cones x this offset for that offset value
 
-    private final double OPEN_CLAW_POSITION = 0.70;
-    private final double CLOSE_CLAW_POSITION = 0.95;
-    //done
-
-//    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.69; // intaking cones
-//    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.03; // puttin in transfer mech
-
-    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.66; // intaking cones
-    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.63; // puttin in transfer mech
-
-    private final double ARM_OUT_POSITION = 0.15; // intake pos
-    private final double ARM_IN_POSITION = 0.85; // transfer
-
-    private final double PIVOTED_CLAW_POSITION = 0.03; // putting in transfer mech
-    private final double UNPIVOTED_CLAW_POSITION = 0.7; // picking up cones in normal position
-
-    private final double CONE_INTERVAL = 0.04;
 
     private final Servo claw;
-    private final Servo rotateServoLeft;
-    private final Servo rotateServoRight;
-    private final Servo armRight;
-    private final Servo armLeft;
+    private final Servo hingeServoL;
+    private final Servo hingeServoR;
+    private final Servo armServoR;
+    private final Servo armServoL;
     private final Servo pivotServo;
 
-    public ArmPosition armPosition = ArmPosition.IN;
-    public ClawPosition clawPosition = ClawPosition.OPEN;
-    public RotateServoPosition rotateServoPosition = RotateServoPosition.UP;
-    public PivoteServoPosition pivoteServoPosition = PivoteServoPosition.UNPIVOTED;
+    public ArmPos armPos = ArmPos.INIT_POS;
+    public ClawPos clawPos = ClawPos.CLOSED;
+    public HingePos hingePos = HingePos.INIT_POS;
+    public PivotPos pivotPos = PivotPos.INIT_POS;
 
-    public HorizontalArm (HardwareMap hardwareMap) {
+    public HorizontalArm(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "horizontalClaw");
-        armRight = hardwareMap.get(Servo.class, "horizontalArmRight");
-        armLeft = hardwareMap.get(Servo.class, "horizontalArmLeft");
-        rotateServoLeft = hardwareMap.get(Servo.class, "horizontalRotateLeft");
-        rotateServoRight = hardwareMap.get(Servo.class, "horizontalRotateRight");
+        armServoL = hardwareMap.get(Servo.class, "horizontalArmLeft");
+        armServoR = hardwareMap.get(Servo.class, "horizontalArmRight");
+        armServoR.setDirection(Servo.Direction.REVERSE);
+        hingeServoL = hardwareMap.get(Servo.class, "horizontalRotateLeft");
+        hingeServoR = hardwareMap.get(Servo.class, "horizontalRotateRight");
+        hingeServoR.setDirection(Servo.Direction.REVERSE);
         pivotServo = hardwareMap.get(Servo.class, "horizontalPivotServo");
     }
 
-    public double getCloseClawPosition() { return CLOSE_CLAW_POSITION; }
-
-    public double getOpenClawPosition() { return OPEN_CLAW_POSITION; }
-
     public double getClawPosition() { return claw.getPosition(); }
+    public double getRotateServoPosition() { return hingeServoL.getPosition(); }
+    public double getArmPosition() { return armServoR.getPosition(); }
 
-    public double getRotateServoPosition() { return rotateServoLeft.getPosition(); }
+    public void openClaw() { clawPos = ClawPos.OPEN; }
+    public void closeClaw() { clawPos = ClawPos.CLOSED; }
 
-    public double getArmPosition() { return armRight.getPosition(); }
+    public void setArmIntake() { armPos = ArmPos.INTAKE_POS; }
+    public void setArmTransfer() { armPos = ArmPos.TRANSFER_POS; }
 
-    public void openClaw() {
-        claw.setPosition(OPEN_CLAW_POSITION);
-        clawPosition = ClawPosition.OPEN;
+    public void setHingeIntake() { armPos = ArmPos.INTAKE_POS; }
+    public void setHingeTransfer() { armPos = ArmPos.TRANSFER_POS; }
+
+    public void setPivotIntake() { pivotPos = PivotPos.INTAKE_POS; }
+    public void setPivotTransfer() { armPos = ArmPos.TRANSFER_POS; }
+
+    public void setIntake() {
+        openClaw();
+        setHingeIntake();
+        setArmIntake();
+        setPivotIntake();
     }
 
-    public void closeClaw() {
-        claw.setPosition(CLOSE_CLAW_POSITION);
-        clawPosition = ClawPosition.CLOSED;
-    }
-
-    public void extendArm() {
-        armRight.setPosition(1-ARM_OUT_POSITION);
-        armLeft.setPosition(ARM_OUT_POSITION);
-        armPosition = ArmPosition.OUT;
-    }
-
-    public void retractArm() {
-        armRight.setPosition(1-ARM_IN_POSITION);
-        armLeft.setPosition(ARM_IN_POSITION);
-        armPosition = ArmPosition.IN;
-    }
-
-    public void uprightClaw() {
-        rotateServoLeft.setPosition(ROTATE_CLAW_UP_POSITION_LEFT);
-        rotateServoRight.setPosition(1-ROTATE_CLAW_UP_POSITION_LEFT);
-        rotateServoPosition = RotateServoPosition.UP;
-    }
-
-    public void flipClaw() {
-        rotateServoLeft.setPosition(ROTATE_CLAW_DOWN_POSITION_LEFT);
-        rotateServoRight.setPosition(1-ROTATE_CLAW_DOWN_POSITION_LEFT);
-        rotateServoPosition = RotateServoPosition.DOWN;
-    }
-
-    public void rotateArmToConeStack(int cones) {
-        armRight.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
-        armLeft.setPosition(ARM_OUT_POSITION + CONE_INTERVAL * cones);
-        armPosition = ArmPosition.OUT;
-    }
-
-    public void pivotClaw() {
-        pivotServo.setPosition(PIVOTED_CLAW_POSITION);
-        pivoteServoPosition = PivoteServoPosition.PIVOTED;
-    }
-
-    public void unpivotClaw() {
-        pivotServo.setPosition(UNPIVOTED_CLAW_POSITION);
-        pivoteServoPosition = PivoteServoPosition.UNPIVOTED;
-    }
-
-    public void clawToTransfer() {
+    public void setTransfer() {
         closeClaw();
-        unpivotClaw();
-        uprightClaw();
-        retractArm();
+        setHingeTransfer();
+        setArmTransfer();
+        setPivotTransfer();
     }
 
-    public void clawToIntake() {
-        closeClaw();
-        pivotClaw();
-        flipClaw();
-        extendArm();
+    public void setInitPoses() {
+        claw.setPosition(ClawPos.CLOSED.getPos());
+        pivotServo.setPosition(PivotPos.INIT_POS.getPos());
+        hingeServoL.setPosition(HingePos.INIT_POS.getPos());
+        hingeServoR.setPosition(1-HingePos.INIT_POS.getPos());
+        armServoL.setPosition(ArmPos.INIT_POS.getPos());
+        armServoR.setPosition(1-ArmPos.INIT_POS.getPos());
+    }
+
+    public void setServoPoses() {
+        claw.setPosition(clawPos.getPos());
+        pivotServo.setPosition(pivotPos.getPos());
+        hingeServoL.setPosition(hingePos.getPos());
+        hingeServoR.setPosition(hingePos.getPos());
+        armServoL.setPosition(armPos.getPos());
+        armServoR.setPosition(armPos.getPos());
     }
 }
