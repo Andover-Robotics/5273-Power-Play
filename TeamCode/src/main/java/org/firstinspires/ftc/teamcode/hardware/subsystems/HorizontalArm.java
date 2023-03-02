@@ -36,17 +36,17 @@ public class HorizontalArm {
     private final double CLOSE_CLAW_POSITION = 0.95;
     //done
 
-    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.0;
-    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.32;
+    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.03; // intaking cones
+    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.69; // puttin in transfer mech
 
-    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.55;
-    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.70;
+    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.03; // intaking cones
+    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.69; // puttin in transfer mech
 
-    private final double ARM_OUT_POSITION = 0.0;
-    private final double ARM_IN_POSITION = 0.70;
+    private final double ARM_OUT_POSITION = 0.11; // putting in transfer mech
+    private final double ARM_IN_POSITION = 0.85; // picking up cones in normal position
 
-    private final double PIVOTED_CLAW_POSITION = 0.70;
-    private final double UNPIVOTED_CLAW_POSITION = 0.04;
+    private final double PIVOTED_CLAW_POSITION = 0.53; // putting in transfer mech
+    private final double UNPIVOTED_CLAW_POSITION = 0.66; // picking up cones in normal position
 
     private final double CONE_INTERVAL = 0.04;
 

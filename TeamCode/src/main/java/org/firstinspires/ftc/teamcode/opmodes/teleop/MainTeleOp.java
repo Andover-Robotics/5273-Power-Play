@@ -156,7 +156,7 @@ public class MainTeleOp extends BaseOpMode{
     private void drive() {
         Vector2d driveVector = new Vector2d(driveController.getLeftX()*Math.abs(driveController.getLeftX()),driveController.getLeftY()*Math.abs(driveController.getLeftY())),
                 turnVector = new Vector2d(
-                        driveController.getRightX()*Math.abs(driveController.getRightX()) , 0);
+                        driveController.getRightX()*Math.sqrt(Math.abs(driveController.getRightX())) , 0);
         if (bot.fieldCentricRunMode) {
             bot.drive(
                     driveVector.getX() * driveSpeed * slowPercentage,
