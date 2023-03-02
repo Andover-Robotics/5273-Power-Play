@@ -34,6 +34,7 @@ public class HorizontalArm {
 
     private final double OPEN_CLAW_POSITION = 0.70;
     private final double CLOSE_CLAW_POSITION = 0.95;
+    //done
 
     private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.0;
     private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.32;
