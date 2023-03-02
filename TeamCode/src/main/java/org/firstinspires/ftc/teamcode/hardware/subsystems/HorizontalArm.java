@@ -36,17 +36,17 @@ public class HorizontalArm {
     private final double CLOSE_CLAW_POSITION = 0.95;
     //done
 
-    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.03; // intaking cones
-    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.69; // puttin in transfer mech
+//    private final double ROTATE_CLAW_DOWN_POSITION_RIGHT = 0.69; // intaking cones
+//    private final double ROTATE_CLAW_UP_POSITION_RIGHT = 0.03; // puttin in transfer mech
 
-    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.03; // intaking cones
-    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.69; // puttin in transfer mech
+    private static final double ROTATE_CLAW_DOWN_POSITION_LEFT = 0.66; // intaking cones
+    private static final double ROTATE_CLAW_UP_POSITION_LEFT = 0.63; // puttin in transfer mech
 
-    private final double ARM_OUT_POSITION = 0.11; // putting in transfer mech
-    private final double ARM_IN_POSITION = 0.85; // picking up cones in normal position
+    private final double ARM_OUT_POSITION = 0.15; // intake pos
+    private final double ARM_IN_POSITION = 0.85; // transfer
 
-    private final double PIVOTED_CLAW_POSITION = 0.53; // putting in transfer mech
-    private final double UNPIVOTED_CLAW_POSITION = 0.66; // picking up cones in normal position
+    private final double PIVOTED_CLAW_POSITION = 0.03; // putting in transfer mech
+    private final double UNPIVOTED_CLAW_POSITION = 0.7; // picking up cones in normal position
 
     private final double CONE_INTERVAL = 0.04;
 
@@ -92,26 +92,26 @@ public class HorizontalArm {
     }
 
     public void extendArm() {
-        armRight.setPosition(ARM_OUT_POSITION);
+        armRight.setPosition(1-ARM_OUT_POSITION);
         armLeft.setPosition(ARM_OUT_POSITION);
         armPosition = ArmPosition.OUT;
     }
 
     public void retractArm() {
-        armRight.setPosition(ARM_IN_POSITION);
-        armLeft.setPosition(ARM_OUT_POSITION);
+        armRight.setPosition(1-ARM_IN_POSITION);
+        armLeft.setPosition(ARM_IN_POSITION);
         armPosition = ArmPosition.IN;
     }
 
     public void uprightClaw() {
         rotateServoLeft.setPosition(ROTATE_CLAW_UP_POSITION_LEFT);
-        rotateServoRight.setPosition(ROTATE_CLAW_UP_POSITION_RIGHT);
+        rotateServoRight.setPosition(1-ROTATE_CLAW_UP_POSITION_LEFT);
         rotateServoPosition = RotateServoPosition.UP;
     }
 
     public void flipClaw() {
         rotateServoLeft.setPosition(ROTATE_CLAW_DOWN_POSITION_LEFT);
-        rotateServoRight.setPosition(ROTATE_CLAW_DOWN_POSITION_RIGHT);
+        rotateServoRight.setPosition(1-ROTATE_CLAW_DOWN_POSITION_LEFT);
         rotateServoPosition = RotateServoPosition.DOWN;
     }
 
@@ -129,5 +129,19 @@ public class HorizontalArm {
     public void unpivotClaw() {
         pivotServo.setPosition(UNPIVOTED_CLAW_POSITION);
         pivoteServoPosition = PivoteServoPosition.UNPIVOTED;
+    }
+
+    public void clawToTransfer() {
+        closeClaw();
+        unpivotClaw();
+        uprightClaw();
+        retractArm();
+    }
+
+    public void clawToIntake() {
+        closeClaw();
+        pivotClaw();
+        flipClaw();
+        extendArm();
     }
 }

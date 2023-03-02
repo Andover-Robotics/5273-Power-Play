@@ -29,17 +29,17 @@ public class VerticalArm {
 
     //TODO: Tune claw values
 //0.05->0.25
-    private final double OPEN_CLAW_POSITION = 0.50;
-    private final double CLOSE_CLAW_POSITION = 0.75;
+    private final double OPEN_CLAW_POSITION = 0.75;
+    private final double CLOSE_CLAW_POSITION = 0.5;
 
-    private final double ROTATE_CLAW_DOWN_POSITION = 0.45;
-    private final double ROTATE_CLAW_UP_POSITION = 0.0;
+    private final double ROTATE_CLAW_DOWN_POSITION = 0.02;
+    private final double ROTATE_CLAW_UP_POSITION = 0.6;
 
-    private final double ARM_OUT_POSITION = 1.0;
+    private final double ARM_OUT_POSITION = 0.78;
     private final double ARM_IN_POSITION = 0.0;
 
-    private final double PIVOTED_CLAW_POSITION = 0.70;
-    private final double UNPIVOTED_CLAW_POSITION = 0.0;
+    private final double PIVOTED_CLAW_POSITION = 0.0;
+    private final double UNPIVOTED_CLAW_POSITION = 0.67;
 
     private final double CONE_INTERVAL = 0.04;
 
@@ -78,13 +78,13 @@ public class VerticalArm {
 
     public void extendArm() {
         armLeft.setPosition(ARM_OUT_POSITION);
-        armRight.setPosition(ARM_IN_POSITION);
+        armRight.setPosition(1-ARM_OUT_POSITION);
         armPosition = ArmPosition.OUT;
     }
 
     public void retractArm() {
         armLeft.setPosition(ARM_IN_POSITION);
-        armRight.setPosition(ARM_OUT_POSITION);
+        armRight.setPosition(1-ARM_IN_POSITION);
         armPosition = ArmPosition.IN;
     }
 
@@ -107,4 +107,18 @@ public class VerticalArm {
         pivotServo.setPosition(UNPIVOTED_CLAW_POSITION);
         pivotServoPosition = PivotServoPosition.UNPIVOTED;
     }
+
+    public void clawToScore() {
+        closeClaw();
+        pivotClaw();
+        uprightClaw();
+        extendArm();
+    }
+    public void clawToTransfer() {
+        closeClaw();
+        unpivotClaw();
+        flipClaw();
+        retractArm();
+    }
+
 }
