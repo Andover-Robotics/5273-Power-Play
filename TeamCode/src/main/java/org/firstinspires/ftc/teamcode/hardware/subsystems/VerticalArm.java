@@ -88,13 +88,13 @@ public class VerticalArm extends SubsystemBase {
 
     public void setPivotTransfer() { pivotPos = PivotPos.TRANSFER_POSS; }
 
-    public void clawToScore() {
+    public void setOuttake() {
         closeClaw();
         setPivotOuttake();
         setHingeOuttake();
         setArmOuttake();
     }
-    public void clawToTransfer() {
+    public void setTransfer() {
         closeClaw();
         setPivotTransfer();
         setHingeTransfer();
