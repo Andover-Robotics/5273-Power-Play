@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.util.utilclasses.TimingScheduler;
 
 public class Manipulator extends SubsystemBase {
 
@@ -18,6 +19,15 @@ public class Manipulator extends SubsystemBase {
         horizontalArm = new HorizontalArm(hardwareMap);
     }
 
+    public void setToIntake() {
+        horizontalLinearSlides.extendSlides();
+        horizontalArm.setArmIntake();
+    }
+
+    public void setToTransfer() {
+        horizontalArm.closeClaw();
+
+    }
 
 
 
@@ -47,8 +57,6 @@ public class Manipulator extends SubsystemBase {
 
 
 
-    @Override
-    public void periodic() {}
 
     public void init() {
 //        verticalArm.unpivotClaw();

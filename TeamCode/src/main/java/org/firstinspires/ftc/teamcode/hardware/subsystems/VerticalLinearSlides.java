@@ -42,10 +42,10 @@ public class VerticalLinearSlides extends SubsystemBase {
 
 
     public VerticalLinearSlides(HardwareMap hardwareMap) {
-        rightSlideMotor = new MotorEx(hardwareMap, "rightVerticalSlideMotor", Motor.GoBILDA.RPM_312);
+        rightSlideMotor = new MotorEx(hardwareMap, "rightVerticalSlideMotor", Motor.GoBILDA.RPM_435);
         initializeSlideMotor(rightSlideMotor);
 
-        leftSlideMotor = new MotorEx(hardwareMap, "leftVerticalSlideMotor", Motor.GoBILDA.RPM_312);
+        leftSlideMotor = new MotorEx(hardwareMap, "leftVerticalSlideMotor", Motor.GoBILDA.RPM_435);
         initializeSlideMotor(leftSlideMotor);
     }
 

@@ -25,7 +25,7 @@ public class HorizontalArm extends SubsystemBase {
 
     public enum ArmPos { //left vals
         INIT_POS(0.0),
-        TRANSFER_POS(0.85),
+        TRANSFER_POS(0.55),
         INTAKE_POS(0.15);
         private double pos;
         ArmPos(double pos) { this.pos = pos; }
@@ -34,7 +34,9 @@ public class HorizontalArm extends SubsystemBase {
 
     public enum HingePos { // left vals
         INIT_POS(0.0),
-        TRANSFER_POS(0.6),
+        TRANSFER_POS(0.9),
+        IDLE_POS(0.6),
+        SCORE_POS(0.7),
         INTAKE_POS(0.63);
 
         private double pos;
@@ -95,6 +97,8 @@ public class HorizontalArm extends SubsystemBase {
     public void setArmTransfer() { armPos = ArmPos.TRANSFER_POS; }
 
     public void setHingeIntake() { hingePos = HingePos.INTAKE_POS; }
+    public void setHingeIdle() { hingePos = HingePos.IDLE_POS; }
+    public void setHingeScore() { hingePos = HingePos.SCORE_POS; }
     public void setHingeTransfer() { hingePos = HingePos.TRANSFER_POS; }
 
     public void setPivotIntake() { pivotPos = PivotPos.INTAKE_POS; }
@@ -111,6 +115,27 @@ public class HorizontalArm extends SubsystemBase {
         setHingeTransfer();
         setArmTransfer();
         setPivotTransfer();
+        setServoPoses();
+    }
+
+    public void setIdle() {
+        setHingeIdle();
+        setArmTransfer();
+        setPivotTransfer();
+        setServoPoses();
+    }
+
+    public void setReadyToScoreGround() {
+        setHingeScore();
+        setArmIntake();
+        setPivotIntake();
+        setServoPoses();
+    }
+
+    public void setScoreGround() {
+        setHingeIntake();
+        setArmIntake();
+        setPivotIntake();
         setServoPoses();
     }
 

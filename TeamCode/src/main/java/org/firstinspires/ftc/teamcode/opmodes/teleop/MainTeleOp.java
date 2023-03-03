@@ -49,15 +49,11 @@ public class MainTeleOp extends BaseOpMode{
         //============== driving and slowmode ================================================================
 //        slowPercentage = (1 - DriveController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)) * (1 - MINIMUM_SPEED) + MINIMUM_SPEED;
         yawPitchRollAngles=bot.imu1.getRobotYawPitchRollAngles();
-        if (driveController.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
-            slowPercentage = 0.5;
-        }
+
         if (driveController.isDown(GamepadKeys.Button.LEFT_STICK_BUTTON)){
             fieldCentricOffset=yawPitchRollAngles.getYaw(AngleUnit.RADIANS);
         }
-
         if (driveController.isDown(GamepadKeys.Button.RIGHT_BUMPER)) { slowPercentage = 0.5; }
-
         if (driveController.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON)){
             telemetry.addLine("LEFT STICK PRESSED");
             bot.imu1.resetYaw();
@@ -68,6 +64,12 @@ public class MainTeleOp extends BaseOpMode{
         //============ subsystem control =============================================================================
 
         if (gameState == GameState.INTAKE) {
+            if(subsystemController.wasJustPressed(GamepadKeys.Button.X)) {
+                bot.manipulator.setToIntake();
+                timingScheduler.defer(0.2, () -> bot.manipulator.horizontalArm.openClaw());
+            }
+
+
         }
 
         else {
@@ -127,8 +129,8 @@ public class MainTeleOp extends BaseOpMode{
         telemetry.addData("imu0", bot.imu0.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 //        telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
 
-        telemetry.addData("HorizontalLinearSlides Position", bot.manipulator.horizontalLinearSlides.getCurrentPos());
-        telemetry.addData("HorizontalLinearSlides targetPosition", bot.manipulator.horizontalLinearSlides.getTargetPos());
+        telemetry.addData("HorizontalLinearSlides Position", bot.manipulator.horizontalLinearSlides.curPos());
+        telemetry.addData("HorizontalLinearSlides targetPosition", bot.manipulator.horizontalLinearSlides.targetPos());
         telemetry.addData("VerticalLinearSlides Position", bot.manipulator.verticalLinearSlides.getCurrentHeight());
         telemetry.addData("VerticalLinearSlides targetPosition", bot.manipulator.verticalLinearSlides.getTargetHeight());
 

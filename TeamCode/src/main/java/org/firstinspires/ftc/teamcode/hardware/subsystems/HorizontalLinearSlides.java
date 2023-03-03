@@ -12,30 +12,18 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
 
 
-    public enum SlidePos {
-        INIT_POS,
-        TRANSFER_POS,
-        EXTENDED
-    }
-
-
     //TODO: Tune position controller
 
     private final double kP = 0.05;
-    private final double kV = 0.01;
 
     //TODO: Find values for levels of extension(ticks)
 
-    private static final int RETRACTED = -20;
-    private static final int MIDWAY = 56;
-    private static final int EXTENDED =  80;
 
-    private static final double POWER_CONSTANT = 0.01;
+    private static final double POWER_CONSTANT = 0.02;
 
-    private final int TOLERANCE = 3;
-
-    public static SlidePos currentSlidePos = SlidePos.INIT_POS;
-    private static int targetPos;
+    private boolean RETRACTED = true;
+    private final int TOLERANCE = 4;
+    private static int targetPos = 0;
 
     public final MotorEx slideMotor;
 
@@ -48,25 +36,44 @@ public class HorizontalLinearSlides extends SubsystemBase {
         slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         slideMotor.setRunMode(Motor.RunMode.PositionControl);
         slideMotor.setPositionTolerance(TOLERANCE);
+        slideMotor.setPositionCoefficient(kP);
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
     }
 
 
 
-    public int getCurrentPos() { return slideMotor.getCurrentPosition(); }
+    public int curPos() { return slideMotor.getCurrentPosition(); }
 
-    public int getTargetPos(){
+    public int targetPos(){
         return targetPos;
     }
 
+    public double getDist() { return distanceSensor.getDistance(DistanceUnit.INCH); }
+
     public boolean atTargetHeight() { return slideMotor.atTargetPosition(); }
 
-
-    public void runUsingDistanceSensor() {
-        double distance = distanceSensor.getDistance(DistanceUnit.INCH);
-        int ticks = distanceToTicks(distance);
+    public void retractSlides() {
+        slideMotor.setRunMode(Motor.RunMode.RawPower);
+        slideMotor.set(1.0);
+        RETRACTED = true;
+        targetPos = 0;
     }
+
+    public void extendSlides() {
+        RETRACTED = false;
+        slideMotor.stopMotor();
+        slideMotor.setRunMode(Motor.RunMode.PositionControl);
+        targetPos = -distanceToTicks(distanceSensor.getDistance(DistanceUnit.INCH));
+        slideMotor.setTargetPosition(targetPos);
+
+    }
+
+    public void shiftManual(int shift) {
+        targetPos -= shift;
+        slideMotor.setTargetPosition(targetPos);
+    }
+
 
     private int distanceToTicks(double distance) {
         double angle = Math.acos((Math.pow(12.0, 2) + Math.pow(distance, 2) - Math.pow(14.0, 2)) / (2 * 12.0 * distance));
@@ -82,14 +89,10 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(currentSlidePos == SlidePos.INIT_POS) {
-            slideMotor.set(-1.0);
+        if(!RETRACTED) {
+            slideMotor.set(1);
         }
-        else if(currentSlidePos == SlidePos.TRANSFER_POS) {
 
-        }
-        else if(currentSlidePos == SlidePos.EXTENDED) {
-            // logic here
-        }
+        if(curPos() > 1) { slideMotor.resetEncoder(); slideMotor.stopMotor(); }
     }
 }
