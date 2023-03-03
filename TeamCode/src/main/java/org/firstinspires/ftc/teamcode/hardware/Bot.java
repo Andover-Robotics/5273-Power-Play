@@ -1,21 +1,18 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.hardware.subsystems.Manipulator;
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import org.firstinspires.ftc.teamcode.hardware.subsystems.*;
 
 public class Bot {
 
@@ -25,6 +22,10 @@ public class Bot {
 
     public final Manipulator manipulator;
 
+    public final HorizontalLinearSlides horizontalLinearSlides;
+    public final VerticalLinearSlides verticalLinearSlides;
+    public final HorizontalArm horizontalArm;
+    public final VerticalArm verticalArm;
     // front left, front right, back left, back right
 
     public final MotorEx[] driveTrainMotors;
@@ -76,12 +77,27 @@ public class Bot {
         instance = new Bot(opMode);
     }
 
+    public void resetJavaGCCleanedThingsSoSad() {
+        horizontalArm.resetJavaGCBaddies();
+        verticalArm.resetJavaGCBeingBadThings();
+    }
+
     private Bot(OpMode opMode){
 
         this.opMode = opMode;
         enableAutoBulkRead();
 
         manipulator = new Manipulator(opMode.hardwareMap);
+        horizontalArm = new HorizontalArm(opMode.hardwareMap);
+        verticalArm = new VerticalArm(opMode.hardwareMap);
+        horizontalLinearSlides = new HorizontalLinearSlides(opMode.hardwareMap);
+        verticalLinearSlides = new VerticalLinearSlides(opMode.hardwareMap);
+
+        CommandScheduler.getInstance().registerSubsystem(manipulator);
+        CommandScheduler.getInstance().registerSubsystem(horizontalArm);
+        CommandScheduler.getInstance().registerSubsystem(horizontalLinearSlides);
+        CommandScheduler.getInstance().registerSubsystem(horizontalArm);
+        CommandScheduler.getInstance().registerSubsystem(verticalArm);
 
         //this.templateSubsystem = new TemplateSubsystem(opMode);
 
@@ -137,7 +153,7 @@ public class Bot {
 
 
     public void drive(double strafeSpeed, double forwardBackSpeed, double turnSpeed){
-        double[] speeds = {
+        double[]  speeds = {
                 forwardBackSpeed + strafeSpeed + turnSpeed,
                 forwardBackSpeed - strafeSpeed - turnSpeed,
                 forwardBackSpeed - strafeSpeed + turnSpeed,

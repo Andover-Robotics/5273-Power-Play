@@ -84,7 +84,6 @@ public class MainAutonomous extends LinearOpMode {
         Thread runSlides = new Thread(() -> {
             while (opModeIsActive()) {
                 bot.manipulator.verticalLinearSlides.loop();
-                bot.manipulator.horizontalLinearSlides.loop();
             }
         });
 

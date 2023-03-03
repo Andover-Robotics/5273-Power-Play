@@ -60,15 +60,15 @@ public class AutoPaths {
                 .addTemporalMarker(4.01, () -> bot.manipulator.verticalLinearSlides.extend())
                 .addTemporalMarker(5.01, () -> bot.manipulator.extendVerticalArm())
                 .addTemporalMarker(7.01, () -> bot.manipulator.openVerticalClaw())
-                .addTemporalMarker(8.01, () -> bot.manipulator.resetVertical())
-                .addTemporalMarker(8.01, () -> bot.manipulator.horizontalLinearSlides.extend())
-                .addTemporalMarker(8.02, () -> bot.manipulator.horizontalArm.rotateArmToConeStack(5))
-                .addTemporalMarker(10.01, () -> bot.manipulator.intake())
+//                .addTemporalMarker(8.01, () -> bot.manipulator.resetVertical())
+//                .addTemporalMarker(8.01, () -> bot.manipulator.horizontalLinearSlides.extend())
+//                .addTemporalMarker(8.02, () -> bot.manipulator.horizontalArm.rotateArmToConeStack(5))
+//                .addTemporalMarker(10.01, () -> bot.manipulator.intake())
                 .addTemporalMarker(12.01, () -> bot.manipulator.prepareToOuttake())
                 .addTemporalMarker(12.01, () -> bot.manipulator.verticalLinearSlides.extend())
                 .addTemporalMarker(13.01, () -> bot.manipulator.extendVerticalArm())
                 .addTemporalMarker(14.01, () -> bot.manipulator.openVerticalClaw())
-                .addTemporalMarker(14.01, () -> bot.manipulator.resetVertical())
+//                .addTemporalMarker(14.01, () -> bot.manipulator.resetVertical())
                 .build();
     }
 

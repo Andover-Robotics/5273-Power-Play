@@ -72,9 +72,13 @@ public class VerticalArm extends SubsystemBase {
         pivot = hardwareMap.get(Servo.class, "verticalPivotServo");
     }
 
-    public void openClaw() { clawPos = ClawPos.OPEN_POS; }
+    public void resetJavaGCBeingBadThings() {
+        armR.setDirection(Servo.Direction.REVERSE);
+    }
 
-    public void closeClaw() { clawPos = ClawPos.CLOSE_POS; }
+    public void openClaw() { clawPos = ClawPos.OPEN_POS; setServoPoses();}
+
+    public void closeClaw() { clawPos = ClawPos.CLOSE_POS; setServoPoses();}
 
     public void setArmOuttake() { armPos = ArmPos.OUTTAKE_POS; }
 
@@ -89,16 +93,16 @@ public class VerticalArm extends SubsystemBase {
     public void setPivotTransfer() { pivotPos = PivotPos.TRANSFER_POSS; }
 
     public void setOuttake() {
-        closeClaw();
         setPivotOuttake();
         setHingeOuttake();
         setArmOuttake();
+        setServoPoses();
     }
     public void setTransfer() {
-        closeClaw();
         setPivotTransfer();
         setHingeTransfer();
         setArmTransfer();
+        setServoPoses();
     }
 
     public void setServoPoses() {
@@ -108,5 +112,4 @@ public class VerticalArm extends SubsystemBase {
         armL.setPosition(armPos.getPos());
         armR.setPosition(armPos.getPos());
     }
-
 }

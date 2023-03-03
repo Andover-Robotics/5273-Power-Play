@@ -50,37 +50,4 @@ public abstract class BaseOpMode extends OpMode {
     subsystemController.readButtons();
   }
 
-
-
-  boolean buttonSignal(Button button) {
-    return driveController.isDown(button) || subsystemController.isDown(button);
-  }
-
-  double triggerSignal(Trigger trigger) {
-    double in1 = driveController.getTrigger(trigger),
-            in2 = subsystemController.getTrigger(trigger);
-    return Math.max(in1, in2);
-  }
-
-
-  Vector2d stickSignal(Direction side) {
-
-    Function<GamepadEx, Vector2d> toCoords = pad ->
-            side == Direction.LEFT ? new Vector2d(pad.getLeftX(), pad.getLeftY()) :
-                    new Vector2d(pad.getRightX(), pad.getRightY());
-
-    Vector2d v1 = toCoords.apply(driveController),
-            v2 = toCoords.apply(subsystemController);
-
-    return v1.magnitude() > 0.01 ? v1 : v2;
-  }
-
-
-  boolean justPressed(Button button) {
-    return driveController.wasJustPressed(button) || subsystemController.wasJustPressed(button);
-  }
-
-  boolean justReleased(Button button){
-    return !(driveController.isDown(button) || subsystemController.isDown(button)) && (driveController.wasJustReleased(button) || subsystemController.wasJustReleased(button));
-  }
 }

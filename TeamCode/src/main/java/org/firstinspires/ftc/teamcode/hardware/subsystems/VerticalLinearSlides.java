@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class VerticalLinearSlides {
+public class VerticalLinearSlides extends SubsystemBase {
 
     public enum Level {
         HOVER,

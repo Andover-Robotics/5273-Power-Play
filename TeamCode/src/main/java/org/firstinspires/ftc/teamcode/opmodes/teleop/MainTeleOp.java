@@ -43,7 +43,7 @@ public class MainTeleOp extends BaseOpMode{
 //            bot.manipulator.verticalLinearSlides.loop();
 //        }
 
-        bot.manipulator.horizontalLinearSlides.setManual();
+//        bot.manipulator.horizontalLinearSlides.setManual();
     }
     public void subLoop(){
         //============== driving and slowmode ================================================================
@@ -68,23 +68,6 @@ public class MainTeleOp extends BaseOpMode{
         //============ subsystem control =============================================================================
 
         if (gameState == GameState.INTAKE) {
-            if (Math.abs(subsystemController.getLeftY()) > 0.05){
-                bot.manipulator.horizontalLinearSlides.runManual(driveController.getLeftY());
-            }
-
-            if (subsystemController.wasJustPressed(GamepadKeys.Button.B)) {
-                bot.manipulator.horizontalLinearSlides.setRunUsingDistanceSensor();
-                bot.manipulator.prepareToIntake();
-            }
-
-            if (subsystemController.isDown(GamepadKeys.Button.A)) {
-                bot.manipulator.openHorizontalClaw();
-            }
-
-            else if (subsystemController.wasJustReleased(GamepadKeys.Button.A)) {
-                bot.manipulator.intake();
-                gameState = GameState.OUTTAKE;
-            }
         }
 
         else {
@@ -118,11 +101,10 @@ public class MainTeleOp extends BaseOpMode{
                     bot.manipulator.extendVerticalArm();
                 }
 
-                if (bot.manipulator.verticalArm.armPosition == VerticalArm.ArmPosition.OUT) {
+                if (bot.manipulator.verticalArm.armPos == VerticalArm.ArmPos.OUTTAKE_POS) {
                     if (subsystemController.wasJustReleased(GamepadKeys.Button.A)) {
                         bot.manipulator.openVerticalClaw();
                         gameState = GameState.INTAKE;
-                        timingScheduler.defer(0.5, () -> bot.manipulator.resetVertical());
                     }
                 }
             }
@@ -138,8 +120,6 @@ public class MainTeleOp extends BaseOpMode{
             }
         }
 
-        bot.manipulator.verticalLinearSlides.loop();
-        bot.manipulator.horizontalLinearSlides.loop();
 
         telemetry.addData("leftStickPressed?", driveController.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON));
         telemetry.addData("Drivetrain Current Draw (mA)", bot.getDriveCurrentDraw());
@@ -147,8 +127,8 @@ public class MainTeleOp extends BaseOpMode{
         telemetry.addData("imu0", bot.imu0.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 //        telemetry.addData("imu1", bot.imu1.getAngularOrientation().toAngleUnit(AngleUnit.RADIANS).firstAngle);
 
-        telemetry.addData("HorizontalLinearSlides Position", bot.manipulator.horizontalLinearSlides.getCurrentHeight());
-        telemetry.addData("HorizontalLinearSlides targetPosition", bot.manipulator.horizontalLinearSlides.getTargetHeight());
+        telemetry.addData("HorizontalLinearSlides Position", bot.manipulator.horizontalLinearSlides.getCurrentPos());
+        telemetry.addData("HorizontalLinearSlides targetPosition", bot.manipulator.horizontalLinearSlides.getTargetPos());
         telemetry.addData("VerticalLinearSlides Position", bot.manipulator.verticalLinearSlides.getCurrentHeight());
         telemetry.addData("VerticalLinearSlides targetPosition", bot.manipulator.verticalLinearSlides.getTargetHeight());
 

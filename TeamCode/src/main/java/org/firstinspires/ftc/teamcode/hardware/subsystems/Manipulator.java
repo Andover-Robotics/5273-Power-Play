@@ -18,31 +18,19 @@ public class Manipulator extends SubsystemBase {
         horizontalArm = new HorizontalArm(hardwareMap);
     }
 
-    //TODO: modify methods to reflect robot
 
-    public void prepareToIntake() {
-        horizontalArm.openClaw();
-        horizontalArm.uprightClaw();
-        horizontalArm.extendArm();
-        horizontalArm.unpivotClaw();
-    }
 
-    public void intake(){
-        horizontalArm.closeClaw();
-        horizontalArm.flipClaw();
-        horizontalArm.pivotClaw();
-        horizontalLinearSlides.retract();
-        horizontalArm.retractArm();
-    }
+
+
 
     public void prepareToOuttake() {
         verticalArm.closeClaw();
-        verticalArm.flipClaw();
-        verticalArm.pivotClaw();
+        verticalArm.setHingeTransfer();
+        verticalArm.setPivotOuttake();
     }
 
     public void extendVerticalArm() {
-        verticalArm.extendArm();
+        verticalArm.setArmOuttake();
     }
 
     public void openHorizontalClaw() {
@@ -57,22 +45,11 @@ public class Manipulator extends SubsystemBase {
         verticalArm.openClaw();
     }
 
-    public void resetVertical() {
-        verticalArm.retractArm();
-        verticalArm.uprightClaw();
-        verticalArm.unpivotClaw();
-        verticalArm.openClaw();
-        verticalLinearSlides.retract();
-    }
 
-    public void resetHorizontal() {
-        horizontalArm.retractArm();
-        horizontalArm.uprightClaw();
-        horizontalArm.unpivotClaw();
-        horizontalArm.openClaw();
-        horizontalLinearSlides.retract();
-    }
-    
+
+    @Override
+    public void periodic() {}
+
     public void init() {
 //        verticalArm.unpivotClaw();
 //        verticalArm.openClaw();

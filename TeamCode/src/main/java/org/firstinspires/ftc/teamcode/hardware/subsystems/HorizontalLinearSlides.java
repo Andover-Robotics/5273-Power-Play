@@ -1,28 +1,23 @@
 package org.firstinspires.ftc.teamcode.hardware.subsystems;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.GlobalConfig;
 
-public class HorizontalLinearSlides {
+public class HorizontalLinearSlides extends SubsystemBase {
 
 
-    public enum Level {
-        RETRACTED,
-        MIDWAY,
+
+    public enum SlidePos {
+        INIT_POS,
+        TRANSFER_POS,
         EXTENDED
     }
 
-    public enum RunState {
-        MANUAL,
-        DISTANCE_SENSOR,
-        PRESET
-    }
 
     //TODO: Tune position controller
 
@@ -37,138 +32,40 @@ public class HorizontalLinearSlides {
 
     private static final double POWER_CONSTANT = 0.01;
 
-    private final int TOLERANCE = 5;
+    private final int TOLERANCE = 3;
 
-    public static Level currentLevel = Level.RETRACTED;
-    private static int targetHeight;
+    public static SlidePos currentSlidePos = SlidePos.INIT_POS;
+    private static int targetPos;
 
     public final MotorEx slideMotor;
 
     private final DistanceSensor distanceSensor;
 
-    private RunState runState = RunState.PRESET;
 
 
     public HorizontalLinearSlides(HardwareMap hardwareMap) {
         slideMotor = new MotorEx(hardwareMap, "horizontalSlideMotor", Motor.GoBILDA.RPM_312);
-        initializeSlideMotor(slideMotor);
+        slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setRunMode(Motor.RunMode.PositionControl);
+        slideMotor.setPositionTolerance(TOLERANCE);
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
     }
 
-    public void initializeSlideMotor(MotorEx motor) {
-        motor.resetEncoder();
-        motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        motor.setTargetPosition(RETRACTED);
-        motor.setRunMode(MotorEx.RunMode.PositionControl);
-        motor.setPositionTolerance(TOLERANCE);
-    }
 
-    public int getCurrentHeight() { return slideMotor.getCurrentPosition(); }
 
-    public int getTargetHeight(){
-        return targetHeight;
+    public int getCurrentPos() { return slideMotor.getCurrentPosition(); }
+
+    public int getTargetPos(){
+        return targetPos;
     }
 
     public boolean atTargetHeight() { return slideMotor.atTargetPosition(); }
 
-    private void setTargetHeight() {
-        switch(currentLevel) {
-            case RETRACTED:
-                targetHeight = RETRACTED;
-                break;
-            case MIDWAY:
-                targetHeight = MIDWAY;
-                break;
-            case EXTENDED:
-                targetHeight = EXTENDED;
-                break;
-        }
-    }
-
-    public void setTargetHeight(int height) {
-        slideMotor.setPositionCoefficient(kP);
-        targetHeight = height;
-    }
-
-    public void runSlides(){
-        setTargetHeight();
-        slideMotor.setTargetPosition(targetHeight);
-    }
-
-    public void runSlides(int ticks){
-        if (ticks < 0) { return;}
-        setTargetHeight(ticks);
-        slideMotor.setTargetPosition(targetHeight);
-    }
-
-    public void setLevel(Level level) {
-        switch(level) {
-            case RETRACTED:
-                currentLevel = Level.RETRACTED;
-                break;
-            case MIDWAY:
-                currentLevel = Level.MIDWAY;
-                break;
-            case EXTENDED:
-                currentLevel = Level.EXTENDED;
-                break;
-        }
-
-        runSlides();
-    }
-    public void incrementLevel() {
-        switch(currentLevel) {
-            case RETRACTED:
-                currentLevel = Level.MIDWAY;
-                break;
-            case MIDWAY:
-            case EXTENDED:
-                currentLevel = Level.EXTENDED;
-                break;
-        }
-
-        runSlides();
-    }
-
-    public void decrementLevel() {
-        switch(currentLevel) {
-            case RETRACTED:
-            case MIDWAY:
-                currentLevel = Level.RETRACTED;
-                break;
-            case EXTENDED:
-                currentLevel = Level.MIDWAY;
-                break;
-        }
-
-        runSlides();
-    }
-
-    public void extend() {
-        currentLevel = Level.EXTENDED;
-        runSlides();
-    }
-
-    public void retract() {
-        currentLevel = Level.RETRACTED;
-        runSlides();
-    }
-
-    public void setManual() { runState = RunState.MANUAL; }
-
-    public void setRunUsingDistanceSensor() { runState = RunState.DISTANCE_SENSOR; }
-
-    public void setPreset() { runState = RunState.PRESET; }
-
-    public void runManual(double input) {
-        slideMotor.set(input * POWER_CONSTANT);
-    }
 
     public void runUsingDistanceSensor() {
         double distance = distanceSensor.getDistance(DistanceUnit.INCH);
         int ticks = distanceToTicks(distance);
-        runSlides(ticks);
     }
 
     private int distanceToTicks(double distance) {
@@ -183,15 +80,16 @@ public class HorizontalLinearSlides {
     }
 
 
-    public void loop(){
-        switch(runState) {
-            case DISTANCE_SENSOR:
-                runUsingDistanceSensor();
-                break;
-            case PRESET:
-                if (!slideMotor.atTargetPosition()) { slideMotor.set(kV); }
-                break;
-            case MANUAL:
+    @Override
+    public void periodic() {
+        if(currentSlidePos == SlidePos.INIT_POS) {
+            slideMotor.set(-1.0);
+        }
+        else if(currentSlidePos == SlidePos.TRANSFER_POS) {
+
+        }
+        else if(currentSlidePos == SlidePos.EXTENDED) {
+            // logic here
         }
     }
 }

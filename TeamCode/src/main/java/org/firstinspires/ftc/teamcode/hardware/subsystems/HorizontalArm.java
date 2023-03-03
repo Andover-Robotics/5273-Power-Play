@@ -34,7 +34,7 @@ public class HorizontalArm extends SubsystemBase {
 
     public enum HingePos { // left vals
         INIT_POS(0.0),
-        TRANSFER_POS(0.66),
+        TRANSFER_POS(0.6),
         INTAKE_POS(0.63);
 
         private double pos;
@@ -44,8 +44,8 @@ public class HorizontalArm extends SubsystemBase {
 
     public enum PivotPos {
         INIT_POS(0.0),
-        TRANSFER_POS(0.03),
-        INTAKE_POS(0.7);
+        TRANSFER_POS(0.7),
+        INTAKE_POS(0.03);
 
         private double pos;
         PivotPos(double pos) { this.pos = pos; }
@@ -79,34 +79,39 @@ public class HorizontalArm extends SubsystemBase {
         pivotServo = hardwareMap.get(Servo.class, "horizontalPivotServo");
     }
 
+    public void resetJavaGCBaddies() {
+        armServoR.setDirection(Servo.Direction.REVERSE);
+        hingeServoR.setDirection(Servo.Direction.REVERSE);
+    }
+
     public double getClawPosition() { return claw.getPosition(); }
     public double getRotateServoPosition() { return hingeServoL.getPosition(); }
     public double getArmPosition() { return armServoR.getPosition(); }
 
-    public void openClaw() { clawPos = ClawPos.OPEN; }
-    public void closeClaw() { clawPos = ClawPos.CLOSED; }
+    public void openClaw() { clawPos = ClawPos.OPEN; setServoPoses();}
+    public void closeClaw() { clawPos = ClawPos.CLOSED; setServoPoses();}
 
     public void setArmIntake() { armPos = ArmPos.INTAKE_POS; }
     public void setArmTransfer() { armPos = ArmPos.TRANSFER_POS; }
 
-    public void setHingeIntake() { armPos = ArmPos.INTAKE_POS; }
-    public void setHingeTransfer() { armPos = ArmPos.TRANSFER_POS; }
+    public void setHingeIntake() { hingePos = HingePos.INTAKE_POS; }
+    public void setHingeTransfer() { hingePos = HingePos.TRANSFER_POS; }
 
     public void setPivotIntake() { pivotPos = PivotPos.INTAKE_POS; }
-    public void setPivotTransfer() { armPos = ArmPos.TRANSFER_POS; }
+    public void setPivotTransfer() { pivotPos = PivotPos.TRANSFER_POS; }
 
     public void setIntake() {
-        openClaw();
         setHingeIntake();
         setArmIntake();
         setPivotIntake();
+        setServoPoses();
     }
 
     public void setTransfer() {
-        closeClaw();
         setHingeTransfer();
         setArmTransfer();
         setPivotTransfer();
+        setServoPoses();
     }
 
     public void setInitPoses() {
