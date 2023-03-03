@@ -84,11 +84,11 @@ public class MainTeleOp extends BaseOpMode{
                 }
 
                 if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-                    bot.manipulator.verticalLinearSlides.extend(); // high junction
+                    bot.manipulator.verticalLinearSlides.setLevel(VerticalLinearSlides.Level.HIGH);; // high junction
                 }
 
                 else if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-                    bot.manipulator.verticalLinearSlides.retract(); // ground junction?
+                    bot.manipulator.verticalLinearSlides.setLevel(VerticalLinearSlides.Level.GROUND); // ground junction?
                 }
 
                 else if (subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
