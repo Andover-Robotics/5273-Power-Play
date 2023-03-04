@@ -66,12 +66,13 @@ public class StatesTeleOp extends BaseOpMode{
 
 
         if(subsystemController.wasJustReleased(GamepadKeys.Button.A)){  //retract horizontal slides and setIdle
-            bot.manipulator.horizontalLinearSlides.extendSlides();
-            bot.manipulator.horizontalArm.setIntake();
-        }
-        else if(subsystemController.wasJustReleased(GamepadKeys.Button.Y)){ //extend horizontal slides and setIntake
             bot.manipulator.horizontalLinearSlides.retractSlides();
             bot.manipulator.horizontalArm.setArmTransfer();
+
+        }
+        else if(subsystemController.wasJustReleased(GamepadKeys.Button.Y)){ //extend horizontal slides and setIntake
+            bot.manipulator.horizontalLinearSlides.extendSlides();
+            bot.manipulator.horizontalArm.setIntake();
         }
         //TODO add other controls and add automated inntake and outtake
 
@@ -79,7 +80,11 @@ public class StatesTeleOp extends BaseOpMode{
 
 
 
-
+        telemetry.addData("Horizontal Current Position", bot.manipulator.horizontalLinearSlides.curPos());
+        telemetry.addData("Horizontal Target Position", bot.manipulator.horizontalLinearSlides.targetPos());
+        telemetry.addData("Horizontal getDist()", bot.manipulator.horizontalLinearSlides.getDist());
+        telemetry.addData("Vertical currentHeight", bot.manipulator.verticalLinearSlides.getCurrentHeight());
+        telemetry.addData("Vertical targetHeight", bot.manipulator.verticalLinearSlides.getTargetHeight());
 
     }
 

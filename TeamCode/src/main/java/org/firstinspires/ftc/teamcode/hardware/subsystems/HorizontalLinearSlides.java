@@ -14,8 +14,9 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     //TODO: Tune position controller
 
-    private final double kP = 0.02;
+    private final double kP = 0.03;
 
+    private final int REVERSE_CONSTANT = -1;
     //TODO: Find values for levels of extension(ticks)
 
 
@@ -64,13 +65,13 @@ public class HorizontalLinearSlides extends SubsystemBase {
         RETRACTED = false;
         slideMotor.stopMotor();
         slideMotor.setRunMode(Motor.RunMode.PositionControl);
-        targetPos = -distanceToTicks(distanceSensor.getDistance(DistanceUnit.INCH));
+        targetPos = distanceToTicks(distanceSensor.getDistance(DistanceUnit.INCH));
         slideMotor.setTargetPosition(targetPos);
 
     }
 
     public void shiftManual(int shift) {
-        targetPos -= shift;
+        targetPos += shift;
         slideMotor.setTargetPosition(targetPos);
     }
 
@@ -83,15 +84,16 @@ public class HorizontalLinearSlides extends SubsystemBase {
             return (int) ((Math.PI / 2 - angle) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
         }
 
-        return (int) ((Math.PI / 2) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
+        return (int) (2 * (Math.PI / 2) / (2 * Math.PI) * Motor.GoBILDA.RPM_312.getCPR());
     }
 
 
     @Override
     public void periodic() {
         if(!RETRACTED) {
-            slideMotor.set(1);
+            slideMotor.set(0.7);
         }
 
+        if(curPos() < 1) slideMotor.stopMotor();
     }
 }

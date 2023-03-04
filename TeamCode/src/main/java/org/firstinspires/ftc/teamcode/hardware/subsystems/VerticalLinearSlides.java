@@ -23,7 +23,7 @@ public class VerticalLinearSlides extends SubsystemBase {
     private final double kPDownward = 0.06;
 
     private final double kS = 0.004;
-    private final double kV = 0.01;
+    private final double kV = 1;
 
 
     private static final int HOVER_HEIGHT = -300;

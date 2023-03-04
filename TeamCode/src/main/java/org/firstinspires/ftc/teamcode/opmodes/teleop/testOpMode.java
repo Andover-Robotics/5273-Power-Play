@@ -110,11 +110,11 @@ public class testOpMode extends BaseOpMode{
 
         bot.manipulator.horizontalLinearSlides.shiftManual((int) (subsystemController.getLeftY()*5));
 
-        telemetry.addLine(Integer.toString(bot.manipulator.horizontalLinearSlides.curPos()));
-        telemetry.addLine(Integer.toString(bot.manipulator.horizontalLinearSlides.targetPos()));
-        telemetry.addLine(Double.toString(bot.manipulator.horizontalLinearSlides.getDist()));
-        telemetry.addData("targetHeight", bot.manipulator.verticalLinearSlides.getTargetHeight());
-        telemetry.addData("currentHeight", bot.manipulator.verticalLinearSlides.getCurrentHeight());
+        telemetry.addData("Horizontal Current Position", bot.manipulator.horizontalLinearSlides.curPos());
+        telemetry.addData("Horizontal Target Position", bot.manipulator.horizontalLinearSlides.targetPos());
+        telemetry.addData("Horizontal getDist()", bot.manipulator.horizontalLinearSlides.getDist());
+        telemetry.addData("Vertical currentHeight", bot.manipulator.verticalLinearSlides.getCurrentHeight());
+        telemetry.addData("Vertical targetHeight", bot.manipulator.verticalLinearSlides.getTargetHeight());
 
 
 
