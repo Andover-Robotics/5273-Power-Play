@@ -74,4 +74,11 @@ public class Manipulator extends SubsystemBase {
 //        horizontalLinearSlides.setPreset();
 //        horizontalLinearSlides.retract();
     }
+
+    @Override
+    public void periodic() {
+        if(horizontalLinearSlides.atTargetHeight()){
+            horizontalArm.setIdle();
+        }
+    }
 }

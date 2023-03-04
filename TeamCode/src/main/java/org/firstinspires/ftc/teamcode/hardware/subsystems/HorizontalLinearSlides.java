@@ -14,7 +14,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     //TODO: Tune position controller
 
-    private final double kP = 0.05;
+    private final double kP = 0.02;
 
     //TODO: Find values for levels of extension(ticks)
 
@@ -22,7 +22,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
     private static final double POWER_CONSTANT = 0.02;
 
     private boolean RETRACTED = true;
-    private final int TOLERANCE = 4;
+    private final int TOLERANCE = 10;
     private static int targetPos = 0;
 
     public final MotorEx slideMotor;
@@ -55,7 +55,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     public void retractSlides() {
         slideMotor.setRunMode(Motor.RunMode.RawPower);
-        slideMotor.set(1.0);
+        slideMotor.set(-0.01);
         RETRACTED = true;
         targetPos = 0;
     }
@@ -93,6 +93,5 @@ public class HorizontalLinearSlides extends SubsystemBase {
             slideMotor.set(1);
         }
 
-        if(curPos() > 1) { slideMotor.resetEncoder(); slideMotor.stopMotor(); }
     }
 }

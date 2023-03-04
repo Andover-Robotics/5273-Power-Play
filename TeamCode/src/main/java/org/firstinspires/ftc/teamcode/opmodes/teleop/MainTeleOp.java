@@ -141,15 +141,15 @@ public class MainTeleOp extends BaseOpMode{
                         driveController.getRightX()*Math.sqrt(Math.abs(driveController.getRightX())) , 0);
         if (bot.fieldCentricRunMode) {
             bot.drive(
-                    driveVector.getX() * driveSpeed * slowPercentage,
-                    driveVector.getY() * driveSpeed * slowPercentage,
-                    turnVector.getX() * driveSpeed * slowPercentage,
-                    bot.imu0.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS)
+                    driveVector.getX() * driveSpeed,
+                    driveVector.getY() * driveSpeed ,
+                    turnVector.getX() * driveSpeed ,
+                    yawPitchRollAngles.getYaw(AngleUnit.RADIANS)
             );
         } else {
-            bot.drive(driveVector.getX() * driveSpeed * slowPercentage,
-                    driveVector.getY() * driveSpeed * slowPercentage,
-                    turnVector.getX() * driveSpeed * slowPercentage
+            bot.drive(driveVector.getX() * driveSpeed,
+                    driveVector.getY() * driveSpeed,
+                    turnVector.getX() * driveSpeed
             );
         }
     }

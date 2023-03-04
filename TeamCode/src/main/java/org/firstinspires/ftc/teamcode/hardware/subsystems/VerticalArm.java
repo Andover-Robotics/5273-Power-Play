@@ -32,6 +32,7 @@ public class VerticalArm extends SubsystemBase {
 
     public enum HingePos {
         INIT_POS(0.02),
+        READY_OUTTAKE_POS(0.55),
         OUTTAKE_POS(0.6),
         TRANSFER_POS(0.02);
 
@@ -84,6 +85,7 @@ public class VerticalArm extends SubsystemBase {
 
     public void setArmTransfer() { armPos = ArmPos.TRANSFER_POS; }
 
+    public void setHingeReadyOuttake() { hingePos = HingePos.READY_OUTTAKE_POS; }
     public void setHingeOuttake() { hingePos = HingePos.OUTTAKE_POS; }
 
     public void setHingeTransfer() { hingePos = HingePos.TRANSFER_POS; }

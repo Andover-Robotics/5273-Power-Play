@@ -28,9 +28,9 @@ public class VerticalLinearSlides extends SubsystemBase {
 
     private static final int HOVER_HEIGHT = -300;
     private static final int GROUND_HEIGHT = 0;
-    private static final int LOW_HEIGHT = -500;
-    private static final int MEDIUM_HEIGHT = -1000;
-    private static final int HIGH_HEIGHT =  -1500;
+    private static final int LOW_HEIGHT = -300;
+    private static final int MEDIUM_HEIGHT = -1120;
+    private static final int HIGH_HEIGHT =  -1920;
 
     public static Level currentLevel = Level.GROUND;
     private static int targetHeight;
@@ -47,14 +47,14 @@ public class VerticalLinearSlides extends SubsystemBase {
 
         leftSlideMotor = new MotorEx(hardwareMap, "leftVerticalSlideMotor", Motor.GoBILDA.RPM_435);
         initializeSlideMotor(leftSlideMotor);
+        targetHeight=-300;
     }
 
     public void initializeSlideMotor(MotorEx motor) {
         motor.resetEncoder();
         motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        motor.setTargetPosition(0);
-        motor.setRunMode(MotorEx.RunMode.PositionControl);
-        motor.setPositionTolerance(TOLERANCE);
+        motor.setRunMode(Motor.RunMode.RawPower);
+
     }
 
     public int getCurrentHeight() { return (rightSlideMotor.getCurrentPosition() + leftSlideMotor.getCurrentPosition()) / 2; }
@@ -64,6 +64,12 @@ public class VerticalLinearSlides extends SubsystemBase {
     }
 
     public boolean atTargetHeight() { return Math.abs(getCurrentHeight() - targetHeight) <= TOLERANCE; }
+
+    public int getHeightDifference() { return getCurrentHeight()-targetHeight; }
+
+    public boolean isAboveTargetHeight() {
+        return getCurrentHeight() > targetHeight;
+    }
 
     private void setTargetHeight() {
         switch(currentLevel) {
@@ -99,17 +105,9 @@ public class VerticalLinearSlides extends SubsystemBase {
         targetHeight = height;
     }
 
-    public void extend(){
-        setTargetHeight();
-        rightSlideMotor.setTargetPosition(targetHeight);
-        leftSlideMotor.setTargetPosition(targetHeight);
-    }
-
     public void extend(int ticks){
         if (ticks > 0) { return;}
-        setTargetHeight(ticks);
-        rightSlideMotor.setTargetPosition(targetHeight);
-        leftSlideMotor.setTargetPosition(targetHeight);
+        targetHeight=ticks;
     }
 
     public void setLevel(Level level) {
@@ -121,7 +119,6 @@ public class VerticalLinearSlides extends SubsystemBase {
                 currentLevel = Level.GROUND;
                 break;
             case LOW:
-                currentLevel = Level.LOW;
                 break;
             case MEDIUM:
                 currentLevel = Level.MEDIUM;
@@ -131,7 +128,7 @@ public class VerticalLinearSlides extends SubsystemBase {
                 break;
         }
 
-        extend();
+        setTargetHeight();
     }
     public void incrementLevel() {
         switch(currentLevel) {
@@ -148,7 +145,7 @@ public class VerticalLinearSlides extends SubsystemBase {
                 break;
         }
 
-        extend();
+setTargetHeight();
     }
 
     public void decrementLevel() {
@@ -166,28 +163,37 @@ public class VerticalLinearSlides extends SubsystemBase {
                 break;
         }
 
-        extend();
+        setTargetHeight();
     }
 
     public void hover() {
         currentLevel = Level.HOVER;
-        extend();
+        setTargetHeight();
     }
 
     public void retract() {
         currentLevel = Level.GROUND;
-        extend();
+        setTargetHeight();
     }
 
-    public void loop(){
+    @Override
+    public void periodic(){
         if (atTargetHeight()) {
-            rightSlideMotor.set(kS);
-            leftSlideMotor.set(kS);
+            rightSlideMotor.set(-kS);
+            leftSlideMotor.set(-kS);
         }
 
         else {
-            rightSlideMotor.set(kV);
-            leftSlideMotor.set(kV);
+            if(isAboveTargetHeight()){
+                rightSlideMotor.set(kV*getHeightDifference()*kPDownward);
+                leftSlideMotor.set(kV*getHeightDifference()*kPDownward);
+            }
+            else{
+                rightSlideMotor.set(kV*getHeightDifference()*kPUpward);
+                leftSlideMotor.set(kV*getHeightDifference()*kPUpward);
+            }
+
+
         }
     }
 }
