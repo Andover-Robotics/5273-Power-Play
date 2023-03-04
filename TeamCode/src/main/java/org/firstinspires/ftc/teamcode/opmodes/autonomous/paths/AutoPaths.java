@@ -6,6 +6,7 @@ import static java.lang.Math.PI;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GlobalConfig;
@@ -24,61 +25,51 @@ public class AutoPaths {
     private static final double EPSILON = 2.0;
     private static final double TRACK_WIDTH = 15.0;
     private static double TRACK_LENGTH;
+    private final ColorSensor colorSensor;
 
     //TODO: Tune positions(add turning) - Use RRPathVisualizer
 
     // private Pose2d intakePose = p2d( - 54.0 + TRACK_WIDTH / 2, - 12.0, PI / 2);
+    
 
-    private Pose2d deliveryPose = p2d(- 34.0, - 7.0, PI);
-
-    private Pose2d startPose = p2d(- 72.0 + TRACK_WIDTH / 2, - 36.0, PI);
+    private Pose2d startPose = new Pose2d(0, 0, 0);
 
     private Map<GlobalConfig.PipelineResult, Pose2d> parkingPose = new HashMap<>();
+    
 
-    public final Trajectory stack;
 
     private final Bot bot = Bot.getInstance();
 
     public AutoPaths(HardwareMap hardwareMap) {
         drive = new RRMecanumDrive(hardwareMap);
+        colorSensor=hardwareMap.get(ColorSensor.class, "colorSensor");
+        
 
-        Pose2d parkingTrajectoryStartPose = (autonomousType == AutonomousType.STACK) ? deliveryPose : startPose;
+        parkingPose.put(PipelineResult.ONE, new Pose2d(-24, 48, 0));
+        parkingPose.put(PipelineResult.TWO, new Pose2d(0, 48, 0));
+        parkingPose.put(PipelineResult.THREE, new Pose2d(24, 48, 0));
 
-        parkingPose.put(PipelineResult.ONE, p2d(- 12.0, parkingTrajectoryStartPose.getY(), PI));
-        parkingPose.put(PipelineResult.TWO, p2d(- 36.0, parkingTrajectoryStartPose.getY(), PI));
-        parkingPose.put(PipelineResult.THREE, p2d(- 60.0, parkingTrajectoryStartPose.getY(), PI));
+        
 
-        park = drive.trajectoryBuilder(parkingTrajectoryStartPose, parkingTrajectoryStartPose.getHeading())
-                .lineTo(p2v(parkingPose.get(GlobalConfig.pipelineResult)))
-                .build();
-
-        //Cycling in place(1 + 1 at the moment)
-
-        stack = drive.trajectoryBuilder(startPose)
-                .lineTo(p2v(deliveryPose))
-                .addTemporalMarker(4.01, () -> bot.manipulator.prepareToOuttake())
-//                .addTemporalMarker(4.01, () -> bot.manipulator.verticalLinearSlides.extend())
-                .addTemporalMarker(5.01, () -> bot.manipulator.extendVerticalArm())
-                .addTemporalMarker(7.01, () -> bot.manipulator.openVerticalClaw())
-//                .addTemporalMarker(8.01, () -> bot.manipulator.resetVertical())
-//                .addTemporalMarker(8.01, () -> bot.manipulator.horizontalLinearSlides.extend())
-//                .addTemporalMarker(8.02, () -> bot.manipulator.horizontalArm.rotateArmToConeStack(5))
-//                .addTemporalMarker(10.01, () -> bot.manipulator.intake())
-                .addTemporalMarker(12.01, () -> bot.manipulator.prepareToOuttake())
-//                .addTemporalMarker(12.01, () -> bot.manipulator.verticalLinearSlides.extend())
-                .addTemporalMarker(13.01, () -> bot.manipulator.extendVerticalArm())
-                .addTemporalMarker(14.01, () -> bot.manipulator.openVerticalClaw())
-//                .addTemporalMarker(14.01, () -> bot.manipulator.resetVertical())
+        park = drive.trajectoryBuilder(startPose)
+                .forward(48)
+                .addTemporalMarker(1,  ()->{colorDetected();})
+                .lineToSplineHeading(parkingPose.get(pipelineResult))
                 .build();
     }
 
-    private Pose2d p2d(double x, double y, double h) {
-        return new Pose2d((side == Side.AUDIENCE) ? x : - x,
-                (alliance == Alliance.RED) ? y : - y,
-                (side == Side.AUDIENCE) ? ((alliance == Alliance.RED) ? h : (PI - h)):
-                        2 * Math.PI - ((alliance == Alliance.RED) ? h : (PI - h)));
+    private void colorDetected(){
+        if(colorSensor.red()>colorSensor.green() &&colorSensor.red()>colorSensor.blue()){
+            pipelineResult=PipelineResult.ONE;
+        }
+        else if(colorSensor.green()>colorSensor.red() &&colorSensor.green()>colorSensor.blue()){
+            pipelineResult=PipelineResult.TWO;
+        }
+        else if(colorSensor.blue()>colorSensor.green() &&colorSensor.blue()>colorSensor.red()){
+            pipelineResult= PipelineResult.THREE;
+        }
     }
 
-    private Vector2d p2v(Pose2d pose) { return new Vector2d(pose.getX(), pose.getY()); }
+
 
 }
