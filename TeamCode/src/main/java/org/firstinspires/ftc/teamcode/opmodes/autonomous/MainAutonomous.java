@@ -25,12 +25,15 @@ public class MainAutonomous extends LinearOpMode {
     double cx = 640;
     double cy = 360;
 
-    private final Bot bot = Bot.getInstance();
-
+    Bot bot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        AutoPaths autoPaths = new AutoPaths(this.hardwareMap);
+        bot=Bot.getInstance(this);
+
+        AutoPaths autoPaths = new AutoPaths(hardwareMap, telemetry);
+
+
 
         bot.manipulator.verticalLinearSlides.resetSlideEncoders();
         // init (hopefully)
@@ -40,15 +43,13 @@ public class MainAutonomous extends LinearOpMode {
 
         waitForStart();
 
-        autoPaths.drive.followTrajectory(autoPaths.park);
-
-
-
-
+        autoPaths.drive.followTrajectorySequence(autoPaths.stack);
+        telemetry.update();
 
         if (isStopRequested()) {
             return;
         }
+
 
         while (!isStopRequested() && opModeIsActive()) { }
     }

@@ -6,8 +6,7 @@ import com.qualcomm.hardware.lynx.LynxModule.BulkCachingMode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -51,8 +50,7 @@ public class LocalizationTest extends LinearOpMode {
       telemetry.addData("heading", poseEstimate.getHeading());
 
       int i = 0;
-      for (Pose2d estimate : drive.localizer.getAllPoseEstimates())
-        telemetry.addData("estimate " + i++, estimate.toString());
+        telemetry.addData("estimate " + i++, drive.getLocalizer().getPoseEstimate());
       telemetry.update();
     }
   }

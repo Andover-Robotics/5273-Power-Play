@@ -20,11 +20,11 @@ public class VerticalLinearSlides extends SubsystemBase {
 
     //TODO: find values for junction heights(ticks)
 
-    private final double kPUpward = 0.25;
-    private final double kPDownward = 0.06;
+    private final double kPUpward = 0.1;
+    private final double kPDownward = 0.01;
 
-    private final double kS = 0.004;
-    private final double kV = 1;
+    private final double kS = 0.04; // 0.05
+    private final double kV = 0.13; // 0.2
 
 
     private static final int HOVER_HEIGHT = -500;

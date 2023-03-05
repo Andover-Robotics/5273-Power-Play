@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
  * classes). The robot drives in a DISTANCE-by-DISTANCE square indefinitely. Utilization of the

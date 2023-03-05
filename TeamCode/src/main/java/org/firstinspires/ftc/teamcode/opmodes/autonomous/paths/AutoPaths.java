@@ -29,7 +29,7 @@ public class AutoPaths {
     //TODO: Tune positions(add turning) - Use RRPathVisualizer
 
     // private Pose2d intakePose = p2d( - 54.0 + TRACK_WIDTH / 2, - 12.0, PI / 2);
-    
+
 
     private Pose2d startPose = new Pose2d(0, 0, 0);
 
@@ -44,13 +44,13 @@ public class AutoPaths {
     public AutoPaths(HardwareMap hardwareMap, Telemetry telemetry) {
         drive = new SampleMecanumDrive(hardwareMap);
         colorSensor=hardwareMap.get(ColorSensor.class, "colorSensor");
-        
+
 
         parkingPoses.put(1, -24);
         parkingPoses.put(2, 1);
         parkingPoses.put(3, 24);
 
-        
+
 
         stack = drive.trajectorySequenceBuilder(startPose)
                 .forward(18)
@@ -83,6 +83,7 @@ public class AutoPaths {
             return 3;
 
         }
+        return -1;
     }
 
 

@@ -99,7 +99,34 @@ public class StatesTeleOp extends BaseOpMode{
         if(subsystemController.wasJustPressed(GamepadKeys.Button.X)){  //retract horizontal slides and setIdle
             bot.manipulator.horizontalArm.closeClaw();
         }
-        else if(subsystemController.wasJustReleased(GamepadKeys.Button.Y)){ //extend horizontal slides and setIntake
+        else if(subsystemController.wasJustReleased(GamepadKeys.Button.X)) {
+            bot.manipulator.horizontalArm.closeClaw();
+            timingScheduler.defer(0.2, () -> {
+                bot.manipulator.horizontalLinearSlides.retractSlides();
+                bot.manipulator.horizontalArm.setIdle();
+                timingScheduler.defer(2, () -> {
+                    bot.manipulator.horizontalArm.setTransfer();
+                    timingScheduler.defer(1, () -> {
+                        bot.manipulator.horizontalArm.openClaw();
+                        bot.manipulator.verticalLinearSlides.hover();
+                        timingScheduler.defer(0.5, () -> {
+                            bot.manipulator.horizontalArm.setIdle();
+                            timingScheduler.defer(0.1, () -> {
+                                bot.manipulator.horizontalArm.closeClaw();
+                                bot.manipulator.verticalArm.closeClaw();
+                                timingScheduler.defer(0.3, () -> {
+                                    bot.manipulator.verticalArm.setOuttake();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }
+
+        // starts horizontal intake
+        else if(subsystemController.wasJustPressed(GamepadKeys.Button.B)){ //extend horizontal slides and setIntake
+            bot.manipulator.horizontalArm.closeClaw();
             bot.manipulator.horizontalLinearSlides.extendSlides();
             bot.manipulator.horizontalArm.setIntake();
             timingScheduler.defer(0.2, () -> {
