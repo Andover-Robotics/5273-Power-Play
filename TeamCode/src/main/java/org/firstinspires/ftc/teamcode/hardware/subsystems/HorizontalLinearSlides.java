@@ -16,11 +16,10 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     private final double kP = 0.03;
 
-    private final int REVERSE_CONSTANT = -1;
     //TODO: Find values for levels of extension(ticks)
 
 
-    private static final double POWER_CONSTANT = 0.02;
+//    private static final double POWER_CONSTANT = 0.02;
 
     private boolean RETRACTED = true;
     private final int TOLERANCE = 10;
@@ -92,6 +91,8 @@ public class HorizontalLinearSlides extends SubsystemBase {
     public void periodic() {
         if(!RETRACTED) {
             slideMotor.set(0.7);
+        } else {
+            retractSlides();
         }
 
         if(curPos() < 1) slideMotor.stopMotor();

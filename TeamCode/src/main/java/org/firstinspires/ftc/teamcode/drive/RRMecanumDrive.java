@@ -69,8 +69,8 @@ public class RRMecanumDrive extends MecanumDrive {
 
   // TODO: Tune PID Coefficients
 
-  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0.15, 0.6);
-  public static PIDCoefficients HEADING_PID = new PIDCoefficients(2.8, 0, 0.3);
+  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5.2, 0.01, 0.2);
+  public static PIDCoefficients HEADING_PID = new PIDCoefficients(2.481, 0.001, 0.35  );
 
   public static double LATERAL_MULTIPLIER = (56.78/48.125) * (57.13/58.0);
 
@@ -424,6 +424,6 @@ public class RRMecanumDrive extends MecanumDrive {
 
   @Override
   public double getRawExternalHeading() {
-    return imu0.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    return imu1.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
   }
 }

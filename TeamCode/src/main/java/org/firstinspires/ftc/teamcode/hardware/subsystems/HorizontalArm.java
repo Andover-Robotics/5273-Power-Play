@@ -121,7 +121,7 @@ public class HorizontalArm extends SubsystemBase {
     public void setIdle() {
         setHingeIdle();
         setArmTransfer();
-        setPivotTransfer();
+        setPivotIntake();
         setServoPoses();
     }
 

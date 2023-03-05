@@ -65,10 +65,16 @@ public class VerticalLinearSlides extends SubsystemBase {
 
     public boolean atTargetHeight() { return Math.abs(getCurrentHeight() - targetHeight) <= TOLERANCE; }
 
+    /***
+     * @Range: 0 to 1920 going up, -1920 to 0 going down
+     */
     public int getHeightDifference() { return getCurrentHeight()-targetHeight; }
 
+    /**
+     * @return both parameters are negative
+     */
     public boolean isAboveTargetHeight() {
-        return getCurrentHeight() > targetHeight;
+        return getCurrentHeight() < targetHeight;
     }
 
     private void setTargetHeight() {
@@ -179,8 +185,8 @@ setTargetHeight();
     @Override
     public void periodic(){
         if (atTargetHeight()) {
-            rightSlideMotor.set(-kS);
-            leftSlideMotor.set(-kS);
+            rightSlideMotor.set(kS);
+            leftSlideMotor.set(kS);
         }
 
         else {
@@ -192,8 +198,13 @@ setTargetHeight();
                 rightSlideMotor.set(kV*getHeightDifference()*kPUpward);
                 leftSlideMotor.set(kV*getHeightDifference()*kPUpward);
             }
-
-
         }
+//            rightSlideMotor.set(-Math.pow(200, (double) getCurrentHeight() / 3000 + 0.03));
+//            leftSlideMotor.set(-Math.pow(200, (double) getCurrentHeight() / 3000 + 0.03));
+//        }
+//        else {
+//            rightSlideMotor.set(-0.1 * Math.pow(200, (double) getCurrentHeight() / 3000 + 0.03));
+//            leftSlideMotor.set(-0.1 * Math.pow(200, (double) getCurrentHeight() / 3000 + 0.03));
+//        }
     }
 }
