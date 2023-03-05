@@ -22,12 +22,12 @@ public class TurnTest extends LinearOpMode {
   public static double sideEncoderX = 0.55, sideEncoderY = 7.3;
   public static double ANGLE = 90; // deg
 
-  private RRMecanumDrive drive;
+  private SampleMecanumDrive drive;
   private PrintWriter fos;
 
   @Override
   public void runOpMode() throws InterruptedException {
-    drive = new RRMecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
     try {
       fos = new PrintWriter("/sdcard/FIRST/odo-diag.tsv");
       fos.println("Cx\tCy\tLx\tLy\tLh");

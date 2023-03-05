@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class HorizontalArm extends SubsystemBase {
 
-    //TODO: find INIT valutes & cone stack values then implement functions for those
+    //TODO: find INIT values & cone stack values then implement functions for those
     // additionally do cone righting if there is time
 
     public enum ClawPos {

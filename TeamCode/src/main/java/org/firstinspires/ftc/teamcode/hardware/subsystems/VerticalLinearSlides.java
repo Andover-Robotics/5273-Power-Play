@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+// IMPORTANT: IF BATTERY VOLTAGE IS LESS THAN 13 THEN THE SLIDES DON'T WORK
 public class VerticalLinearSlides extends SubsystemBase {
 
     public enum Level {
@@ -26,7 +27,7 @@ public class VerticalLinearSlides extends SubsystemBase {
     private final double kV = 1;
 
 
-    private static final int HOVER_HEIGHT = -300;
+    private static final int HOVER_HEIGHT = -500;
     private static final int GROUND_HEIGHT = 0;
     private static final int LOW_HEIGHT = -300;
     private static final int MEDIUM_HEIGHT = -1120;
@@ -50,6 +51,10 @@ public class VerticalLinearSlides extends SubsystemBase {
         targetHeight=-300;
     }
 
+    public void resetSlideEncoders() {
+        leftSlideMotor.resetEncoder();
+        rightSlideMotor.resetEncoder();
+    }
     public void initializeSlideMotor(MotorEx motor) {
         motor.resetEncoder();
         motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -57,7 +62,10 @@ public class VerticalLinearSlides extends SubsystemBase {
 
     }
 
-    public int getCurrentHeight() { return (rightSlideMotor.getCurrentPosition() + leftSlideMotor.getCurrentPosition()) / 2; }
+    private final int SCUFFED_SLIDE_OFFSET = 0;
+    public int getCurrentHeight() { return (rightSlideMotor.getCurrentPosition() + leftSlideMotor.getCurrentPosition()) / 2 + SCUFFED_SLIDE_OFFSET; }
+    public int getCurrentLeftHeight() { return leftSlideMotor.getCurrentPosition();}
+    public int getCurrentRightHeight() { return rightSlideMotor.getCurrentPosition();}
 
     public int getTargetHeight(){
         return targetHeight;

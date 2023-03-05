@@ -29,10 +29,6 @@ public class Manipulator extends SubsystemBase {
 
     }
 
-
-
-
-
     public void prepareToOuttake() {
         verticalArm.closeClaw();
         verticalArm.setHingeTransfer();

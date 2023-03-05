@@ -33,7 +33,8 @@ public class MaxVelocityTuner extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    RRMecanumDrive drive = new RRMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive;
+    drive = new SampleMecanumDrive(hardwareMap);
 
     drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

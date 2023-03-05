@@ -32,7 +32,11 @@ public class MainAutonomous extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         AutoPaths autoPaths = new AutoPaths(this.hardwareMap);
 
-
+        bot.manipulator.verticalLinearSlides.resetSlideEncoders();
+        // init (hopefully)
+        bot.manipulator.horizontalLinearSlides.retractSlides();
+        bot.manipulator.horizontalArm.setTransfer();
+        bot.manipulator.verticalArm.setInit();
 
         waitForStart();
 

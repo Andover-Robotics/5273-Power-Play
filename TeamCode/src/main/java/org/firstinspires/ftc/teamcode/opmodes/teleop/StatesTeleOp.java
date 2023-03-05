@@ -5,7 +5,9 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.VerticalLinearSlides;
@@ -23,10 +25,22 @@ public class StatesTeleOp extends BaseOpMode{
             motor.setRunMode(Motor.RunMode.RawPower);
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         }
+//        bot.manipulator.verticalLinearSlides.resetSlideEncoders();
+        /** TODO ===========================================================================================
+         * SLIDE ENCODER PROBLEMS:
+         * IF I DON'T RESET THE ENCODERS, THEN THE SLIDES DON'T GO TO THE CORRECT POSITION
+         * HOWEVER, THIS MEANS THAT THE SLIDES HAVE TO START FROM THE BOTTOM AT THE START OF TELEOP
+         * WHICH DOESN'T WORK BECAUSE AUTONOMOUS CAUSES THE SLIDES TO POP UP A BIT
+         * ALSO, THE VERTICAL SLIDE CLAW DOESN'T CLOSE WELL
+         * TODO ===========================================================================================
+         */
         bot.resetJavaGCCleanedThingsSoSad();
         CommandScheduler.getInstance().enable();
-        bot.manipulator.horizontalArm.setArmTransfer();
-        bot.manipulator.verticalArm.setArmTransfer();
+        bot.manipulator.horizontalArm.closeClaw();
+        bot.manipulator.horizontalArm.setIdle();
+        bot.manipulator.verticalLinearSlides.hover();
+        bot.manipulator.verticalArm.setTransfer();
+        bot.manipulator.verticalArm.closeClaw();
         telemetry.addLine("Init done.");
     }
 
@@ -39,42 +53,75 @@ public class StatesTeleOp extends BaseOpMode{
 
     @Override
     protected void subLoop() {
-        //drive
+        //drive=============================================================================
         yawPitchRollAngles = bot.imu1.getRobotYawPitchRollAngles();
 
-        if (driveController.wasJustReleased(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
+        if (driveController.wasJustPressed(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
             bot.imu1.resetYaw();
         }
-        if(driveController.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
-            bot.manipulator.horizontalArm.openClaw();
+        if(driveController.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
+            bot.manipulator.verticalArm.setArmOuttake();
+            bot.manipulator.verticalArm.closeClaw();
         }
-        if(driveController.wasJustReleased(GamepadKeys.Button.RIGHT_BUMPER)){
-            bot.manipulator.horizontalArm.closeClaw();
+        else if(driveController.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)) {
+            bot.manipulator.verticalArm.openClaw();
+            timingScheduler.defer(0.2, () -> {
+                bot.manipulator.verticalArm.closeClaw();
+                bot.manipulator.verticalArm.setTransfer();
+                bot.manipulator.verticalLinearSlides.hover();
+                timingScheduler.defer(0.2, () -> {
+                    bot.manipulator.verticalArm.openClaw();
+                });
+            });
         }
-        drive();
-        //subsystem
 
-        if(subsystemController.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
+        drive();
+
+        //subsystem===========================================================================
+
+        if(subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
             bot.manipulator.verticalLinearSlides.hover();
         }
-        else if(subsystemController.wasJustReleased(GamepadKeys.Button.DPAD_LEFT)){
+        else if(subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
+            bot.manipulator.verticalLinearSlides.setLevel(VerticalLinearSlides.Level.LOW);
+        }
+        else if(subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)){
             bot.manipulator.verticalLinearSlides.setLevel(VerticalLinearSlides.Level.MEDIUM);
         }
-        else if(subsystemController.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
+        else if(subsystemController.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
             bot.manipulator.verticalLinearSlides.setLevel(VerticalLinearSlides.Level.HIGH);
         }
+        // reset linear slides to ready intake position
 
 
-        if(subsystemController.wasJustReleased(GamepadKeys.Button.A)){  //retract horizontal slides and setIdle
-            bot.manipulator.horizontalLinearSlides.retractSlides();
-            bot.manipulator.horizontalArm.setArmTransfer();
-
+        // finishes horizontal intake
+        if(subsystemController.wasJustPressed(GamepadKeys.Button.X)){  //retract horizontal slides and setIdle
+            bot.manipulator.horizontalArm.closeClaw();
         }
         else if(subsystemController.wasJustReleased(GamepadKeys.Button.Y)){ //extend horizontal slides and setIntake
             bot.manipulator.horizontalLinearSlides.extendSlides();
             bot.manipulator.horizontalArm.setIntake();
+            timingScheduler.defer(0.2, () -> {
+                bot.manipulator.horizontalArm.openClaw();
+            });
         }
-        //TODO add other controls and add automated inntake and outtake
+
+        // set linear slide outtake position
+        if (subsystemController.wasJustPressed(GamepadKeys.Button.Y)) {
+            bot.manipulator.verticalArm.closeClaw();
+            bot.manipulator.verticalArm.setOuttake();
+        }
+
+        if (subsystemController.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            bot.manipulator.closeVerticalClaw();
+        } else if (subsystemController.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            bot.manipulator.openVerticalClaw();
+        }
+
+        // manual horizontal slide movement
+        bot.manipulator.horizontalLinearSlides.shiftManual((int) (subsystemController.getLeftY()*5));
+
+        //TODO add other controls and add automated intake and outtake
 
         CommandScheduler.getInstance().run();
 
@@ -83,7 +130,8 @@ public class StatesTeleOp extends BaseOpMode{
         telemetry.addData("Horizontal Current Position", bot.manipulator.horizontalLinearSlides.curPos());
         telemetry.addData("Horizontal Target Position", bot.manipulator.horizontalLinearSlides.targetPos());
         telemetry.addData("Horizontal getDist()", bot.manipulator.horizontalLinearSlides.getDist());
-        telemetry.addData("Vertical currentHeight", bot.manipulator.verticalLinearSlides.getCurrentHeight());
+        telemetry.addData("Vertical currentHeight left", bot.manipulator.verticalLinearSlides.getCurrentLeftHeight());
+        telemetry.addData("Vertical currentHeight right", bot.manipulator.verticalLinearSlides.getCurrentRightHeight());
         telemetry.addData("Vertical targetHeight", bot.manipulator.verticalLinearSlides.getTargetHeight());
 
     }

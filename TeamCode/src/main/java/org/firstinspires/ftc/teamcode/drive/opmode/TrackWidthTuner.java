@@ -33,7 +33,7 @@ public class TrackWidthTuner extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    RRMecanumDrive drive = new RRMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
     telemetry.addLine("Press play to begin the track width tuner routine");

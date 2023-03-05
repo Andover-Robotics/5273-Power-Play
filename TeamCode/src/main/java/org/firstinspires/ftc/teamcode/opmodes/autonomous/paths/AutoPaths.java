@@ -1,26 +1,25 @@
 package org.firstinspires.ftc.teamcode.opmodes.autonomous.paths;
 
 import static org.firstinspires.ftc.teamcode.GlobalConfig.*;
-import static java.lang.Math.PI;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.GlobalConfig;
-import org.firstinspires.ftc.teamcode.drive.RRMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Bot;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AutoPaths {
 
-    public final RRMecanumDrive drive;
+    public final SampleMecanumDrive drive;
 
-    public final Trajectory park;
+    public final TrajectorySequence stack;
 
     private static final double EPSILON = 2.0;
     private static final double TRACK_WIDTH = 15.0;
@@ -34,39 +33,55 @@ public class AutoPaths {
 
     private Pose2d startPose = new Pose2d(0, 0, 0);
 
-    private Map<GlobalConfig.PipelineResult, Pose2d> parkingPose = new HashMap<>();
-    
+    private int parkingPose=1;
+
+    private Map<Integer, Integer> parkingPoses = new HashMap<>();
 
 
-    private final Bot bot = Bot.getInstance();
 
-    public AutoPaths(HardwareMap hardwareMap) {
-        drive = new RRMecanumDrive(hardwareMap);
+
+
+    public AutoPaths(HardwareMap hardwareMap, Telemetry telemetry) {
+        drive = new SampleMecanumDrive(hardwareMap);
         colorSensor=hardwareMap.get(ColorSensor.class, "colorSensor");
         
 
-        parkingPose.put(PipelineResult.ONE, new Pose2d(-24, 48, 0));
-        parkingPose.put(PipelineResult.TWO, new Pose2d(0, 48, 0));
-        parkingPose.put(PipelineResult.THREE, new Pose2d(24, 48, 0));
+        parkingPoses.put(1, -24);
+        parkingPoses.put(2, 1);
+        parkingPoses.put(3, 24);
 
         
 
-        park = drive.trajectoryBuilder(startPose)
-                .forward(48)
-                .addTemporalMarker(1,  ()->{colorDetected();})
-                .lineToSplineHeading(parkingPose.get(pipelineResult))
+        stack = drive.trajectorySequenceBuilder(startPose)
+                .forward(18)
+                .waitSeconds(1)
+                .addTemporalMarker(()->{colorDetected(telemetry);})
+                .forward(30)
+                .waitSeconds(5)
+                .strafeRight(parkingPoses.get(parkingPose))
                 .build();
+
+        telemetry.addData("parkingPose", parkingPose);
     }
 
-    private void colorDetected(){
-        if(colorSensor.red()>colorSensor.green() &&colorSensor.red()>colorSensor.blue()){
-            pipelineResult=PipelineResult.ONE;
+    private int colorDetected(Telemetry telemetry){
+        int red=colorSensor.red();
+        int green=colorSensor.green();
+        int blue = colorSensor.blue();
+        telemetry.addData("color", colorSensor.red()+" "+colorSensor.green()+" "+colorSensor.blue());
+            if(red > blue && red > green){
+            this.parkingPose=1;
+            return 1;
         }
-        else if(colorSensor.green()>colorSensor.red() &&colorSensor.green()>colorSensor.blue()){
-            pipelineResult=PipelineResult.TWO;
+            else if(green > blue && green > red){
+
+            this.parkingPose=2;
+            return 2;
         }
-        else if(colorSensor.blue()>colorSensor.green() &&colorSensor.blue()>colorSensor.red()){
-            pipelineResult= PipelineResult.THREE;
+            else if(blue > red && blue > green){
+            this.parkingPose= 3;
+            return 3;
+
         }
     }
 

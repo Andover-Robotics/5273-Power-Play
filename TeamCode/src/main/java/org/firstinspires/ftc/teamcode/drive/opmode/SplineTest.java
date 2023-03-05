@@ -16,7 +16,7 @@ public class SplineTest extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    RRMecanumDrive drive = new RRMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
     waitForStart();
 

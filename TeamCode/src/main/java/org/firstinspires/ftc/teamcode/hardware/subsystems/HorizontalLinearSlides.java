@@ -14,7 +14,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     //TODO: Tune position controller
 
-    private final double kP = 0.03;
+    private final double kP = 0.02;
 
     //TODO: Find values for levels of extension(ticks)
 
@@ -24,6 +24,9 @@ public class HorizontalLinearSlides extends SubsystemBase {
     private boolean RETRACTED = true;
     private final int TOLERANCE = 10;
     private static int targetPos = 0;
+
+    private static int SLIDE_MIN = -47;
+    private static int SLIDE_MAX = 250;
 
     public final MotorEx slideMotor;
 
@@ -64,7 +67,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
         RETRACTED = false;
         slideMotor.stopMotor();
         slideMotor.setRunMode(Motor.RunMode.PositionControl);
-        targetPos = distanceToTicks(distanceSensor.getDistance(DistanceUnit.INCH));
+        targetPos = Math.min(distanceToTicks(distanceSensor.getDistance(DistanceUnit.INCH)),SLIDE_MAX);
         slideMotor.setTargetPosition(targetPos);
 
     }

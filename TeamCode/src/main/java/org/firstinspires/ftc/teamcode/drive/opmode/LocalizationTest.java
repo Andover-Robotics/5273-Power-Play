@@ -22,7 +22,7 @@ public class LocalizationTest extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    RRMecanumDrive drive = new RRMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     for (LynxModule mod : hardwareMap.getAll(LynxModule.class)) {
       mod.setBulkCachingMode(BulkCachingMode.AUTO);
     }

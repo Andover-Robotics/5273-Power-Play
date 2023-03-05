@@ -46,7 +46,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
   private FtcDashboard dashboard = FtcDashboard.getInstance();
 
-  private RRMecanumDrive drive;
+  private SampleMecanumDrive drive;
 
   enum Mode {
     DRIVER_MODE,
@@ -70,7 +70,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
     telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-    drive = new RRMecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
     mode = Mode.TUNING_MODE;
 

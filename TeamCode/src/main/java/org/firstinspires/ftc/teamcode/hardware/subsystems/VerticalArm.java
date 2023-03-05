@@ -21,7 +21,7 @@ public class VerticalArm extends SubsystemBase {
     }
 
     public enum ArmPos {
-        INIT_POS(0.0),
+        INIT_POS(0.6),
         TRANSFER_POS(0.0),
         OUTTAKE_POS(0.78);
 
@@ -44,7 +44,7 @@ public class VerticalArm extends SubsystemBase {
     public enum PivotPos {
         INIT_POS(0.67),
         OUTTAKE_POS(0.0),
-        TRANSFER_POSS(0.67);
+        TRANSFER_POS(0.67);
 
         private double pos;
         PivotPos(double pos) { this.pos = pos; }
@@ -65,7 +65,7 @@ public class VerticalArm extends SubsystemBase {
     private PivotPos pivotPos = PivotPos.INIT_POS;
 
     public VerticalArm (HardwareMap hardwareMap) {
-        claw = hardwareMap.get(Servo.class, "horizontalClaw");
+        claw = hardwareMap.get(Servo.class, "verticalClaw");
         armL = hardwareMap.get(Servo.class, "verticalArmLeft");
         armR = hardwareMap.get(Servo.class, "verticalArmRight");
         armR.setDirection(Servo.Direction.REVERSE);
@@ -85,14 +85,27 @@ public class VerticalArm extends SubsystemBase {
 
     public void setArmTransfer() { armPos = ArmPos.TRANSFER_POS; }
 
+    public void setArmInit() { armPos = ArmPos.INIT_POS; }
+
     public void setHingeReadyOuttake() { hingePos = HingePos.READY_OUTTAKE_POS; }
     public void setHingeOuttake() { hingePos = HingePos.OUTTAKE_POS; }
 
     public void setHingeTransfer() { hingePos = HingePos.TRANSFER_POS; }
 
+    public void setHingeInit() { hingePos = HingePos.INIT_POS; }
+
     public void setPivotOuttake() { pivotPos = PivotPos.OUTTAKE_POS; }
 
-    public void setPivotTransfer() { pivotPos = PivotPos.TRANSFER_POSS; }
+    public void setPivotTransfer() { pivotPos = PivotPos.TRANSFER_POS; }
+
+    public void setPivotInit() { pivotPos = PivotPos.INIT_POS; }
+
+    public void setReadyOuttake() {
+        setPivotOuttake();
+        setHingeReadyOuttake();
+        setArmOuttake();
+        setServoPoses();
+    }
 
     public void setOuttake() {
         setPivotOuttake();
@@ -104,6 +117,13 @@ public class VerticalArm extends SubsystemBase {
         setPivotTransfer();
         setHingeTransfer();
         setArmTransfer();
+        setServoPoses();
+    }
+
+    public void setInit() {
+        setArmInit();
+        setHingeInit();
+        setPivotInit();
         setServoPoses();
     }
 
