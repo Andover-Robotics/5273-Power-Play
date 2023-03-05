@@ -73,8 +73,6 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(horizontalLinearSlides.atTargetHeight()){
-            horizontalArm.setIdle();
-        }
+
     }
 }

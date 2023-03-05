@@ -58,7 +58,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     public void retractSlides() {
         slideMotor.setRunMode(Motor.RunMode.RawPower);
-        slideMotor.set(-0.01);
+        slideMotor.set(-0.6);
         RETRACTED = true;
         targetPos = 0;
     }
@@ -74,7 +74,7 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     public void shiftManual(int shift) {
         targetPos += shift;
-        slideMotor.setTargetPosition(targetPos);
+        slideMotor.setTargetPosition(Math.min(targetPos, SLIDE_MAX));
     }
 
 
@@ -94,10 +94,9 @@ public class HorizontalLinearSlides extends SubsystemBase {
     public void periodic() {
         if(!RETRACTED) {
             slideMotor.set(0.7);
-        } else {
-            retractSlides();
+        } else if (curPos() < 1) {
+            slideMotor.set(-0.3); slideMotor.resetEncoder();
         }
 
-        if(curPos() < 1) slideMotor.stopMotor();
     }
 }

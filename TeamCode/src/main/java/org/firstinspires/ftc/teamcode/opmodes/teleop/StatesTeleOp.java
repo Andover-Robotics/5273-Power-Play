@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.hardware.subsystems.VerticalLinearSlides;
+import org.firstinspires.ftc.teamcode.util.utilclasses.TimingScheduler;
 
 @TeleOp(name = "StatesTeleOp", group = "Competition")
 public class StatesTeleOp extends BaseOpMode{
@@ -124,7 +125,7 @@ public class StatesTeleOp extends BaseOpMode{
         //TODO add other controls and add automated intake and outtake
 
         CommandScheduler.getInstance().run();
-
+        timingScheduler.run();
 
 
         telemetry.addData("Horizontal Current Position", bot.manipulator.horizontalLinearSlides.curPos());
