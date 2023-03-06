@@ -46,6 +46,7 @@ public class AutoPaths {
     public AutoPaths(HardwareMap hardwareMap, Telemetry telemetry) {
         drive = new SampleMecanumDrive(hardwareMap);
 
+<<<<<<< Updated upstream
 
         parkingPoses.put(1, -26);
         parkingPoses.put(2, 1);
@@ -54,6 +55,10 @@ public class AutoPaths {
         detect=drive.trajectorySequenceBuilder(startPose)
                 .forward(18)
                 .waitSeconds(5)
+=======
+        park = drive.trajectoryBuilder(startPose)
+                .strafeRight(parkingPose.get(pipelineResult));
+>>>>>>> Stashed changes
                 .build();
 
         park = drive.trajectorySequenceBuilder(detect.end())
