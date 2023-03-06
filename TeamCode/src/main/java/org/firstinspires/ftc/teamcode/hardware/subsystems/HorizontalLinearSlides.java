@@ -92,10 +92,10 @@ public class HorizontalLinearSlides extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(!RETRACTED) {
-            slideMotor.set(0.7);
-        } else if (curPos() < 1) {
+        if (curPos() < 1) {
             slideMotor.set(-0.3); slideMotor.resetEncoder();
+        } else if (RETRACTED && curPos() > 10) {
+            retractSlides();
         }
 
     }

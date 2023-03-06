@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.hardware.Bot;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.paths.AutoPaths;
@@ -26,24 +27,37 @@ public class MainAutonomous extends LinearOpMode {
     double cy = 360;
 
     Bot bot;
+    private ColorSensor colorSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         bot=Bot.getInstance(this);
 
         AutoPaths autoPaths = new AutoPaths(hardwareMap, telemetry);
+        colorSensor=hardwareMap.get(ColorSensor.class, "colorSensor");
 
 
 
         bot.manipulator.verticalLinearSlides.resetSlideEncoders();
         // init (hopefully)
-        bot.manipulator.horizontalLinearSlides.retractSlides();
-        bot.manipulator.horizontalArm.setTransfer();
-        bot.manipulator.verticalArm.setInit();
+        bot.manipulator.horizontalArm.closeClaw();
+        bot.manipulator.horizontalArm.setIdle();
+        bot.manipulator.verticalLinearSlides.hover();
+        bot.manipulator.verticalArm.setTransfer();
+        bot.manipulator.verticalArm.closeClaw();
 
         waitForStart();
 
-        autoPaths.drive.followTrajectorySequence(autoPaths.stack);
+        autoPaths.drive.followTrajectorySequence(autoPaths.detect);
+
+        autoPaths.parkingPose=colorDetected();
+
+
+        autoPaths.drive.followTrajectorySequence(autoPaths.park);
+
+
+
         telemetry.update();
 
         if (isStopRequested()) {
@@ -53,6 +67,26 @@ public class MainAutonomous extends LinearOpMode {
 
         while (!isStopRequested() && opModeIsActive()) { }
     }
+    private int colorDetected(){
+        int red=colorSensor.red();
+        int green=colorSensor.green();
+        int blue = colorSensor.blue();
+        telemetry.addData("color", colorSensor.red()+" "+colorSensor.green()+" "+colorSensor.blue());
+        if(red > blue && red > green){
+            return 1;
+        }
+        else if(green > blue && green > red){
+
+            return 2;
+
+        }
+        else if(blue > red && blue > green){
+            return 3;
+        }
+        return 2;
+
+    }
+
 
 }
 

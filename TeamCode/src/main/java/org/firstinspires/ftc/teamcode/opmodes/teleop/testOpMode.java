@@ -24,6 +24,8 @@ public class testOpMode extends BaseOpMode{
             motor.resetEncoder();
             motor.setRunMode(Motor.RunMode.RawPower);
         }
+        bot.manipulator.verticalLinearSlides.resetSlideEncoders();
+
         bot.resetJavaGCCleanedThingsSoSad();
         CommandScheduler.getInstance().enable();
         bot.manipulator.horizontalArm.setArmTransfer();

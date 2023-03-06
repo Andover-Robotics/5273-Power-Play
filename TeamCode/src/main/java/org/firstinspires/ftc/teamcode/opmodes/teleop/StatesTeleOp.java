@@ -63,6 +63,9 @@ public class StatesTeleOp extends BaseOpMode{
         if(driveController.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
             bot.manipulator.verticalArm.setArmOuttake();
             bot.manipulator.verticalArm.closeClaw();
+            timingScheduler.defer(0.5, () -> {
+                bot.manipulator.verticalArm.setOuttake();
+            });
         }
         else if(driveController.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)) {
             bot.manipulator.verticalArm.openClaw();
@@ -70,7 +73,7 @@ public class StatesTeleOp extends BaseOpMode{
                 bot.manipulator.verticalArm.closeClaw();
                 bot.manipulator.verticalArm.setTransfer();
                 bot.manipulator.verticalLinearSlides.hover();
-                timingScheduler.defer(0.2, () -> {
+                timingScheduler.defer(1, () -> {
                     bot.manipulator.verticalArm.openClaw();
                 });
             });
@@ -100,22 +103,26 @@ public class StatesTeleOp extends BaseOpMode{
             bot.manipulator.horizontalArm.closeClaw();
         }
         else if(subsystemController.wasJustReleased(GamepadKeys.Button.X)) {
-            bot.manipulator.horizontalArm.closeClaw();
-            timingScheduler.defer(0.2, () -> {
-                bot.manipulator.horizontalLinearSlides.retractSlides();
-                bot.manipulator.horizontalArm.setIdle();
-                timingScheduler.defer(2, () -> {
-                    bot.manipulator.horizontalArm.setTransfer();
-                    timingScheduler.defer(1, () -> {
-                        bot.manipulator.horizontalArm.openClaw();
-                        bot.manipulator.verticalLinearSlides.hover();
-                        timingScheduler.defer(0.5, () -> {
-                            bot.manipulator.horizontalArm.setIdle();
+            bot.manipulator.horizontalLinearSlides.retractSlides();
+            bot.manipulator.horizontalArm.setIdle();
+            bot.manipulator.verticalLinearSlides.extend(700);
+            timingScheduler.defer(2, () -> {
+                bot.manipulator.horizontalArm.setTransfer();
+                timingScheduler.defer(1, () -> {
+                    bot.manipulator.horizontalArm.openClaw();
+//                        bot.manipulator.verticalLinearSlides.hover();
+                    timingScheduler.defer(0.5, () -> {
+                        bot.manipulator.horizontalArm.setIdle();
+                        timingScheduler.defer(0.2, () -> {
+                           bot.manipulator.verticalLinearSlides.hover();
                             timingScheduler.defer(0.1, () -> {
                                 bot.manipulator.horizontalArm.closeClaw();
                                 bot.manipulator.verticalArm.closeClaw();
                                 timingScheduler.defer(0.3, () -> {
-                                    bot.manipulator.verticalArm.setOuttake();
+                                    bot.manipulator.verticalArm.setArmOuttake();
+                                    timingScheduler.defer(1, () -> {
+                                        bot.manipulator.verticalArm.setOuttake();
+                                    });
                                 });
                             });
                         });
@@ -140,10 +147,16 @@ public class StatesTeleOp extends BaseOpMode{
             bot.manipulator.verticalArm.setOuttake();
         }
 
+        if (subsystemController.wasJustPressed(GamepadKeys.Button.X)) {
+            bot.manipulator.horizontalLinearSlides.retractSlides();
+        }
+
         if (subsystemController.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            bot.manipulator.closeVerticalClaw();
+            bot.manipulator.horizontalArm.setScoreGround();
+            bot.manipulator.horizontalArm.openClaw();
         } else if (subsystemController.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
-            bot.manipulator.openVerticalClaw();
+            bot.manipulator.horizontalArm.closeClaw();
+            bot.manipulator.horizontalArm.setArmIntake();
         }
 
         // manual horizontal slide movement

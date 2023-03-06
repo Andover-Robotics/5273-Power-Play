@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 // IMPORTANT: IF BATTERY VOLTAGE IS LESS THAN 13 THEN THE SLIDES DON'T WORK
 public class VerticalLinearSlides extends SubsystemBase {
@@ -27,7 +28,7 @@ public class VerticalLinearSlides extends SubsystemBase {
     private final double kV = 0.13; // 0.2
 
 
-    private static final int HOVER_HEIGHT = -500;
+    private static final int HOVER_HEIGHT = -570;
     private static final int GROUND_HEIGHT = 0;
     private static final int LOW_HEIGHT = -300;
     private static final int MEDIUM_HEIGHT = -1120;
@@ -40,6 +41,7 @@ public class VerticalLinearSlides extends SubsystemBase {
 
     private final MotorEx leftSlideMotor;
     private final MotorEx rightSlideMotor;
+
 
 
     public VerticalLinearSlides(HardwareMap hardwareMap) {

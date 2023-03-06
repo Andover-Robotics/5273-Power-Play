@@ -11,9 +11,9 @@ public class VerticalArm extends SubsystemBase {
     //TODO: find init servo pos values
     // make transfer mech actually work
     public enum ClawPos {
-        INIT_POS(0.5),
-        OPEN_POS(0.75),
-        CLOSE_POS(0.5);
+        INIT_POS(0.75),
+        OPEN_POS(0.5),
+        CLOSE_POS(0.75);
 
         private double pos;
         ClawPos(double pos) { this.pos = pos; }
@@ -31,7 +31,7 @@ public class VerticalArm extends SubsystemBase {
     }
 
     public enum HingePos {
-        INIT_POS(0.02),
+        INIT_POS(0.6),
         READY_OUTTAKE_POS(0.55),
         OUTTAKE_POS(0.6),
         TRANSFER_POS(0.02);
@@ -113,7 +113,8 @@ public class VerticalArm extends SubsystemBase {
         setArmOuttake();
         setServoPoses();
     }
-    public void setTransfer() {
+    public void
+    setTransfer() {
         setPivotTransfer();
         setHingeTransfer();
         setArmTransfer();
